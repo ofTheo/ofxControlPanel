@@ -1,0 +1,6 @@
+*.mode1v3
+*.pbxuser
+build/
+obj/
+*.o
+*.app/
