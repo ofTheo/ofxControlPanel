@@ -64,6 +64,9 @@ void testApp::setup(){
 	gui.addSlider("motion fade amnt", "MOTION_FADE", 0.67, 0.0, 1.0, false);	
 	gui.addSlider("field draw scale", "FIELD_DRAW_SCALE", 1.0, 1.0, 10.0, false);	
 
+	//load from xml!
+	gui.loadSettings("controlPanelSettings.xml");
+
 	//if you want to use events call this after you have added all your gui elements
 	gui.setupEvents();
 	gui.enableEvents();
