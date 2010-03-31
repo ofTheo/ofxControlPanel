@@ -1,30 +1,14 @@
-#ifndef _TEST_APP
-#define _TEST_APP
-
-
-//#define OF_ADDON_USING_OFXOPENCV
-//#define OF_ADDON_USING_OFXOBJLOADER
-//#define OF_ADDON_USING_OFXDIRLIST
-//#define OF_ADDON_USING_OFXVECTORMATH
-//#define OF_ADDON_USING_OFXNETWORK
-//#define OF_ADDON_USING_OFXVECTORGRAPHICS
-//#define OF_ADDON_USING_OFXOSC
-//#define OF_ADDON_USING_OFXTHREAD
-//#define OF_ADDON_USING_OFXXMLSETTINGS
+#pragma once
 
 #include "ofMain.h"
 #include "ofAddons.h"
-#include "computerVision.h"
+#include "videoMotionExample.h"
 #include "ofxControlPanel.h"
-
+#include "backgroundSubtractionExample.h"
 
 class testApp : public ofSimpleApp{
 
 	public:
-		
-		int iAvrg;
-		float avrgArray[20];
-		float xVec, yVec;
 		
 		void setup();
 		void update();
@@ -45,9 +29,12 @@ class testApp : public ofSimpleApp{
 		motionStats stats;
 		motionDraw threshDraw;
 		motionDraw camDraw;
-        computerVision vision;
+		
+		ofVideoGrabber grabber;
+		backgroundSubtractionExample bgExample;
+		
+        videoMotionExample motion;
 
 };
 
-#endif
 

@@ -73,6 +73,8 @@
 		E4C242CD10CC650E004149E2 /* libfmodex.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C242CC10CC650E004149E2 /* libfmodex.dylib */; };
 		E4C2443910CC7693004149E2 /* openFrameworks-Info.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */; };
 		E4C246DA10CCAE22004149E2 /* freeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C246D910CCAE22004149E2 /* freeimage.a */; };
+		E4E48C961163DB25007DCE2F /* videoMotionExample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E48C951163DB25007DCE2F /* videoMotionExample.cpp */; };
+		E4E48D421163E4F6007DCE2F /* backgroundSubtractionExample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E48D411163E4F6007DCE2F /* backgroundSubtractionExample.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,7 +124,6 @@
 		A1A2F136111F5772000703E4 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testApp.h; sourceTree = "<group>"; };
 		A1A2F138111F5772000703E4 /* vectorField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vectorField.cpp; path = vectorField/vectorField.cpp; sourceTree = "<group>"; };
 		A1A2F139111F5772000703E4 /* vectorField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vectorField.h; path = vectorField/vectorField.h; sourceTree = "<group>"; };
-		A1A2F13B111F5772000703E4 /* computerVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = computerVision.h; path = vision/computerVision.h; sourceTree = "<group>"; };
 		A1A2F151111F57F9000703E4 /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Instructions.txt; sourceTree = "<group>"; };
 		A1A2F152111F57F9000703E4 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		A1A2F154111F57F9000703E4 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDirList.cpp; sourceTree = "<group>"; };
@@ -182,7 +183,7 @@
 		A1A2F1E8111F57F9000703E4 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		A1A2F1EA111F57F9000703E4 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		A1A2F1EB111F57F9000703E4 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
-		A1A2F1F9111F57F9000703E4 /* emptyExampleDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emptyExampleDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxControlPanelDemoDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -265,6 +266,10 @@
 		E4C2429310CC5C38004149E2 /* freetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = freetype.a; path = ../../../libs/freetype/lib/osx/freetype.a; sourceTree = SOURCE_ROOT; };
 		E4C242CC10CC650E004149E2 /* libfmodex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfmodex.dylib; path = ../../../libs/fmodex/lib/osx/libfmodex.dylib; sourceTree = SOURCE_ROOT; };
 		E4C246D910CCAE22004149E2 /* freeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = freeimage.a; path = ../../../libs/FreeImage/lib/osx/freeimage.a; sourceTree = SOURCE_ROOT; };
+		E4E48C951163DB25007DCE2F /* videoMotionExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = videoMotionExample.cpp; sourceTree = "<group>"; };
+		E4E48D401163E4F6007DCE2F /* backgroundSubtractionExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = backgroundSubtractionExample.h; sourceTree = "<group>"; };
+		E4E48D411163E4F6007DCE2F /* backgroundSubtractionExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = backgroundSubtractionExample.cpp; sourceTree = "<group>"; };
+		E4E48DAA1163EDA9007DCE2F /* videoMotionExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = videoMotionExample.h; path = src/videoMotionExample.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -730,7 +735,7 @@
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4C2422310CC54B6004149E2 /* openFrameworks */,
 				E45BE0360E8CC5DE009D7055 /* libs */,
-				A1A2F1F9111F57F9000703E4 /* emptyExampleDebug.app */,
+				A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -741,7 +746,10 @@
 				A1A2F134111F5772000703E4 /* ofAddons.h */,
 				A1A2F138111F5772000703E4 /* vectorField.cpp */,
 				A1A2F139111F5772000703E4 /* vectorField.h */,
-				A1A2F13B111F5772000703E4 /* computerVision.h */,
+				E4E48D411163E4F6007DCE2F /* backgroundSubtractionExample.cpp */,
+				E4E48D401163E4F6007DCE2F /* backgroundSubtractionExample.h */,
+				E4E48C951163DB25007DCE2F /* videoMotionExample.cpp */,
+				E4E48DAA1163EDA9007DCE2F /* videoMotionExample.h */,
 				A1A2F135111F5772000703E4 /* testApp.cpp */,
 				A1A2F136111F5772000703E4 /* testApp.h */,
 				A1A2F133111F5772000703E4 /* main.cpp */,
@@ -835,9 +843,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4B69B5A0A3A1756003C02F2 /* emptyExample */ = {
+		E4B69B5A0A3A1756003C02F2 /* ofxControlPanelDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "emptyExample" */;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ofxControlPanelDemo" */;
 			buildPhases = (
 				E4B69B580A3A1756003C02F2 /* Sources */,
 				E4B69B590A3A1756003C02F2 /* Frameworks */,
@@ -850,9 +858,9 @@
 			dependencies = (
 				E4C2422810CC54DA004149E2 /* PBXTargetDependency */,
 			);
-			name = emptyExample;
+			name = ofxControlPanelDemo;
 			productName = myOFApp;
-			productReference = A1A2F1F9111F57F9000703E4 /* emptyExampleDebug.app */;
+			productReference = A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -874,7 +882,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E4B69B5A0A3A1756003C02F2 /* emptyExample */,
+				E4B69B5A0A3A1756003C02F2 /* ofxControlPanelDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -949,6 +957,8 @@
 				E48D9D191159484E00A7B771 /* guiTypeVideo.cpp in Sources */,
 				E4A056F11163AE860087BEF7 /* guiCallbackValue.cpp in Sources */,
 				E4A056F41163B2000087BEF7 /* guiCallback.cpp in Sources */,
+				E4E48C961163DB25007DCE2F /* videoMotionExample.cpp in Sources */,
+				E4E48D421163E4F6007DCE2F /* backgroundSubtractionExample.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1246,7 +1256,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "emptyExample" */ = {
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ofxControlPanelDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B600A3A1757003C02F2 /* Debug */,

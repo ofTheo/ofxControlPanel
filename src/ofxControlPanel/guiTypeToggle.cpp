@@ -9,6 +9,7 @@ void guiTypeToggle::setup(string toggleName, bool defaultVal){
 //-----------------------------------------------
 void guiTypeToggle::updateValue(){
 	//CB
+	notify();
 }
 
 //-----------------------------------------------.
@@ -23,6 +24,7 @@ void guiTypeToggle::updateGui(float x, float y, bool firstHit, bool isRelative){
 		}
 
 		//CB
+		notify();
 	}
 }
 

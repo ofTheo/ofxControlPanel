@@ -121,6 +121,17 @@ void ofxControlPanel::setWhichColumn(int column){
     panels[currentPanel]->selectColumn(column);
 }
 
+//---------------------------------------------
+int ofxControlPanel::getSelectedPanel(){
+	return selectedPanel;
+}
+
+//---------------------------------------------
+void ofxControlPanel::setSelectedPanel(int whichPanel){
+	if( whichPanel >= 0 && whichPanel < panels.size()){
+		selectedPanel = whichPanel;
+	}
+}
 
 // ############################################################## //
 // ##
@@ -364,6 +375,106 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
     return tmp;
 }
 
+// ############################################################## //
+// ##
+// ##       events 
+// ##
+// ############################################################## //
+
+//THIS SHOULD BE CALLED AFTER ALL GUI SETUP CALLS HAVE HAPPENED
+//---------------------------------------------
+void ofxControlPanel::setupEvents(){
+	eventsEnabled = true;
+	for(int i = 0; i < guiObjects.size(); i++){
+		ofAddListener(guiObjects[i]->guiEvent, this, &ofxControlPanel::eventsIn);
+	}
+	
+	//setup an event group for each panel
+	for(int i = 0; i < panels.size(); i++){
+	
+		vector <string> xmlNames;
+		
+		for(int j = 0; j < panels[i]->children.size(); j++){
+			xmlNames.push_back(panels[i]->children[j]->xmlName);
+		}
+		
+		string groupName = "PANEL_EVENT_"+ofToString(i);
+		createEventGroup(groupName, xmlNames);
+		printf("creating %s\n", groupName.c_str());
+	}
+	
+	bEventsSetup = true;
+}
+
+// Create a single common event which fired whenever any of the gui elements represented by xmlNames is changed
+//---------------------------------------------
+void ofxControlPanel::createEventGroup(string eventGroupName, vector <string> xmlNames){
+	customEvents.push_back( new guiCustomEvent() );
+	customEvents.back()->group = eventGroupName;
+	customEvents.back()->names = xmlNames;
+}		
+
+//---------------------------------------------
+void ofxControlPanel::enableEvents(){
+	if( !bEventsSetup ){
+		setupEvents();
+	}
+	eventsEnabled = true;
+}
+
+//---------------------------------------------
+void ofxControlPanel::disableEvents(){
+	eventsEnabled = false;
+}
+
+// Get an event object for just a panel
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getEventsForPanel(int panelNo){
+	if( panelNo < panels.size() ){
+		return getEventGroup("PANEL_EVENT_"+ofToString(panelNo));
+	}else{			
+		return guiEvent;
+	}
+}
+
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getAllEvents(){
+	return guiEvent;
+ } 
+
+
+// Use the name you made for your custom group to get back the event object
+//---------------------------------------------
+ofEvent <guiCallbackData> & ofxControlPanel::getEventGroup(string eventGroupName){
+	for(int i = 0; i < customEvents.size(); i++){
+		if( eventGroupName == customEvents[i]->group ){
+			return customEvents[i]->guiEvent;
+		}
+	}
+	
+	//if we don't find a match we return the global event
+	ofLog(OF_LOG_ERROR, "error eventGroup %s does not exist - returning the global event instead", eventGroupName.c_str());
+	return guiEvent;
+}
+
+//This is protected
+//---------------------------------------------
+void ofxControlPanel::eventsIn(guiCallbackData & data){
+	if( !eventsEnabled ) return;
+	
+	//we notify the ofxControlPanel event object - aka the global ALL events callback
+	ofNotifyEvent(guiEvent, data, this);
+	
+	//we then check custom event groups
+	for(int i = 0; i < customEvents.size(); i++){
+		for(int k = 0; k < customEvents[i]->names.size(); k++){
+			if( customEvents[i]->names[k] == data.groupName ){
+				ofNotifyEvent(customEvents[i]->guiEvent, data, this);
+			}
+		}
+	}
+}
+		
 // ############################################################## //
 // ##
 // ##       get and set values

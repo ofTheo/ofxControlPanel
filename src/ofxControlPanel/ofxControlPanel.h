@@ -34,7 +34,10 @@ class ofxControlPanel: public guiBaseObject{
         void loadFont( string fontName, int fontsize );
 
         guiTypePanel * addPanel(string panelName, int numColumns, bool locked = false);
-
+		
+		int getSelectedPanel();
+		void setSelectedPanel(int whichPanel);
+		
         void setWhichPanel(int whichPanel);
         void setWhichPanel(string panelName);
         void setWhichColumn(int column);
@@ -53,68 +56,14 @@ class ofxControlPanel: public guiBaseObject{
         guiTypeButtonSlider * addButtonSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt);
         guiTypeTextDropDown * addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames);
 
-		//THIS SHOULD BE CALLED AFTER ALL GUI SETUP CALLS HAVE HAPPENED
-		void setupEvents(){
-			eventsEnabled = true;
-			for(int i = 0; i < guiObjects.size(); i++){
-				ofAddListener(guiObjects[i]->guiEvent, this, &ofxControlPanel::eventsIn);
-			}
-			
-			//setup an event group for each panel
-			for(int i = 0; i < panels.size(); i++){
-			
-				vector <string> xmlNames;
-				
-				for(int j = 0; j < panels[i]->children.size(); j++){
-					xmlNames.push_back(panels[i]->children[j]->xmlName);
-				}
-				
-				string groupName = "PANEL_EVENT_"+ofToString(i);
-				createEventGroup(groupName, xmlNames);
-				printf("creating %s\n", groupName.c_str());
-			}
-			
-			bEventsSetup = true;
-		}
-		
-		void enableEvents(){
-			if( !bEventsSetup ){
-				setupEvents();
-			}
-			eventsEnabled = true;
-		}
-		
-		void disableEvents(){
-			eventsEnabled = false;
-		}
-		
-		ofEvent <guiCallbackData> & getEventsForPanel(int panelNo){
-			if( panelNo < panels.size() ){
-				return getEventGroup("PANEL_EVENT_"+ofToString(panelNo));
-			}else{			
-				return guiEvent;
-			}
-		}
-		
-		void createEventGroup(string eventGroupName, vector <string> xmlNames){
-			customEvents.push_back( new guiCustomEvent() );
-			customEvents.back()->group = eventGroupName;
-			customEvents.back()->names = xmlNames;
-		}
-		
-		ofEvent <guiCallbackData> & getEventGroup(string eventGroupName){
-			for(int i = 0; i < customEvents.size(); i++){
-				if( eventGroupName == customEvents[i]->group ){
-					return customEvents[i]->guiEvent;
-				}
-			}
-			
-			//if we don't find a match we return the global event
-			ofLog(OF_LOG_ERROR, "error eventGroup %s does not exist - returning the global event instead", eventGroupName.c_str());
-			return guiEvent;
-		}
-		
-				
+		void setupEvents();
+		void createEventGroup(string eventGroupName, vector <string> xmlNames);
+		void enableEvents();
+		void disableEvents();
+		ofEvent <guiCallbackData> & getEventsForPanel(int panelNo);
+		ofEvent <guiCallbackData> & getAllEvents();
+		ofEvent <guiCallbackData> & getEventGroup(string eventGroupName);
+
         void setValueB(string xmlName, bool value,  int whichParam = 0);
         void setValueI(string xmlName, int value,  int whichParam = 0);
         void setValueF(string xmlName, float value,  int whichParam = 0);
@@ -190,22 +139,7 @@ class ofxControlPanel: public guiBaseObject{
 		
 		
 		protected:
-		
-		void eventsIn(guiCallbackData & data){
-			if( !eventsEnabled ) return;
-			
-			//we notify the ofxControlPanel event object - aka the global ALL events callback
-			ofNotifyEvent(guiEvent, data, this);
-			
-			//we then check custom event groups
-			for(int i = 0; i < customEvents.size(); i++){
-				for(int k = 0; k < customEvents[i]->names.size(); k++){
-					if( customEvents[i]->names[k] == data.groupName ){
-						ofNotifyEvent(customEvents[i]->guiEvent, data, this);
-					}
-				}
-			}
-		}
+			void eventsIn(guiCallbackData & data);
 
 		
 
