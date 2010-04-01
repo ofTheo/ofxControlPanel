@@ -19,15 +19,22 @@ guiTextBase::guiTextBase(){
 	}else bRealFont = false;
 }
 
+
 //--------------------------------------------
- float guiTextBase::getTextWidth(){
+ float guiTextBase::getTextWidth(string textIn){
 	float textWidth = 0;
 
-	if(bRealFont)textWidth = ourFont->stringWidth(textString);
-	else textWidth = 0.615 * (float)fontSize * textString.size() ;
+	if(bRealFont)textWidth = ourFont->stringWidth(textIn);
+	else textWidth = 0.615 * (float)fontSize * textIn.size() ;
 
 	return  textWidth;
 }
+
+//--------------------------------------------
+ float guiTextBase::getTextWidth(){
+	return  getTextWidth(textString);
+}
+
 
 //--------------------------------------------
  float guiTextBase::getTextHeight(){

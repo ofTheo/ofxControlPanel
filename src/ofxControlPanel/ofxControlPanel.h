@@ -19,9 +19,18 @@ class xmlAssociation
         int numParams;
 };
 
+extern guiColor gTextColor;
+extern guiColor gFgColor;
+extern guiColor gBgColor;
+extern guiColor gOutlineColor;
+
 class ofxControlPanel: public guiBaseObject{
 
 	public:
+	
+		static vector <ofxControlPanel *> globalPanelList;
+		static ofxControlPanel * getPanelInstance(string panelName);
+
         static float borderWidth;
         static float topSpacing;
         static float tabWidth;
@@ -45,6 +54,26 @@ class ofxControlPanel: public guiBaseObject{
 		string getCurrentPanelName();
 
         void setSliderWidth(int width);
+		
+		static void setForegroundColor(simpleColor color, simpleColor selectedColor){
+			gFgColor.color		= color;
+			gFgColor.selected	= selectedColor;
+		}
+
+		static void setBackgroundColor(simpleColor color, simpleColor selectedColor){
+			gBgColor.color		= color;
+			gBgColor.selected	= selectedColor;
+		}
+		
+		static void setTextColor(simpleColor color, simpleColor selectedColor){
+			gTextColor.color	= color;
+			gTextColor.selected = selectedColor;
+		}
+
+		static void setOutlineColor(simpleColor color, simpleColor selectedColor){
+			gOutlineColor.color		= color;
+			gOutlineColor.selected	= selectedColor;
+		}
 
         guiTypeToggle * addToggle(string name, string xmlName, bool defaultValue);
         guiTypeMultiToggle * addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames);

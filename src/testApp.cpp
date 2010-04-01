@@ -9,16 +9,21 @@ void testApp::setup(){
 
 	//ofSetFrameRate(60);
 	//motion.loadVideo("video/motion2.mov");
-    motion.setup(grabber.width, grabber.height);
-	bgExample.setup(grabber.width, grabber.height);
-	
-	camDraw.setup(&motion.gray, &motion.motionField);
-	threshDraw.setup(&motion.motion, &motion.motionField);
-			
+
+	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 60, 200), simpleColor(30, 30, 60, 200));
+	ofxControlPanel::setTextColor(simpleColor(240, 50, 50, 255), simpleColor(240, 50, 50, 255));
+		
+	gui.loadFont("MONACO.TTF", 8);		
 	gui.setup("test cv", 0, 0, ofGetWidth(), 700);
 	gui.addPanel("background subtraction example", 4, false);
+	
+	ofxControlPanel::setBackgroundColor(simpleColor(60, 30, 30, 200), simpleColor(60, 30, 30, 200));	
 	gui.addPanel("motion example", 4, false);
+	
+	ofxControlPanel::setBackgroundColor(simpleColor(70, 70, 30, 200), simpleColor(70, 70, 30, 200));	
 	gui.addPanel("third panel", 4, false);
+
+	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200), simpleColor(30, 30, 30, 200));	
 	
 	gui.setWhichPanel(0);
 	gui.setWhichColumn(0);
@@ -70,6 +75,12 @@ void testApp::setup(){
 	//if you want to use events call this after you have added all your gui elements
 	gui.setupEvents();
 	gui.enableEvents();
+	
+    motion.setup(grabber.width, grabber.height);
+	bgExample.setup(grabber.width, grabber.height);
+	
+	camDraw.setup(&motion.gray, &motion.motionField);
+	threshDraw.setup(&motion.motion, &motion.motionField);	
 	
 //	vector <string> list;
 //	list.push_back("FIELD_DRAW_SCALE");

@@ -33,6 +33,8 @@ class testApp : public ofSimpleApp{
 		ofVideoGrabber grabber;
 		backgroundSubtractionExample bgExample;
 		
+		ofTrueTypeFont TTF;
+		
         videoMotionExample motion;
 
 };

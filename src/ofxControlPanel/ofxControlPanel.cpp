@@ -5,6 +5,8 @@ float ofxControlPanel::topSpacing  = 20;
 float ofxControlPanel::tabWidth = 25;
 float ofxControlPanel::tabHeight = 10;
 
+vector <ofxControlPanel *> ofxControlPanel::globalPanelList;
+
 //----------------------------
 ofxControlPanel::ofxControlPanel(){
     dragging        = false;
@@ -24,27 +26,62 @@ ofxControlPanel::ofxControlPanel(){
     currentXmlFile = "";
     incrementSaveName = "";
     xmlObjects.clear();
-}
-
-ofxControlPanel::~ofxControlPanel(){
-    for(unsigned int i = 0; i < guiObjects.size(); i++){
-        delete guiObjects[i];
-    }
+	
+	ofxControlPanel::globalPanelList.push_back(this);
 }
 
 //-----------------------------
+ofxControlPanel::~ofxControlPanel(){
+
+    for(unsigned int i = 0; i < guiObjects.size(); i++){
+        if( guiObjects[i] != NULL ){
+			delete guiObjects[i];
+			guiObjects[i] = NULL;
+		}
+    }
+	guiObjects.clear();
+	
+	for(int i = 0; i < ofxControlPanel::globalPanelList.size(); i++){
+		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i]->name == name ){			
+			ofxControlPanel::globalPanelList.erase( ofxControlPanel::globalPanelList.begin()+i, ofxControlPanel::globalPanelList.begin()+i+1);
+			break;
+		}
+	}
+	
+	for(int i = 0; i < customEvents.size(); i++){
+		if( customEvents[i] != NULL ){
+			delete customEvents[i];
+			customEvents[i] = NULL;
+		}
+	}
+	
+	customEvents.clear();
+}
+
+//-----------------------------
+ofxControlPanel * ofxControlPanel::getPanelInstance(string panelName){
+	for(int i = 0; i < ofxControlPanel::globalPanelList.size(); i++){
+		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i]->name == panelName ){
+			return ofxControlPanel::globalPanelList[i];
+		}
+	}
+	return NULL;
+}	
+		
+//-----------------------------
 void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY, float width, float height){
-      name = controlPanelName;
+	
+	name = controlPanelName;
 
-      setPosition(panelX, panelY);
-      setDimensions(width, height);
-      setShowText(true);
+	setPosition(panelX, panelY);
+	setDimensions(width, height);
+	setShowText(true);
 
-      // Setup depth buffer
-//	  glClearDepth(1.0f);
-//	  glDepthFunc(GL_LEQUAL	);
-//	  glDepthMask(GL_TRUE);
-//	  glEnable(GL_DEPTH_TEST);
+	fgColor			= gFgColor;
+	outlineColor	= gOutlineColor;				
+	bgColor			= gBgColor;
+	textColor		= gTextColor;	  
+
 }
 
 //-----------------------------
@@ -831,16 +868,18 @@ void ofxControlPanel::mouseReleased(){
 void ofxControlPanel::update(){
     guiBaseObject::update();
 
-    topBar           = ofRectangle(boundingBox.x, boundingBox.y, boundingBox.width, 20);
+    topBar           = ofRectangle(boundingBox.x, boundingBox.y, boundingBox.width, MAX(20, displayText.getTextSingleLineHeight() * 1.2 ) );
     minimizeButton   = ofRectangle(boundingBox.x + boundingBox.width - 24, boundingBox.y + 4, 20, 10 );
-    saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, 40, 12 );
-    restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4, 60, 12 );
+    saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save")) , MAX(12, displayText.getTextSingleLineHeight()) );
+    restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
+
+	ofxControlPanel::topSpacing = MAX(20, topBar.height);
 
     for(int i = 0; i < (int) panels.size(); i++){
         panels[i]->update();
 
         panelTabs[i].x      = i * tabWidth + hitArea.x + borderWidth;
-        panelTabs[i].y      = hitArea.y + topSpacing - tabHeight;
+        panelTabs[i].y      = hitArea.y + 20 - tabHeight;
         panelTabs[i].width  = tabWidth;
         panelTabs[i].height = tabHeight;
 
@@ -878,7 +917,7 @@ void ofxControlPanel::draw(){
 
         float panelH = boundingBox.height;
         if( minimize ){
-            panelH = 20;
+            panelH = topBar.height;
         }
 
         glPushMatrix();
@@ -892,7 +931,7 @@ void ofxControlPanel::draw(){
             ofNoFill();
             glColor4fv(outlineColor.getColorF());
             ofRect(0, 0, boundingBox.width, panelH);
-            ofLine(0, 20, boundingBox.width, 20);
+            ofLine(0, topBar.height, boundingBox.width, topBar.height);
         glPopMatrix();
 
         ofRect(minimizeButton.x, minimizeButton.y, minimizeButton.width, minimizeButton.height);

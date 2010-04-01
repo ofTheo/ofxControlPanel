@@ -12,8 +12,11 @@ class guiTextBase{
         guiTextBase();
         virtual void setFont(ofTrueTypeFont * fontPtr);
 
+		virtual float getTextWidth(string textIn);
 		virtual float getTextWidth();
+		
 		virtual float getTextHeight();
+
 		virtual float getTextSingleLineHeight();
 
 		virtual void setText(string textStr); 

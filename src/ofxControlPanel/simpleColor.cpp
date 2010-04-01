@@ -9,6 +9,16 @@ simpleColor::simpleColor(){
 }
 
 //----------------------------------------------------------
+simpleColor::simpleColor(int _r, int _g, int _b, int _a){
+	setColor(_r, _g, _b, _a);
+}
+
+//----------------------------------------------------------
+simpleColor::simpleColor(int hexColor){
+	setColor(hexColor);
+}
+
+//----------------------------------------------------------
 void simpleColor::setColor(int _r, int _g, int _b, int _a){
 	r = (float)_r / 255.0f; r = MAX(0,MIN(r,1.0f));
 	g = (float)_g / 255.0f; g = MAX(0,MIN(g,1.0f));

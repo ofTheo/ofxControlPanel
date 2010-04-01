@@ -9,8 +9,6 @@
 
 #include "backgroundSubtractionExample.h"
 
-#include "backgroundSubtractionExample.h"
-
 //------------
 void backgroundSubtractionExample::setup(int width, int height){
 

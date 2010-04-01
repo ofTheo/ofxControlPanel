@@ -1,6 +1,6 @@
 #include "guiTypeTextDropDown.h"
 
-static const int boxHeight = 15;
+static int boxHeight = 15;
 
 //------------------------------------------------
 void guiTypeTextDropDown::setup(string dropDownName, int defaultBox, vector <string> boxNames){
@@ -8,9 +8,10 @@ void guiTypeTextDropDown::setup(string dropDownName, int defaultBox, vector <str
 	value.addValue( (int)defaultBox, 0, vecDropList.size()-1);
 	name = dropDownName;
 
+	boxHeight = MAX(15, displayText.getTextHeight());
 	hitArea.height = boundingBox.height = boxHeight;
 
-	bShowDropDown = false;
+	bShowDropDown = false;	
 }
 
 //-----------------------------------------------
@@ -21,6 +22,18 @@ void guiTypeTextDropDown::updateValue(){
 
 //-----------------------------------------------.
 void guiTypeTextDropDown::update(){
+
+	boxHeight = MAX(15, displayText.getTextHeight());
+	hitArea.height = boundingBox.height = boxHeight;
+	
+	int minSize = 0;
+	for(int i = 0; i < vecDropList.size(); i++){
+		minSize = MAX(minSize, displayText.getTextWidth(vecDropList[i]));
+	}
+	
+	boundingBox.width = MAX(boundingBox.width, minSize + boxHeight + 5);
+	hitArea			= boundingBox;
+	
 	//setShowText(false);
 	updateText();
 	if(bShowDropDown) {
@@ -116,7 +129,8 @@ void guiTypeTextDropDown::render(){
 					ofFill();
 					glColor4fv(outlineColor.getColorF());
 					//ofTriangle(bx + boundingBox.width - 7, by + boxHeight, bx + boundingBox.width - 14, by,bx + boundingBox.width, by);
-					ofRect(bx + boundingBox.width - boxHeight, by, boxHeight*0.666f, boxHeight*0.666f);
+					ofRect(bx + boundingBox.width - boxHeight*0.5, by, boxHeight*0.5, boxHeight*0.5);
+					
 				}
 
 				glColor4fv(textColor.getColorF());
@@ -141,7 +155,7 @@ void guiTypeTextDropDown::render(){
 			ofFill();
 			glColor4fv(outlineColor.getColorF());
 			//ofTriangle(bx + boundingBox.width - 7, by + boxHeight, bx + boundingBox.width - 14, by,bx + boundingBox.width, by);
-			ofRect(bx + boundingBox.width - boxHeight, by, boxHeight*0.666f, boxHeight*0.666f);
+			ofRect(bx + boundingBox.width - boxHeight*0.5, by, boxHeight*0.5, boxHeight*0.5);
 
 			glColor4fv(textColor.getColorF());
 			displayText.renderString(vecDropList[value.getValueI()], bx + 2, by + boxHeight -4);
