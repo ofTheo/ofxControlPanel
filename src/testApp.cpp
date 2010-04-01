@@ -1,14 +1,17 @@
 #include "testApp.h"
 
-
 //--------------------------------------------------------------
 void testApp::setup(){
 	ofBackground(127,127,127);
-
+	
+	ofSetVerticalSync(true);
 	grabber.initGrabber(320, 240);
 
-	//ofSetFrameRate(60);
-	//motion.loadVideo("video/motion2.mov");
+    motion.setup(grabber.width, grabber.height);
+	bgExample.setup(grabber.width, grabber.height);
+	
+	camDraw.setup(&motion.gray, &motion.motionField);
+	threshDraw.setup(&motion.motion, &motion.motionField);	
 
 	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 60, 200), simpleColor(30, 30, 60, 200));
 	ofxControlPanel::setTextColor(simpleColor(240, 50, 50, 255), simpleColor(240, 50, 50, 255));
@@ -25,13 +28,9 @@ void testApp::setup(){
 
 	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200), simpleColor(30, 30, 30, 200));	
 	
+	//--------- PANEL 0 
 	gui.setWhichPanel(0);
-	gui.setWhichColumn(0);
-	
-//	gui.setWhichColumn(0);
-//	gui.addDrawableRect("video", &motion.gray, 200, 150);
-//	gui.addDrawableRect("background", &motion.background, 200, 150);
-//	
+		
 	gui.setWhichColumn(0);
 	gui.addDrawableRect("video", &bgExample.gray, 200, 150);
 
@@ -52,6 +51,7 @@ void testApp::setup(){
 	names.push_back("less than");
 	gui.addTextDropDown("difference mode", "DIFF_MODE", 0, names);
 	
+	//--------- PANEL 1
 	gui.setWhichPanel(1);
 	
 	gui.setWhichColumn(0);
@@ -76,19 +76,17 @@ void testApp::setup(){
 	gui.setupEvents();
 	gui.enableEvents();
 	
-    motion.setup(grabber.width, grabber.height);
-	bgExample.setup(grabber.width, grabber.height);
-	
-	camDraw.setup(&motion.gray, &motion.motionField);
-	threshDraw.setup(&motion.motion, &motion.motionField);	
-	
+//  -- this approach creates an event group and only sends you events for the elements you describe. 
 //	vector <string> list;
 //	list.push_back("FIELD_DRAW_SCALE");
 //	list.push_back("DIFF_MODE");
 //	gui.createEventGroup("TEST_GROUP", list);
-//	
+//	ofAddListener(gui.getEventGroup("TEST_GROUP"), this, &testApp::eventsIn);
+
+//  -- this approach gives you back an ofEvent for only the events from panel 0
 //	ofAddListener(gui.getEventsForPanel(0), this, &testApp::eventsIn);
 
+//  -- this gives you back an ofEvent for all events in this control panel object
 	ofAddListener(gui.guiEvent, this, &testApp::eventsIn);
 
 }
@@ -96,11 +94,14 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::eventsIn(guiCallbackData & data){
 
+	//we use the event callback to capture the background - we then set the toggle value back to its previous value
 	if( data.groupName == "GRAB_BACKGROUND" && data.getFloat(0.0) == 1.0 ){
 		bgExample.captureBackground();
 		gui.setValueB("GRAB_BACKGROUND", false);
 	}
-
+	
+	//this code prints out the name of the events coming in and all the variables passed
+	
 	printf("testApp::eventsIn - name is %s - \n", data.groupName.c_str());
 	if( data.elementName != "" ){
 		printf(" element name is %s \n", data.elementName.c_str());
@@ -125,9 +126,6 @@ void testApp::eventsIn(guiCallbackData & data){
 
 //--------------------------------------------------------------
 void testApp::update(){
-
-//    motion.setThreshold(thresh);
-//    motion.setFadeAmnt(fade);
 	
 	camDraw.setDrawScale(gui.getValueF("FIELD_DRAW_SCALE"));
 	threshDraw.setDrawScale(gui.getValueF("FIELD_DRAW_SCALE"));
@@ -168,7 +166,6 @@ void testApp::keyPressed  (int key){
         grabber.videoSettings();
     }
 	
-//	gui.keyPressed(key);
 }
 
 //--------------------------------------------------------------
