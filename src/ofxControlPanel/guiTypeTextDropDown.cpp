@@ -99,22 +99,21 @@ void guiTypeTextDropDown::render(){
 
 		//draw the background
 		ofFill();
-		glColor4fv(bgColor.getColorF());
+		glColor4fv(bgColor.getNormalColorF());
 		ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 		if(bShowDropDown)
 		{
 
-			glTranslated(1,0,0.1f);
 			for(int i = 0; i < (int) vecDropList.size(); i++)
 			{
-				float bx = hitArea.x + 0;
+				float bx = hitArea.x;
 				float by = hitArea.y + i * (boxHeight);
 
 				if(value.getValueI() == i){
 					glColor4fv(fgColor.getSelectedColorF());
 				}else{
-					glColor4fv(fgColor.getNormalColorF());
+					glColor4fv(bgColor.getNormalColorF());
 				}
 
 				ofFill();
@@ -128,9 +127,7 @@ void guiTypeTextDropDown::render(){
 				if(i==0) {
 					ofFill();
 					glColor4fv(outlineColor.getColorF());
-					//ofTriangle(bx + boundingBox.width - 7, by + boxHeight, bx + boundingBox.width - 14, by,bx + boundingBox.width, by);
 					ofRect(bx + boundingBox.width - boxHeight*0.5, by, boxHeight*0.5, boxHeight*0.5);
-					
 				}
 
 				glColor4fv(textColor.getColorF());
@@ -138,7 +135,6 @@ void guiTypeTextDropDown::render(){
 				displayText.renderString(vecDropList[i], bx + 2, by + boxHeight -4);
 
 			}
-			glTranslated(-1,0,-0.1f);
 
 		} else {
 			float bx = hitArea.x;

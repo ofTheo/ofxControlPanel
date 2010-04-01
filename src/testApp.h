@@ -33,6 +33,10 @@ class testApp : public ofSimpleApp{
 		ofVideoGrabber grabber;
 		backgroundSubtractionExample bgExample;
 		
+		float elapsedTime;
+		int appFrameCount;
+		float appFrameRate;
+		
 		ofTrueTypeFont TTF;
 		
         videoMotionExample motion;

@@ -5,6 +5,7 @@
 #include "guiColor.h"
 #include "simpleColor.h"
 #include "guiValue.h"
+#include "guiVariablePointer.h"
 
 //interface
 #include "guiTypePanel.h"
@@ -21,5 +22,7 @@
 #include "guiTypeCustom.h"
 #include "guiCustomImpl.h"
 #include "guiTypeVideo.h"
+#include "guiTypeVairableLister.h"
+#include "guiTypeChartPlotter.h"
 
 

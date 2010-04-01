@@ -54,12 +54,27 @@ class ofxControlPanel: public guiBaseObject{
 		string getCurrentPanelName();
 
         void setSliderWidth(int width);
+
+		static void setBackgroundColor(simpleColor color){
+			gBgColor.color		= color;
+			gBgColor.selected	= color;
+		}
 		
-		static void setForegroundColor(simpleColor color, simpleColor selectedColor){
-			gFgColor.color		= color;
-			gFgColor.selected	= selectedColor;
+		static void setTextColor(simpleColor color){
+			gTextColor.color	= color;
+			gTextColor.selected = color;
 		}
 
+		static void setOutlineColor(simpleColor color){
+			gOutlineColor.color		= color;
+			gOutlineColor.selected	= color;
+		}
+		
+		static void setForegroundColor(simpleColor color){
+			gFgColor.color		= color;
+			gFgColor.selected	= color;
+		}
+			
 		static void setBackgroundColor(simpleColor color, simpleColor selectedColor){
 			gBgColor.color		= color;
 			gBgColor.selected	= selectedColor;
@@ -75,6 +90,11 @@ class ofxControlPanel: public guiBaseObject{
 			gOutlineColor.selected	= selectedColor;
 		}
 
+		static void setForegroundColor(simpleColor color, simpleColor selectedColor){
+			gFgColor.color		= color;
+			gFgColor.selected	= selectedColor;
+		}
+		
         guiTypeToggle * addToggle(string name, string xmlName, bool defaultValue);
         guiTypeMultiToggle * addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames);
         guiTypeSlider * addSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt);
@@ -84,7 +104,9 @@ class ofxControlPanel: public guiBaseObject{
         guiTypeCustom * addCustomRect(string name, guiCustomImpl * customPtr, int drawW, int drawH);
         guiTypeButtonSlider * addButtonSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt);
         guiTypeTextDropDown * addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames);
-
+        guiTypeVairableLister * addVariableLister(string name, vector <guiVariablePointer> & varsIn);
+		guiTypeChartPlotter * addChartPlotter(string name, guiStatVarPointer varPtr, float width, float height, int maxNum, float minYVal, float maxYVal);
+		
 		void setupEvents();
 		void createEventGroup(string eventGroupName, vector <string> xmlNames);
 		void enableEvents();

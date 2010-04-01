@@ -5,6 +5,8 @@ void testApp::setup(){
 	ofBackground(127,127,127);
 	
 	ofSetVerticalSync(true);
+	ofSetFrameRate(60);
+	
 	grabber.initGrabber(320, 240);
 
     motion.setup(grabber.width, grabber.height);
@@ -13,20 +15,20 @@ void testApp::setup(){
 	camDraw.setup(&motion.gray, &motion.motionField);
 	threshDraw.setup(&motion.motion, &motion.motionField);	
 
-	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 60, 200), simpleColor(30, 30, 60, 200));
-	ofxControlPanel::setTextColor(simpleColor(240, 50, 50, 255), simpleColor(240, 50, 50, 255));
+	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 60, 200));
+	ofxControlPanel::setTextColor(simpleColor(240, 50, 50, 255));
 		
 	gui.loadFont("MONACO.TTF", 8);		
 	gui.setup("test cv", 0, 0, ofGetWidth(), 700);
 	gui.addPanel("background subtraction example", 4, false);
 	
-	ofxControlPanel::setBackgroundColor(simpleColor(60, 30, 30, 200), simpleColor(60, 30, 30, 200));	
+	ofxControlPanel::setBackgroundColor(simpleColor(60, 30, 30, 200));	
 	gui.addPanel("motion example", 4, false);
 	
-	ofxControlPanel::setBackgroundColor(simpleColor(70, 70, 30, 200), simpleColor(70, 70, 30, 200));	
+	ofxControlPanel::setBackgroundColor(simpleColor(70, 70, 30, 200));	
 	gui.addPanel("third panel", 4, false);
 
-	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200), simpleColor(30, 30, 30, 200));	
+	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200));	
 	
 	//--------- PANEL 0 
 	gui.setWhichPanel(0);
@@ -43,7 +45,24 @@ void testApp::setup(){
 	gui.setWhichColumn(3);
 	gui.addToggle("grab background", "GRAB_BACKGROUND", 0);		
 
-	gui.addSlider("threshold", "BG_THRESHOLD", 29.0, 1.0, 255.0, false);		
+	gui.addButtonSlider("threshold", "BG_THRESHOLD", 29.0, 1.0, 255.0, false);		
+	
+	//some dummy vars we will update to show the variable lister object
+	elapsedTime		= ofGetElapsedTimef();
+	appFrameCount	= ofGetFrameNum();	
+	appFrameRate	= ofGetFrameRate();
+		
+	vector <guiVariablePointer> vars;
+	vars.push_back( guiVariablePointer("ellapsed time", &elapsedTime, GUI_VAR_FLOAT, 2) );
+	vars.push_back( guiVariablePointer("ellapsed frames", &appFrameCount, GUI_VAR_INT) );
+	vars.push_back( guiVariablePointer("app fps", &appFrameRate, GUI_VAR_FLOAT, 2) );
+
+	vars.push_back( guiVariablePointer("mouse x", &mouseX, GUI_VAR_INT) );
+	vars.push_back( guiVariablePointer("mouse y", &mouseY, GUI_VAR_INT) );
+
+	gui.addVariableLister("app vars", vars);
+	
+	gui.addChartPlotter("some chart", guiStatVarPointer("app fps", &appFrameRate, GUI_VAR_FLOAT, true, 2), 200, 100, 200, 40, 80);
 	
 	vector <string> names;
 	names.push_back("abs diff");
@@ -88,6 +107,8 @@ void testApp::setup(){
 
 //  -- this gives you back an ofEvent for all events in this control panel object
 	ofAddListener(gui.guiEvent, this, &testApp::eventsIn);
+	
+
 
 }
 
@@ -126,6 +147,10 @@ void testApp::eventsIn(guiCallbackData & data){
 
 //--------------------------------------------------------------
 void testApp::update(){
+	//some dummy vars we will update to show the variable lister object
+	elapsedTime		= ofGetElapsedTimef();
+	appFrameCount	= ofGetFrameNum();	
+	appFrameRate	= ofGetFrameRate();
 	
 	camDraw.setDrawScale(gui.getValueF("FIELD_DRAW_SCALE"));
 	threshDraw.setDrawScale(gui.getValueF("FIELD_DRAW_SCALE"));
@@ -137,6 +162,7 @@ void testApp::update(){
 			bgExample.update(grabber.getPixels(), grabber.width, grabber.height);
 		}else if( gui.getSelectedPanel() == 1 ){
 			motion.update(grabber.getPixels(), grabber.width, grabber.height);
+			stats.updateFromField(motion.motionField, 0.97);
 		}
 	}
 	
@@ -146,7 +172,6 @@ void testApp::update(){
 	bgExample.setDifferenceMode(gui.getValueI("DIFF_MODE"));
 	bgExample.setThreshold(gui.getValueI("BG_THRESHOLD"));
 	
-	stats.updateFromField(motion.motionField, 0.97);
 	
 	gui.update();
 }

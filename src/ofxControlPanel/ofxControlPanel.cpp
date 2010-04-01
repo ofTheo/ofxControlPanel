@@ -385,8 +385,7 @@ guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string
 }
 
 //---------------------------------------------
-guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames)
-{
+guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames){
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
 
     //add a new multi toggle to our list
@@ -411,6 +410,53 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
 
     return tmp;
 }
+
+//---------------------------------------------
+guiTypeVairableLister * ofxControlPanel::addVariableLister(string name, vector <guiVariablePointer> & varsIn){
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+
+    //add a new multi toggle to our list
+    guiTypeVairableLister * tmp = new guiTypeVairableLister();
+
+    //setup and dimensions
+    tmp->setDimensions(180, 60);
+    tmp->setup(name, varsIn);
+    tmp->xmlName = "NONE_NOT_NEEDED";
+
+    guiObjects.push_back(tmp);
+
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+
+    panels[currentPanel]->addElement( tmp );
+
+    return tmp;
+}
+
+//-----------------------------------------------------
+guiTypeChartPlotter * ofxControlPanel::addChartPlotter(string name, guiStatVarPointer varPtr, float width, float height, int maxNum, float minValY, float maxValY){
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+
+    //add a new multi toggle to our list
+    guiTypeChartPlotter * tmp = new guiTypeChartPlotter();
+
+    //setup and dimensions
+    tmp->setDimensions(width, height);
+    tmp->setup(name, varPtr, width, height, maxNum, minValY, maxValY);
+    tmp->xmlName = "NONE_NOT_NEEDED";
+
+    guiObjects.push_back(tmp);
+
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+
+    panels[currentPanel]->addElement( tmp );
+
+    return tmp;
+}
+
 
 // ############################################################## //
 // ##

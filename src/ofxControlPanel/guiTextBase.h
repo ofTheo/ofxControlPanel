@@ -27,6 +27,10 @@ class guiTextBase{
         virtual float stringHeight(string textToRender);
 		virtual float stringWidth(string textToRender);
 
+		virtual bool usingTTF(){
+			return ourFont != NULL;
+		}
+
         //--------------------------------------------
         ofTrueTypeFont * ourFont;
 
