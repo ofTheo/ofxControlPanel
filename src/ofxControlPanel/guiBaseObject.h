@@ -175,6 +175,7 @@ class guiBaseObject{
 
         //bool isRelative;
         bool locked;
+		bool bRemoveFromLayout;
 
         float storedTextWidth;
         float titleSpacing;

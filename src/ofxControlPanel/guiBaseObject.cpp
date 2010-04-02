@@ -10,10 +10,11 @@ guiColor gOutlineColor;
 bool initialColorsLoaded = false;
 
 guiBaseObject::guiBaseObject(){
-	readOnly    = false;
-	bShowText   = true;
-	locked      = false;
-	dataType    = SG_TYPE_FLOAT;
+	readOnly			= false;
+	bShowText			= true;
+	locked				= false;
+	bRemoveFromLayout	= false;
+	dataType			= SG_TYPE_FLOAT;
 
 	numDecimalPlaces    = 2;
 	storedTextWidth     = 0;

@@ -5,8 +5,7 @@
 #include "guiIncludes.h"
 
 
-class xmlAssociation
-{
+class xmlAssociation{
     public:
         xmlAssociation(guiBaseObject * objPtr, string xmlNameIn, int numParamsIn){
             guiObj      = objPtr;
@@ -54,6 +53,18 @@ class ofxControlPanel: public guiBaseObject{
 		string getCurrentPanelName();
 
         void setSliderWidth(int width);
+		
+		void enableIgnoreLayoutFlag(){
+			bIgnoreLayout = true;
+		}
+
+		void disableIgnoreLayoutFlag(){
+			bIgnoreLayout = false;
+		}
+
+		void setLayoutFlag( guiBaseObject * obj ){
+			obj->bRemoveFromLayout = bIgnoreLayout;
+		}
 
 		static void setBackgroundColor(simpleColor color){
 			gBgColor.color		= color;
@@ -106,6 +117,8 @@ class ofxControlPanel: public guiBaseObject{
         guiTypeTextDropDown * addTextDropDown(string name, string xmlName, int defaultBox, vector <string> boxNames);
         guiTypeVairableLister * addVariableLister(string name, vector <guiVariablePointer> & varsIn);
 		guiTypeChartPlotter * addChartPlotter(string name, guiStatVarPointer varPtr, float width, float height, int maxNum, float minYVal, float maxYVal);
+		guiTypeLogger * addLogger(string name, simpleLogger * logger, int drawW, int drawH);
+		guiTypeFileLister * addFileLister(string name, simpleFileLister * lister, int drawW, int drawH);
 		
 		void setupEvents();
 		void createEventGroup(string eventGroupName, vector <string> xmlNames);
@@ -183,7 +196,8 @@ class ofxControlPanel: public guiBaseObject{
 		
 		bool bEventsSetup;
 		bool eventsEnabled;
-
+		bool bIgnoreLayout;
+		
 		ofPoint mouseDownPoint;
 
 		bool dragging;

@@ -2,22 +2,24 @@
 
 
 //TODO: fix this!
-static int lineSpacing = 18;
-static int dblClickTime = 500;
+
 
 //TODO: fix bitmap type specific code
 
 //------------------------------------------------
 guiTypeFileLister::guiTypeFileLister(){
-	lister = NULL;
-	pct = 0;
-	sliderWidth = 20;
-	selectPct = -1;
-	selection = -1;
-	selectionTmp = -1;
-	startPos = 0;
-	endPos = 0;
-	usingSlider = false;
+	lister			= NULL;
+	pct				= 0;
+	sliderWidth		= 20;
+	selectPct		= -1;
+	selection		= -1;
+	selectionTmp	= -1;
+	startPos		= 0;
+	endPos			= 0;
+	usingSlider		= false;
+
+	lineSpacing		= 12;
+	dblClickTime	= 500;	
 }
 
 //------------------------------------------------
@@ -33,7 +35,7 @@ void guiTypeFileLister::setup(string listerName, simpleFileLister * listerPtr , 
 //-----------------------------------------------
 void guiTypeFileLister::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(xmlName);
+	cbVal.setup(name);
 	cbVal.addString(lister->getSelectedPath());
 	cbVal.addString(lister->getSelectedName());
 	ofNotifyEvent(guiEvent,cbVal,this);
@@ -80,22 +82,26 @@ void guiTypeFileLister::release(){
 void guiTypeFileLister::drawRecords(float x, float y, float width, float height){
 	if( lister == NULL)return;
 	if( lister->entries.size() == 0)return;
-
+	
+	float textW = MAX(5, displayText.stringWidth("abcdefg")/7.0);
+	float textH = MAX(lineSpacing, displayText.getTextSingleLineHeight() + 2);
+	lineSpacing = textH;
+	
 	ofPushStyle();
-		float yPos = lineSpacing;
+		float yPos = textH;
 		startPos = (float)(lister->entries.size()-1) * (pct);
 		endPos = 0;
 
-		int numCanFit = (height / lineSpacing)- 1;
+		int numCanFit = (height / textH)- 1;
 		endPos = startPos + numCanFit;
 		endPos = MIN(lister->entries.size(), endPos);
 
 		for(int i = startPos; i < endPos; i++){
 
 			string str = lister->entries[i].filename;
-			if( str.length() * 8 > width ){
-				int newLen = (float)width / 8;
-				//newLen = ofClamp(newLen, 1, 999999);
+			if( str.length() * textW > width ){
+				int newLen = (float)width / textW;
+
 				str = str.substr(0, newLen);
 			}
 
@@ -103,20 +109,20 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
 				ofPushStyle();
 					ofFill();
 					glColor4fv( fgColor.getSelectedColorF() );
-					ofRect(x, y+yPos+4, width-5, -lineSpacing);
+					ofRect(x, y+yPos+4, width-5, -textH);
 				ofPopStyle();
 			}else if( i == selectionTmp){
 				ofPushStyle();
 					ofNoFill();
 					glColor4fv(outlineColor.getColorF());
-					ofRect(x, y+yPos+4, width-2, -lineSpacing);
+					ofRect(x, y+yPos+4, width-2, -textH);
 				ofPopStyle();
 			}
 
 			glColor4fv(textColor.getColorF());
 
 			displayText.renderString(str, x, y + yPos);
-			yPos += lineSpacing;
+			yPos += textH;
 			//if(yPos+lineSpacing >= height)break;
 		}
 	ofPopStyle();

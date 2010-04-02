@@ -22,6 +22,7 @@ ofxControlPanel::ofxControlPanel(){
     bDraggable      = true;
 	eventsEnabled	= false;
 	bEventsSetup	= false;
+	bIgnoreLayout	= false;
 	
     currentXmlFile = "";
     incrementSaveName = "";
@@ -189,6 +190,8 @@ guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool def
     //add a new toggle to our list
     guiTypeToggle * tmp = new guiTypeToggle();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(name, (bool)defaultValue);
     tmp->setDimensions(14, 14);
@@ -215,6 +218,8 @@ guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName
 
     //add a new multi toggle to our list
     guiTypeMultiToggle * tmp = new guiTypeMultiToggle();
+
+	setLayoutFlag(tmp);
 
     //setup and dimensions
     tmp->setup(name, defaultBox, boxNames);
@@ -243,6 +248,8 @@ guiTypeSlider * ofxControlPanel::addSlider(string sliderName, string xmlName, fl
 
     //add a new slider to our list
     guiTypeSlider * tmp = new guiTypeSlider();
+	
+	setLayoutFlag(tmp);
 
     //setup and dimensions
     tmp->setup(sliderName, value, min, max);
@@ -276,6 +283,8 @@ guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName
     //add a new slider to our list
     guiType2DSlider * tmp = new guiType2DSlider();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setup(sliderName, valueX, minX, maxX, valueY, minY, maxY);
     tmp->setDimensions(200, 200);
@@ -307,6 +316,8 @@ guiTypeDrawable * ofxControlPanel::addDrawableRect(string name, ofBaseDraws * dr
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
     guiTypeDrawable * vid = new guiTypeDrawable();
 
+	setLayoutFlag(vid);
+
     vid->setup(name, drawablePtr, drawW, drawH);
     panels[currentPanel]->addElement(vid);
 
@@ -323,6 +334,8 @@ guiTypeDrawable * ofxControlPanel::addDrawableRect(string name, ofBaseDraws * dr
 guiTypeVideo * ofxControlPanel::addVideoRect(string name, ofVideoPlayer * drawablePtr, int drawW, int drawH){
     if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
     guiTypeVideo * vid = new guiTypeVideo();
+
+	setLayoutFlag(vid);
 
     vid->setup(name, drawablePtr, drawW, drawH);
     panels[currentPanel]->addElement(vid);
@@ -342,6 +355,8 @@ guiTypeCustom * ofxControlPanel::addCustomRect(string name, guiCustomImpl * cust
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
     guiTypeCustom * custom = new guiTypeCustom();
 
+	setLayoutFlag(custom);
+
     custom->setup(name, customPtr, drawW, drawH);
     panels[currentPanel]->addElement(custom);
     guiObjects.push_back(custom);
@@ -360,6 +375,8 @@ guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string
 
     //add a new slider to our list
     guiTypeButtonSlider * tmp = new guiTypeButtonSlider();
+
+	setLayoutFlag(tmp);
 
     //setup and dimensions
     tmp->setup(sliderName, 210, 15, value, min, max, false);
@@ -391,6 +408,8 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
     //add a new multi toggle to our list
     guiTypeTextDropDown * tmp = new guiTypeTextDropDown();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setDimensions(180, 60);
     tmp->setup(name, defaultBox, boxNames);
@@ -418,6 +437,8 @@ guiTypeVairableLister * ofxControlPanel::addVariableLister(string name, vector <
     //add a new multi toggle to our list
     guiTypeVairableLister * tmp = new guiTypeVairableLister();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setDimensions(180, 60);
     tmp->setup(name, varsIn);
@@ -441,6 +462,8 @@ guiTypeChartPlotter * ofxControlPanel::addChartPlotter(string name, guiStatVarPo
     //add a new multi toggle to our list
     guiTypeChartPlotter * tmp = new guiTypeChartPlotter();
 
+	setLayoutFlag(tmp);
+
     //setup and dimensions
     tmp->setDimensions(width, height);
     tmp->setup(name, varPtr, width, height, maxNum, minValY, maxValY);
@@ -455,6 +478,44 @@ guiTypeChartPlotter * ofxControlPanel::addChartPlotter(string name, guiStatVarPo
     panels[currentPanel]->addElement( tmp );
 
     return tmp;
+}
+
+//---------------------------------------------
+guiTypeLogger * ofxControlPanel::addLogger(string name, simpleLogger * logger, int drawW, int drawH){
+    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    guiTypeLogger * loggerType = new guiTypeLogger();
+
+	setLayoutFlag(loggerType);
+
+    loggerType->setup(name, logger, drawW, drawH);
+    panels[currentPanel]->addElement(loggerType);
+
+    guiObjects.push_back(loggerType);
+
+    if( bUseTTFFont ){
+        loggerType->setFont(&guiTTFFont);
+    }
+
+    return loggerType;
+}
+
+//---------------------------------------------
+guiTypeFileLister * ofxControlPanel::addFileLister(string name, simpleFileLister * lister, int drawW, int drawH){
+    if( currentPanel < 0 || currentPanel >= panels.size() )return NULL;
+    guiTypeFileLister * listerType = new guiTypeFileLister();
+
+	setLayoutFlag(listerType);
+
+    listerType->setup(name, lister, drawW, drawH);
+    panels[currentPanel]->addElement(listerType);
+
+    guiObjects.push_back(listerType);
+
+    if( bUseTTFFont ){
+        listerType->setFont(&guiTTFFont);
+    }
+
+    return listerType;
 }
 
 

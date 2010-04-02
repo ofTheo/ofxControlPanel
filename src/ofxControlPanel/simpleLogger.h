@@ -8,6 +8,9 @@ typedef struct{
     int level;
 
     string logStr;
+	string dateStr;
+	string timeStr;
+	string levelStr;
 
     long timestamp;
     int year;

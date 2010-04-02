@@ -19,6 +19,9 @@ class guiTypeFileLister : public guiBaseObject{
         void render();
 
 		void notify();
+			
+		int lineSpacing;
+		int dblClickTime;			
 
         int selection;
         int selectionTmp;

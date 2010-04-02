@@ -16,6 +16,7 @@ class guiTypeLogger : public guiBaseObject{
         void drawRecords(float x, float y, float width, float height);
         void render();
 		
+		int toggle;
 		float pct;
         simpleLogger * log;
 };

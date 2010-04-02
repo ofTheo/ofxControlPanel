@@ -181,22 +181,22 @@ void guiTypeButtonSlider::update(){
 //-----------------------------------------------.
 void guiTypeButtonSlider::updateGui(float x, float y, bool firstHit, bool isRelative){
 
-
 	if(state != SG_STATE_SELECTED)return;
 
 	if(this->readOnly) return;
 
-	if( isInsideRect(x, y, slider->hitArea))
-	{
+	if( firstHit ){
+		if( isInsideRect(x, y, slider->hitArea) ){
+			slider->state = SG_STATE_SELECTED;
+			slider->setSelected();
+			slider->updateGui(x,y,firstHit,isRelative);
+			prevMouse.set(x, y);	
+		}
+	}else{
 		slider->state = SG_STATE_SELECTED;
 		slider->setSelected();
 		slider->updateGui(x,y,firstHit,isRelative);
 		prevMouse.set(x, y);
-	}
-	else
-	if ((slider->state == SG_STATE_SELECTED) && (!firstHit&&isRelative))
-	{
-		slider->updateGui(x,y,firstHit,isRelative);
 	}
 
 	if( isInsideRect(x, y, leftButton->hitArea) ){

@@ -24,5 +24,8 @@
 #include "guiTypeVideo.h"
 #include "guiTypeVairableLister.h"
 #include "guiTypeChartPlotter.h"
+#include "guiTypeLogger.h"
+#include "guiTypeFileLister.h"
+
 
 

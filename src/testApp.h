@@ -25,6 +25,8 @@ class testApp : public ofSimpleApp{
 		void mouseReleased();
 		
 		ofxControlPanel gui;
+		simpleFileLister lister;
+		simpleLogger logger;
 		
 		motionStats stats;
 		motionDraw threshDraw;

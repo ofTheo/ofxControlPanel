@@ -80,22 +80,18 @@ float simpleLogger::getHeight(){
 
 //----------------------------------------------
 string simpleLogger::convertToString(logRecord & record){
-	string timeStr;
-	string dateStr;
-	string levelStr;
-
-	if(bDate) dateStr = ofToString(record.year) +"-"+ofToString(record.month) +"-"+ ofToString(record.day)+" ";
-	if(bTime) timeStr = ofToString(record.hour) + ":"+ ofToString(record.minute) + ":"+ ofToString(record.seconds)+" ";
+	if(bDate) record.dateStr = ofToString(record.year) +"-"+ofToString(record.month) +"-"+ ofToString(record.day)+" ";
+	if(bTime) record.timeStr = ofToString(record.hour) + ":"+ ofToString(record.minute) + ":"+ ofToString(record.seconds)+" ";
 
 	if( bLevel ){
-		if(record.level == OF_LOG_VERBOSE) levelStr = "VERBOSE: ";
-		else if(record.level == OF_LOG_NOTICE)levelStr = "NOTICE: ";
-		else if(record.level == OF_LOG_WARNING)levelStr = "WARNING: ";
-		else if(record.level == OF_LOG_ERROR)levelStr = "ERROR: ";
-		else if(record.level == OF_LOG_FATAL_ERROR)levelStr = "FATAL_ERROR: ";
+		if(record.level == OF_LOG_VERBOSE) record.levelStr = "VERBOSE: ";
+		else if(record.level == OF_LOG_NOTICE)record.levelStr = "NOTICE: ";
+		else if(record.level == OF_LOG_WARNING)record.levelStr = "WARNING: ";
+		else if(record.level == OF_LOG_ERROR)record.levelStr = "ERROR: ";
+		else if(record.level == OF_LOG_FATAL_ERROR)record.levelStr = "FATAL_ERROR: ";
 	}
 
-	return dateStr + timeStr + levelStr + record.msg;
+	return record.dateStr + record.timeStr + record.levelStr + record.msg;
 }
 
 //-----------------------------------------------

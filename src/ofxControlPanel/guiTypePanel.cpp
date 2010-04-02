@@ -117,7 +117,7 @@ void guiTypePanel::update(){
 		if( children[i]->boundingBox.x != columns[whichColumn[i]].x ){
 			float amntToShiftX = columns[whichColumn[i]].x - children[i]->boundingBox.x;
 
-			children[i]->hitArea.x += amntToShiftX;
+			children[i]->hitArea.x     += amntToShiftX;
 			children[i]->boundingBox.x += amntToShiftX;
 		}
 	}
@@ -136,18 +136,19 @@ void guiTypePanel::addElement( guiBaseObject * element ){
 	columns[col].y += element->getHeight() + spacingAmntY;
 
 	float checkWidth = element->getWidth();
-	if(checkWidth >= columns[col].width ){
+		
+	if(checkWidth >= columns[col].width && !element->bRemoveFromLayout ){
 		float amnt = checkWidth - columns[col].width;
 		columns[col].width += amnt;
 
 		for(unsigned int i = col+1; i < columns.size(); i++){
 			columns[i].x += amnt;
 		}
+		
 	}
 
 	//see if we need to resize!
 	//checkResize(element);
-
 }
 
 //-----------------------------------------------.

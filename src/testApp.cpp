@@ -4,9 +4,6 @@
 void testApp::setup(){
 	ofBackground(127,127,127);
 	
-	ofSetVerticalSync(true);
-	ofSetFrameRate(60);
-	
 	grabber.initGrabber(320, 240);
 
     motion.setup(grabber.width, grabber.height);
@@ -35,9 +32,16 @@ void testApp::setup(){
 		
 	gui.setWhichColumn(0);
 	gui.addDrawableRect("video", &bgExample.gray, 200, 150);
-
+	
+	lister.listDir("images/of_logos/");
+	gui.addFileLister("image lister", &lister, 200, 300);
+	
 	gui.setWhichColumn(1);
 	gui.addDrawableRect("background", &bgExample.background, 200, 150);
+
+	gui.enableIgnoreLayoutFlag();
+	gui.addLogger("events logger", &logger, 410, 300);
+	gui.disableIgnoreLayoutFlag();
 
 	gui.setWhichColumn(2);
 	gui.addDrawableRect("thresholded image", &bgExample.thresh, 200, 150);
@@ -119,6 +123,30 @@ void testApp::eventsIn(guiCallbackData & data){
 	if( data.groupName == "GRAB_BACKGROUND" && data.getFloat(0.0) == 1.0 ){
 		bgExample.captureBackground();
 		gui.setValueB("GRAB_BACKGROUND", false);
+	}
+	
+	if( data.groupName != "events logger"){
+		
+		string logStr = data.groupName;
+		
+		if( data.fVal.size() ){
+			for(int i = 0; i < data.fVal.size(); i++){
+				logStr += " - "+ofToString(data.fVal[i], 4);
+			}
+		}
+		if( data.iVal.size() ){
+			for(int i = 0; i < data.iVal.size(); i++){
+				logStr += " - "+ofToString(data.iVal[i]);
+			}
+		}	
+		if( data.sVal.size() ){
+			for(int i = 0; i < data.sVal.size(); i++){
+				logStr += " - "+data.sVal[i];
+			}
+		}
+		
+		logger.log(OF_LOG_NOTICE, "event - %s", logStr.c_str());
+		
 	}
 	
 	//this code prints out the name of the events coming in and all the variables passed
