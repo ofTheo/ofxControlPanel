@@ -27,7 +27,7 @@ void testApp::setup(){
 
 	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200));	
 	
-	//--------- PANEL 0 
+	//--------- PANEL 1
 	gui.setWhichPanel(0);
 		
 	gui.setWhichColumn(0);
@@ -74,7 +74,7 @@ void testApp::setup(){
 	names.push_back("less than");
 	gui.addTextDropDown("difference mode", "DIFF_MODE", 0, names);
 	
-	//--------- PANEL 1
+	//--------- PANEL 2
 	gui.setWhichPanel(1);
 	
 	gui.setWhichColumn(0);
@@ -91,6 +91,13 @@ void testApp::setup(){
 	gui.addSlider("motion threshold", "MOTION_THRESHOLD", 29.0, 1.0, 255.0, false);	
 	gui.addSlider("motion fade amnt", "MOTION_FADE", 0.67, 0.0, 1.0, false);	
 	gui.addSlider("field draw scale", "FIELD_DRAW_SCALE", 1.0, 1.0, 10.0, false);	
+	
+	//------- PANEL 3
+	gui.setWhichPanel(2);
+	gui.addCustomRect("custom implementation demo", &pointAdder, 500, 375);
+
+
+	//SETTINGS AND EVENTS
 
 	//load from xml!
 	gui.loadSettings("controlPanelSettings.xml");
@@ -99,14 +106,14 @@ void testApp::setup(){
 	gui.setupEvents();
 	gui.enableEvents();
 	
-//  -- this approach creates an event group and only sends you events for the elements you describe. 
+//  -- SPECIFIC EVENTS -- this approach creates an event group and only sends you events for the elements you describe. 
 //	vector <string> list;
 //	list.push_back("FIELD_DRAW_SCALE");
 //	list.push_back("DIFF_MODE");
 //	gui.createEventGroup("TEST_GROUP", list);
 //	ofAddListener(gui.getEventGroup("TEST_GROUP"), this, &testApp::eventsIn);
 
-//  -- this approach gives you back an ofEvent for only the events from panel 0
+//  -- PANEL EVENTS -- this approach gives you back an ofEvent for only the events from panel 0
 //	ofAddListener(gui.getEventsForPanel(0), this, &testApp::eventsIn);
 
 //  -- this gives you back an ofEvent for all events in this control panel object
@@ -124,33 +131,26 @@ void testApp::eventsIn(guiCallbackData & data){
 		bgExample.captureBackground();
 		gui.setValueB("GRAB_BACKGROUND", false);
 	}
-	
-	if( data.groupName != "events logger"){
 		
+	//lets send all events to our logger
+	if( data.groupName != "events logger"){
 		string logStr = data.groupName;
 		
 		if( data.fVal.size() ){
-			for(int i = 0; i < data.fVal.size(); i++){
-				logStr += " - "+ofToString(data.fVal[i], 4);
-			}
+			for(int i = 0; i < data.fVal.size(); i++) logStr += " - "+ofToString(data.fVal[i], 4);
 		}
 		if( data.iVal.size() ){
-			for(int i = 0; i < data.iVal.size(); i++){
-				logStr += " - "+ofToString(data.iVal[i]);
-			}
+			for(int i = 0; i < data.iVal.size(); i++) logStr += " - "+ofToString(data.iVal[i]);
 		}	
 		if( data.sVal.size() ){
-			for(int i = 0; i < data.sVal.size(); i++){
-				logStr += " - "+data.sVal[i];
-			}
+			for(int i = 0; i < data.sVal.size(); i++) logStr += " - "+data.sVal[i];
 		}
 		
 		logger.log(OF_LOG_NOTICE, "event - %s", logStr.c_str());
-		
 	}
 	
+	// print to terminal if you want to 
 	//this code prints out the name of the events coming in and all the variables passed
-	
 	printf("testApp::eventsIn - name is %s - \n", data.groupName.c_str());
 	if( data.elementName != "" ){
 		printf(" element name is %s \n", data.elementName.c_str());
@@ -199,7 +199,6 @@ void testApp::update(){
 	
 	bgExample.setDifferenceMode(gui.getValueI("DIFF_MODE"));
 	bgExample.setThreshold(gui.getValueI("BG_THRESHOLD"));
-	
 	
 	gui.update();
 }

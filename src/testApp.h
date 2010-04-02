@@ -6,6 +6,8 @@
 #include "ofxControlPanel.h"
 #include "backgroundSubtractionExample.h"
 
+#include "customDrawer.h"
+
 class testApp : public ofSimpleApp{
 
 	public:
@@ -34,6 +36,7 @@ class testApp : public ofSimpleApp{
 		
 		ofVideoGrabber grabber;
 		backgroundSubtractionExample bgExample;
+		customDrawer pointAdder;
 		
 		float elapsedTime;
 		int appFrameCount;

@@ -25,6 +25,7 @@
 		A1A2F20E111F57F9000703E4 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F1E7111F57F9000703E4 /* tinyxmlerror.cpp */; };
 		A1A2F20F111F57F9000703E4 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F1E8111F57F9000703E4 /* tinyxmlparser.cpp */; };
 		A1A2F210111F57F9000703E4 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F1EA111F57F9000703E4 /* ofxXmlSettings.cpp */; };
+		E4245AAE11665F9C00F68A73 /* customDrawer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4245AAD11665F9C00F68A73 /* customDrawer.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -187,6 +188,8 @@
 		A1A2F1EA111F57F9000703E4 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		A1A2F1EB111F57F9000703E4 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
 		A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxControlPanelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4245AAC11665F9C00F68A73 /* customDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = customDrawer.h; sourceTree = "<group>"; };
+		E4245AAD11665F9C00F68A73 /* customDrawer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = customDrawer.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -761,6 +764,8 @@
 				A1A2F134111F5772000703E4 /* ofAddons.h */,
 				A1A2F138111F5772000703E4 /* vectorField.cpp */,
 				A1A2F139111F5772000703E4 /* vectorField.h */,
+				E4245AAD11665F9C00F68A73 /* customDrawer.cpp */,
+				E4245AAC11665F9C00F68A73 /* customDrawer.h */,
 				E4E48D411163E4F6007DCE2F /* backgroundSubtractionExample.cpp */,
 				E4E48D401163E4F6007DCE2F /* backgroundSubtractionExample.h */,
 				E4E48C951163DB25007DCE2F /* videoMotionExample.cpp */,
@@ -977,6 +982,7 @@
 				E4BD0D251164F30700A20636 /* guiBaseObject.cpp in Sources */,
 				E4BD0E3911651F3A00A20636 /* guiTypeVairableLister.cpp in Sources */,
 				E4BD0F711165310C00A20636 /* guiTypeChartPlotter.cpp in Sources */,
+				E4245AAE11665F9C00F68A73 /* customDrawer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

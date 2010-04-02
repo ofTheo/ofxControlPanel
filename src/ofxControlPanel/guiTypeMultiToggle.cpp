@@ -26,7 +26,7 @@ void guiTypeMultiToggle::setup(string multiToggleName, int defaultBox, vector <s
 }
 
 //-----------------------------------------------
-virtual void guiTypeMultiToggle::updateValue(){
+void guiTypeMultiToggle::updateValue(){
 	//CB
 	notify();	
 }

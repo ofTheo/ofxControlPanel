@@ -10,10 +10,10 @@ class simpleColor{
     simpleColor();
 
 	//----------------------------------------------------------
-	simpleColor::simpleColor(int _r, int _g, int _b, int _a);
+	simpleColor(int _r, int _g, int _b, int _a);
 
 	//----------------------------------------------------------
-	simpleColor::simpleColor(int hexColor);
+	simpleColor(int hexColor);
 
     //----------------------------------------------------------
     void setColor(int _r, int _g, int _b, int _a);
