@@ -7,6 +7,7 @@ void guiTypeTextDropDown::setup(string dropDownName, int defaultBox, vector <str
 	vecDropList = boxNames;
 	value.addValue( (int)defaultBox, 0, vecDropList.size()-1);
 	name = dropDownName;
+	makeXmlNameFromDisplayName();
 
 	boxHeight = MAX(15, displayText.getTextHeight());
 	hitArea.height = boundingBox.height = boxHeight;
@@ -55,10 +56,10 @@ void guiTypeTextDropDown::release(){
 //-----------------------------------------------
 void guiTypeTextDropDown::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(xmlName);
-	cbVal.addInt(value.getValueI());
+	cbVal.setup(xmlName, name);
+	cbVal.addValueI(value.getValueI());
 	if( value.getValueI() < vecDropList.size() ){
-		cbVal.addString(vecDropList[value.getValueI()]);
+		cbVal.addValueS(vecDropList[value.getValueI()]);
 	}
 	ofNotifyEvent(guiEvent,cbVal,this);
 }

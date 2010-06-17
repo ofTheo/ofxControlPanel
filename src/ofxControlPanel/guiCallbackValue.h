@@ -11,56 +11,148 @@
 
 #include "ofMain.h"
 
+typedef enum{
+	CB_VALUE_NOT_SET,
+	CB_VALUE_INT,
+	CB_VALUE_FLOAT,
+	CB_VALUE_STRING
+}guiCBValueType;
+
+class cbValue{
+	public:
+		cbValue(){
+			valF = 0.0f;
+			valI = 0;
+			valueType = CB_VALUE_NOT_SET;
+		}
+		
+		void setValue(float val){
+			valF = val;
+			valueType = CB_VALUE_FLOAT;
+		}
+
+		void setValue(int val){
+			valI = val;
+			valueType = CB_VALUE_INT;
+		}
+
+		void setValue(string val){
+			valS = val;
+			valueType = CB_VALUE_STRING;
+		}
+		
+		guiCBValueType getType(){
+			return valueType;
+		}
+		
+		float getFloat(){
+			if( valueType == CB_VALUE_FLOAT ){
+				return valF;
+			}else if( valueType == CB_VALUE_INT ){
+				return (float)valI;
+			}
+			return 0.0f;
+		}
+		
+		int getInt(){
+			if( valueType == CB_VALUE_INT ){
+				return valI;
+			}else if( valueType == CB_VALUE_FLOAT ){
+				return (int)valF;
+			}
+			return 0;
+		}
+		
+		string getString(){
+			if( valueType == CB_VALUE_STRING ){
+				return valS;
+			}else if( valueType == CB_VALUE_FLOAT ){
+				return ofToString(valF);
+			}else{
+				return ofToString(valI);
+			}
+			return "";
+		}
+				
+		guiCBValueType valueType;
+		float   valF;
+		int     valI;
+		string  valS;
+};
+
 class guiCallbackData{
 	public:
-		
-		string elementName;
-		string groupName;
-		
-		void setup(string groupNameIn, string elementNameIn = ""){
-			groupName	= groupNameIn;
-			elementName = elementNameIn;
+	
+		void setup(string xmlNameIn, string displayNameIn){
+			xmlName	    = xmlNameIn;
+			displayName = displayNameIn;
 		}
 		
-		void addFloat(float val){
-			fVal.push_back(val);
+		void addValueF(float val){
+			values.push_back(cbValue());
+			values.back().setValue(val);
 		}
 
-		void addInt(int val){
-			iVal.push_back(val);
+		void addValueI(int val){
+			values.push_back(cbValue());
+			values.back().setValue(val);
 		}
 
-		void addString(string val){
-			sVal.push_back(val);
+		void addValueS(string val){
+			values.push_back(cbValue());
+			values.back().setValue(val);
+		}
+		
+		bool isElement(string nameToMatch){
+			if( nameToMatch == xmlName || nameToMatch == displayName) return true;
+			return false;
+		}
+		
+		string getXmlName(){
+			return xmlName;
+		}
+		
+		string getDisplayName(){
+			return displayName;
+		}
+				
+		int getNumValues(){
+			return values.size();
 		}
 		
 		float getFloat(int which){
-			if( which < fVal.size() ){
-				return fVal[which];
-			}else{
-				return 0.0;
-			}		
+			if( which < values.size() ){
+				return values[which].getFloat();
+			}
+			return 0.0;	
 		}
 
-		float getInt(unsigned int which){
-			if( which < iVal.size() ){
-				return iVal[which];
-			}else{
-				return 0;
+		int getInt(int which){
+			if( which < values.size() ){
+				return values[which].getInt();
 			}
+			return 0;
+		}
+		
+		guiCBValueType getType(int which){
+			if( which < values.size() ){
+				return values[which].getType();
+			}
+			return CB_VALUE_NOT_SET;
 		}
 
 		string getString(int which){
-			if( which < sVal.size() ){
-				return sVal[which];
-			}else{
-				return "";
+			if( which < values.size() ){
+				return values[which].getString();
 			}
+			return "";
 		}
 		
-		vector <string> sVal;
-		vector <float> fVal;
-		vector <int> iVal;		
+		protected:
+		
+		string displayName;
+		string xmlName;
+		vector <cbValue> values;	
 };
 
 

@@ -29,9 +29,9 @@ void guiType2DSlider::updateGui(float x, float y, bool firstHit, bool isRelative
 //-----------------------------------------------
 void guiType2DSlider::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(xmlName);
-	cbVal.addFloat(value.getValueF(0));
-	cbVal.addFloat(value.getValueF(1));
+	cbVal.setup(xmlName, name);
+	cbVal.addValueF(value.getValueF(0));
+	cbVal.addValueF(value.getValueF(1));
 	ofNotifyEvent(guiEvent,cbVal,this);
 }
 

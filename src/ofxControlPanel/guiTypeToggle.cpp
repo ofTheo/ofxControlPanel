@@ -28,6 +28,15 @@ void guiTypeToggle::updateGui(float x, float y, bool firstHit, bool isRelative){
 	}
 }
 
+//-----------------------------------------------
+void guiTypeToggle::notify(){
+	guiCallbackData cbVal;
+	cbVal.setup(xmlName, name);
+	cbVal.addValueF(value.getValueI());
+	ofNotifyEvent(guiEvent,cbVal,this);
+	//CB
+}
+
 //-----------------------------------------------.
 void guiTypeToggle::render(){
 	ofPushStyle();

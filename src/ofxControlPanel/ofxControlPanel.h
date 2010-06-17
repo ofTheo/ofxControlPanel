@@ -121,12 +121,15 @@ class ofxControlPanel: public guiBaseObject{
 		guiTypeFileLister * addFileLister(string name, simpleFileLister * lister, int drawW, int drawH);
 		
 		void setupEvents();
-		void createEventGroup(string eventGroupName, vector <string> xmlNames);
+		ofEvent <guiCallbackData> & createEventGroup(string eventGroupName, vector <string> xmlNames);
+		ofEvent <guiCallbackData> & createEventGroup(string xmlName);
+
 		void enableEvents();
 		void disableEvents();
 		ofEvent <guiCallbackData> & getEventsForPanel(int panelNo);
 		ofEvent <guiCallbackData> & getAllEvents();
 		ofEvent <guiCallbackData> & getEventGroup(string eventGroupName);
+
 
         void setValueB(string xmlName, bool value,  int whichParam = 0);
         void setValueI(string xmlName, int value,  int whichParam = 0);

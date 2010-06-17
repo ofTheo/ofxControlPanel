@@ -14,6 +14,9 @@ class guiTypeMultiToggle : public guiBaseObject{
         //------------------------------------------------
         void setup(string multiToggleName, int defaultBox, vector <string> boxNames);
 
+		//-----------------------------------------------
+		void notify();
+
         //-----------------------------------------------
         virtual void updateValue();
         void updateGui(float x, float y, bool firstHit, bool isRelative);

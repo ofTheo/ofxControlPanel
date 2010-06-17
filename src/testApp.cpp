@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 	ofBackground(127,127,127);
+		
+	ofSetVerticalSync(true);
 	
 	grabber.initGrabber(320, 240);
 
@@ -26,7 +28,7 @@ void testApp::setup(){
 	gui.addPanel("third panel", 4, false);
 
 	ofxControlPanel::setBackgroundColor(simpleColor(30, 30, 30, 200));	
-	
+		
 	//--------- PANEL 1
 	gui.setWhichPanel(0);
 		
@@ -96,7 +98,6 @@ void testApp::setup(){
 	gui.setWhichPanel(2);
 	gui.addCustomRect("custom implementation demo", &pointAdder, 500, 375);
 
-
 	//SETTINGS AND EVENTS
 
 	//load from xml!
@@ -118,32 +119,33 @@ void testApp::setup(){
 
 //  -- this gives you back an ofEvent for all events in this control panel object
 	ofAddListener(gui.guiEvent, this, &testApp::eventsIn);
-	
 
+//  --EVENT FOR SINGLE GUI OBJECT
+	ofAddListener(gui.createEventGroup("GRAB_BACKGROUND"), this, &testApp::grabBackgroundEvent);
 
 }
 
+// this is our callback function for the GRAB_BACKGROUND toggle - everytime it changes this gets fired
 //--------------------------------------------------------------
-void testApp::eventsIn(guiCallbackData & data){
-
+void testApp::grabBackgroundEvent(guiCallbackData & data){
+	
 	//we use the event callback to capture the background - we then set the toggle value back to its previous value
-	if( data.groupName == "GRAB_BACKGROUND" && data.getFloat(0.0) == 1.0 ){
+	if( data.isElement( "GRAB_BACKGROUND" ) && data.getInt(0) == 1 ){
 		bgExample.captureBackground();
 		gui.setValueB("GRAB_BACKGROUND", false);
 	}
-		
+}
+
+//this captures all our control panel events - unless its setup differently in testApp::setup
+//--------------------------------------------------------------
+void testApp::eventsIn(guiCallbackData & data){
+
 	//lets send all events to our logger
-	if( data.groupName != "events logger"){
-		string logStr = data.groupName;
+	if( !data.isElement( "events logger" ) ){
+		string logStr = data.getXmlName();
 		
-		if( data.fVal.size() ){
-			for(int i = 0; i < data.fVal.size(); i++) logStr += " - "+ofToString(data.fVal[i], 4);
-		}
-		if( data.iVal.size() ){
-			for(int i = 0; i < data.iVal.size(); i++) logStr += " - "+ofToString(data.iVal[i]);
-		}	
-		if( data.sVal.size() ){
-			for(int i = 0; i < data.sVal.size(); i++) logStr += " - "+data.sVal[i];
+		for(int k = 0; k < data.getNumValues(); k++){
+			logStr += " - " + data.getString(k);
 		}
 		
 		logger.log(OF_LOG_NOTICE, "event - %s", logStr.c_str());
@@ -151,25 +153,22 @@ void testApp::eventsIn(guiCallbackData & data){
 	
 	// print to terminal if you want to 
 	//this code prints out the name of the events coming in and all the variables passed
-	printf("testApp::eventsIn - name is %s - \n", data.groupName.c_str());
-	if( data.elementName != "" ){
-		printf(" element name is %s \n", data.elementName.c_str());
+	printf("testApp::eventsIn - name is %s - \n", data.getXmlName().c_str());
+	if( data.getDisplayName() != "" ){
+		printf(" element name is %s \n", data.getDisplayName().c_str());
 	}
-	if( data.fVal.size() ){
-		for(int i = 0; i < data.fVal.size(); i++){
-			printf(" float value [%i] = %f \n", i, data.fVal[i]);
+	for(int k = 0; k < data.getNumValues(); k++){
+		if( data.getType(k) == CB_VALUE_FLOAT ){
+			printf("%i float  value = %f \n", k, data.getFloat(k));
+		}
+		else if( data.getType(k) == CB_VALUE_INT ){
+			printf("%i int    value = %i \n", k, data.getInt(k));
+		}
+		else if( data.getType(k) == CB_VALUE_STRING ){
+			printf("%i string value = %s \n", k, data.getString(k).c_str());
 		}
 	}
-	if( data.iVal.size() ){
-		for(int i = 0; i < data.iVal.size(); i++){
-			printf(" int value [%i] = %i \n", i, data.iVal[i]);
-		}
-	}	
-	if( data.sVal.size() ){
-		for(int i = 0; i < data.sVal.size(); i++){
-			printf(" string value [%i] = %s \n", i, data.sVal[i].c_str());
-		}
-	}
+	
 	printf("\n");
 }
 

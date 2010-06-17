@@ -56,6 +56,18 @@ class guiBaseObject{
         virtual void lock();
         virtual void unlock();
         bool isLocked();
+		
+        //------------------------------------------------
+		virtual void makeXmlNameFromDisplayName(){
+			xmlName = name;
+			size_t found;
+			found=xmlName.find_first_of(" ");
+			while (found!=string::npos){
+				xmlName[found]='_';
+				found=xmlName.find_first_of(" ",found+1);
+			}
+			transform(xmlName.begin(), xmlName.end(), xmlName.begin(), ::toupper);
+		}
 
         //------------------------------------------------
         virtual void setShowText(bool showText);

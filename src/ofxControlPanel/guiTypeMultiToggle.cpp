@@ -53,6 +53,15 @@ void guiTypeMultiToggle::updateGui(float x, float y, bool firstHit, bool isRelat
 
 }
 
+//-----------------------------------------------
+void guiTypeMultiToggle::notify(){
+	guiCallbackData cbVal;
+	cbVal.setup(xmlName, name);
+	cbVal.addValueF(value.getValueI());
+	ofNotifyEvent(guiEvent,cbVal,this);
+	//CB
+}
+
 //-----------------------------------------------.
 void guiTypeMultiToggle::render(){
 	ofPushStyle();

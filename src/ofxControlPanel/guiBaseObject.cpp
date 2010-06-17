@@ -176,8 +176,8 @@ void guiBaseObject::update(){
 //-----------------------------------------------
 void guiBaseObject::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(xmlName);
-	cbVal.addFloat(value.getValueF());
+	cbVal.setup(xmlName, name);
+	cbVal.addValueF(value.getValueF());
 	ofNotifyEvent(guiEvent,cbVal,this);
 	//CB
 }
@@ -211,7 +211,7 @@ void guiBaseObject::checkPrescison(){
 void guiBaseObject::updateText(){
 
 	drawStr = name;
-	for(int i = 0; i < value.getNumValues(); i++){
+	for(int i = 0; i < value.getgetgetNumValues(); i++){
 		if( dataType == SG_TYPE_FLOAT ){
 			checkPrescison();
 			drawStr += " "+ofToString(value.getValueF(i), numDecimalPlaces);

@@ -134,7 +134,7 @@ float guiValue::getPct(unsigned int which){
 }
 
 //------------------------------------------------
-int guiValue::getNumValues(){
+int guiValue::getgetgetNumValues(){
 	return (int) value.size();
 }
 

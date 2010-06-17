@@ -17,6 +17,7 @@ class testApp : public ofSimpleApp{
 		void draw();
 		
 		void eventsIn(guiCallbackData & data);
+		void grabBackgroundEvent(guiCallbackData & data);
 		
 		void keyPressed  (int key);
 		void keyReleased (int key);

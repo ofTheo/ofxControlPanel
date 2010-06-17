@@ -26,6 +26,8 @@ guiTypeFileLister::guiTypeFileLister(){
 void guiTypeFileLister::setup(string listerName, simpleFileLister * listerPtr , float listerWidth, float listerHeight){
 	lister  =  listerPtr;
 	name    =  listerName;
+	makeXmlNameFromDisplayName();
+	
 	updateText();
 
 	setDimensions(listerWidth, listerHeight);
@@ -35,9 +37,10 @@ void guiTypeFileLister::setup(string listerName, simpleFileLister * listerPtr , 
 //-----------------------------------------------
 void guiTypeFileLister::notify(){
 	guiCallbackData cbVal;
-	cbVal.setup(name);
-	cbVal.addString(lister->getSelectedPath());
-	cbVal.addString(lister->getSelectedName());
+	cbVal.setup(xmlName, name);
+	cbVal.addValueI(selection);
+	cbVal.addValueS(lister->getSelectedPath());
+	cbVal.addValueS(lister->getSelectedName());
 	ofNotifyEvent(guiEvent,cbVal,this);
 }
 
