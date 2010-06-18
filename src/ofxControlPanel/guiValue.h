@@ -40,7 +40,7 @@ class guiValue{
         //------------------------------------------------
         float getPct(unsigned int which = 0);
 
-        int getgetgetNumValues();
+        int getNumValues();
 
     protected:
 
