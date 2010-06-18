@@ -211,7 +211,7 @@ void guiBaseObject::checkPrescison(){
 void guiBaseObject::updateText(){
 
 	drawStr = name;
-	for(int i = 0; i < value.getgetgetNumValues(); i++){
+	for(int i = 0; i < value.getNumValues(); i++){
 		if( dataType == SG_TYPE_FLOAT ){
 			checkPrescison();
 			drawStr += " "+ofToString(value.getValueF(i), numDecimalPlaces);
