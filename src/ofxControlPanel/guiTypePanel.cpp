@@ -55,7 +55,6 @@ bool guiTypePanel::checkHit(float x, float y, bool isRelative){
 		}
 
 		setSelected();
-		updateGui(x, y, true, isRelative);
 
 		if( !locked ){
 
@@ -64,9 +63,12 @@ bool guiTypePanel::checkHit(float x, float y, bool isRelative){
 
 			for(unsigned int i = 0; i < children.size(); i++){
 				bool result = children[i]->checkHit(offsetX, offsetY, isRelative);
-				if(result) break;
+				if(result){
+					break;
+				}
 			}
 		}
+				
 		return true;
 	}
 	return false;

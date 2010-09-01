@@ -88,7 +88,15 @@ class guiTypeChartPlotter : public guiBaseObject{
 			
 			if( var.autoUpdate || var.bDoUpdate ){
 			
-				valueHistory.push_back( *( (float *)var.ptr) );
+				float valIn = 0.0;
+				
+				if( var.dataType == GUI_VAR_FLOAT ){
+					valIn = *( (float *)var.ptr) ;
+				}else if( var.dataType == GUI_VAR_INT ){
+					valIn = (int)( *( (int *)var.ptr) );
+				}
+
+				valueHistory.push_back( valIn );
 				if( valueHistory.size() > maxNum ){
 					valueHistory.erase(valueHistory.begin(), valueHistory.begin()+1);
 				}
@@ -129,28 +137,6 @@ class guiTypeChartPlotter : public guiBaseObject{
 					}
 					
 					ofFill();
-
-//					float lineH = hitArea.height / (float) MAX(1, vars.size());
-//					
-//					float x		= hitArea.x;
-//					float y		= (hitArea.y + lineH) + typeStartOffset;
-//					float ly	= (hitArea.y + lineH);
-//					
-//					//draw the foreground
-//					for(int i = 0; i < vars.size(); i++){
-//						
-//						if( i != vars.size()-1){
-//							glColor4fv(outlineColor.getColorF());
-//							ofLine(x, ly, x + hitArea.width, ly);
-//						}
-//						
-//						glColor4fv(textColor.getColorF());
-//						displayText.renderString(vars[i].displayName, x, y);
-//						displayText.renderString("= " + vars[i].varAsString, x + minNameWidth, y);
-//
-//						y  += lineH;
-//						ly += lineH;
-//					}
 
 					glColor4fv(textColor.getColorF());				
 					displayText.renderString(var.displayName + ": " + var.varAsString, x + 2, y - displayText.getTextSingleLineHeight()*3);

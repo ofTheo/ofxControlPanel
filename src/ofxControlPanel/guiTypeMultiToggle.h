@@ -14,7 +14,7 @@ class guiTypeMultiToggle : public guiBaseObject{
         //------------------------------------------------
         void setup(string multiToggleName, int defaultBox, vector <string> boxNames);
 
-		//-----------------------------------------------
+        //-----------------------------------------------
 		void notify();
 
         //-----------------------------------------------

@@ -40,6 +40,13 @@ class guiValue{
         //------------------------------------------------
         float getPct(unsigned int which = 0);
 
+        //------------------------------------------------		
+		bool hasValueChanged(unsigned int which = 0);
+		
+        //------------------------------------------------		
+		void clearChangedFlag();
+
+        //------------------------------------------------
         int getNumValues();
 
     protected:
@@ -56,6 +63,8 @@ class guiValue{
         vector <float> min;
         vector <float> max;
         vector <float> pct;
+
+		vector<bool> bChanged;
 
 };
 

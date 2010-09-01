@@ -17,4 +17,5 @@ class guiTypeToggle : public guiBaseObject{
         void render();
 		void notify();
 
+		void updateBoundingBox();
 };

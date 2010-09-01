@@ -15,6 +15,7 @@ guiBaseObject::guiBaseObject(){
 	locked				= false;
 	bRemoveFromLayout	= false;
 	dataType			= SG_TYPE_FLOAT;
+	state				= SG_STATE_NORMAL;
 
 	numDecimalPlaces    = 2;
 	storedTextWidth     = 0;
@@ -171,6 +172,11 @@ float guiBaseObject::getHeight(){
 //-----------------------------------------------
 void guiBaseObject::update(){
 	updateText();
+}
+
+//-----------------------------------------------
+bool guiBaseObject::hasValueChanged(unsigned int which){
+	return value.hasValueChanged(which);
 }
 
 //-----------------------------------------------

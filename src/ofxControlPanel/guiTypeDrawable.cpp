@@ -74,8 +74,8 @@ void guiTypeDrawable::render(){
 			glColor4fv(bgColor.getColorF());
 			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
-			ofDisableAlphaBlending();
-
+			//ofDisableAlphaBlending();
+			ofEnableAlphaBlending();
 			ofSetColor(0xFFFFFF);
 			vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 

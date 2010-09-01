@@ -56,7 +56,7 @@ class guiBaseObject{
         virtual void lock();
         virtual void unlock();
         bool isLocked();
-		
+
         //------------------------------------------------
 		virtual void makeXmlNameFromDisplayName(){
 			xmlName = name;
@@ -101,6 +101,9 @@ class guiBaseObject{
 
         //-----------------------------------------------
         virtual void update();
+
+		//-----------------------------------------------
+		virtual bool hasValueChanged(unsigned int which = 0);
 
 		//-----------------------------------------------
 		virtual void notify();

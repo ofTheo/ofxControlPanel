@@ -86,7 +86,7 @@ void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY,
 }
 
 //-----------------------------
-void ofxControlPanel::loadFont( string fontName, int fontsize ){
+void ofxControlPanel::loadFont(string fontName, int fontsize ){
     guiTTFFont.loadFont(fontName, fontsize);
     bool okay = guiTTFFont.bLoadedOk;
 	guiBaseObject::setFont(&guiTTFFont);
@@ -568,7 +568,7 @@ ofEvent <guiCallbackData> & ofxControlPanel::createEventGroup(string xmlName){
 	customEvents.back()->group = xmlName;
 	customEvents.back()->names = xmlNames;
 	return customEvents.back()->guiEvent;
-}	
+}		
 
 //---------------------------------------------
 void ofxControlPanel::enableEvents(){
@@ -714,6 +714,49 @@ int ofxControlPanel::getValueI(string xmlName, int whichParam){
 }
 
 //---------------------------------------------
+bool ofxControlPanel::hasValueChanged(string xmlName, int whichParam){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
+        if( guiObjects[i]->xmlName == xmlName){
+            if( whichParam >= 0  ){
+				return guiObjects[i]->value.hasValueChanged(whichParam);
+            }
+        }
+    }
+	return false;
+}
+
+//---------------------------------------------
+bool ofxControlPanel::hasValueChangedInPanel(string whichPanel){
+	
+	guiTypePanel * panel = NULL;
+	
+	for(int i = 0; i < panels.size(); i++){
+		if( panels[i]->name == whichPanel ){
+			panel = panels[i];
+			break;
+		}
+	}
+
+	if( panel == NULL ){
+		return false;
+	}
+
+	 for(int i = 0; i < (int)panel->children.size(); i++){
+		for(int k = 0; k < panel->children[i]->value.getNumValues(); k++){
+			if( panel->children[i]->value.hasValueChanged(k) ){
+				return true;
+			}
+		}
+    }
+	return false;
+}
+
+//---------------------------------------------
+bool ofxControlPanel::newPanelSelected(){
+	return bNewPanelSelected;
+}
+
+//---------------------------------------------
 string ofxControlPanel::getCurrentPanelName(){
     if( selectedPanel < 0 || selectedPanel >= panels.size() )return "no panel";
 	return panels[selectedPanel]->name;
@@ -800,7 +843,7 @@ void ofxControlPanel::reloadSettings(){
 }
 
 //-------------------------------
-void ofxControlPanel::saveSettings(string xmlFile){
+void ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
     for(int i = 0; i < (int) guiObjects.size(); i++)guiObjects[i]->saveSettings(xmlFile);
 
     for(int i = 0; i < (int) xmlObjects.size(); i++){
@@ -823,7 +866,9 @@ void ofxControlPanel::saveSettings(string xmlFile){
         settings.saveFile(xmlName);
     }
     settings.saveFile(xmlFile);
-    currentXmlFile = xmlFile;
+	if( bUpdateXmlFile ){
+		currentXmlFile = xmlFile;
+	}
     usingXml = true;
 }
 
@@ -907,10 +952,21 @@ void ofxControlPanel::toggleView(){
 
 
 //-------------------------------
-void ofxControlPanel::mousePressed(float x, float y, int button){
-    if( hidden ) return;
+bool ofxControlPanel::mousePressed(float x, float y, int button){
+    if( hidden ) return false;
 
+	bool hitSomething	  =	false;
     bool tabButtonPressed = false;
+	
+	ofRectangle checkRect = boundingBox;
+	if( minimize ){
+		checkRect.height = topBar.height;
+	}	
+
+	//we do this so people can check if mouse is interacting with panel
+	if( isInsideRect(x, y, checkRect) ){
+		hitSomething = true;
+	}
 
     if( isInsideRect(x, y, minimizeButton)){
         minimize = !minimize;
@@ -924,9 +980,15 @@ void ofxControlPanel::mousePressed(float x, float y, int button){
         dragging = true;
         mouseDownPoint.set(x - boundingBox.x, y-boundingBox.y, 0);
     }else if(!minimize){
+		int lastSelectedPanel = selectedPanel;
         for(int i = 0; i < (int) panels.size(); i++){
             if( isInsideRect(x, y, panelTabs[i]) ){
                 selectedPanel = i;
+				if( lastSelectedPanel != selectedPanel ){
+					bNewPanelSelected = true;
+				}else{
+					bNewPanelSelected = false;
+				}
                 tabButtonPressed = true;
                 break;
             }
@@ -940,12 +1002,27 @@ void ofxControlPanel::mousePressed(float x, float y, int button){
     }
 
     prevMouse.set(x, y);
+
+	return hitSomething;
 }
 
 
 //-------------------------------
-void ofxControlPanel::mouseDragged(float x, float y, int button){
-    if( hidden ) return;
+bool ofxControlPanel::mouseDragged(float x, float y, int button){
+    if( hidden ) return false;
+	
+	//we do this so people can check if mouse is interacting with panel
+	bool isDragging = dragging;
+		
+	if( !isDragging ){
+		ofRectangle checkRect = boundingBox;
+		if( minimize ){
+			checkRect.height = topBar.height;
+		}	
+		if( isInsideRect(x, y, checkRect) ){
+			isDragging = true;
+		}
+	}
 
     if(dragging)setPosition( MAX(0, x - mouseDownPoint.x), MAX(0, y -mouseDownPoint.y));
     else if(!minimize){
@@ -962,6 +1039,7 @@ void ofxControlPanel::mouseDragged(float x, float y, int button){
     }
 
     prevMouse.set(x, y);
+	return isDragging;
 }
 
 //-------------------------------
@@ -1003,6 +1081,15 @@ void ofxControlPanel::update(){
         panelTabs[i].height = tabHeight;
 
     }
+}
+
+//---------------------------------------------
+void ofxControlPanel::clearAllChanged(){
+	for(int i = 0; i < (int) guiObjects.size(); i++){
+		guiObjects[i]->value.clearChangedFlag();
+    }
+	
+	bNewPanelSelected = false;
 }
 
 //---------------------------------------------

@@ -138,11 +138,17 @@ class ofxControlPanel: public guiBaseObject{
         float getValueF(string xmlName, int whichParam = 0);
         int getValueI(string xmlName, int whichParam = 0);
 
+		bool hasValueChanged(string xmlName, int whichParam = 0);
+		bool hasValueChangedInPanel(string whichPanel);
+		bool newPanelSelected();		
+		
+		void clearAllChanged();
+		
         void setIncrementSave(string incrmentalFileBaseName);
         void disableIncrementSave();
         void loadSettings(string xmlFile);
         void reloadSettings();
-        void saveSettings(string xmlFile);
+        void saveSettings(string xmlFile, bool bUpdateXmlFile = true);
         void saveSettings();
         void setXMLFilename(string xmlFile);
 
@@ -152,14 +158,13 @@ class ofxControlPanel: public guiBaseObject{
         void hide();
 
         void toggleView();
-        void mousePressed(float x, float y, int button);
-        void mouseDragged(float x, float y, int button);
+        bool mousePressed(float x, float y, int button);
+        bool mouseDragged(float x, float y, int button);
         void mouseReleased();
 
         void updateBoundingBox();
         void update();
         void draw();
-
 
         ofTrueTypeFont guiTTFFont;
 
@@ -204,7 +209,7 @@ class ofxControlPanel: public guiBaseObject{
 		ofPoint mouseDownPoint;
 
 		bool dragging;
-		
+		bool bNewPanelSelected;
 		
 		protected:
 			void eventsIn(guiCallbackData & data);
