@@ -38,7 +38,7 @@ class ofxControlPanel: public guiBaseObject{
         ofxControlPanel();
         ~ofxControlPanel();
 
-        void setup(string controlPanelName, float panelX, float panelY, float width, float height);
+        void setup(string controlPanelName, float panelX, float panelY, float width, float height, bool doSaveRestore = true );
         void loadFont( string fontName, int fontsize );
 
         guiTypePanel * addPanel(string panelName, int numColumns, bool locked = false);
@@ -49,6 +49,8 @@ class ofxControlPanel: public guiBaseObject{
         void setWhichPanel(int whichPanel);
         void setWhichPanel(string panelName);
         void setWhichColumn(int column);
+	
+		void setSize( int new_width, int new_height );
 
 		string getCurrentPanelName();
 
@@ -119,6 +121,8 @@ class ofxControlPanel: public guiBaseObject{
 		guiTypeChartPlotter * addChartPlotter(string name, guiStatVarPointer varPtr, float width, float height, int maxNum, float minYVal, float maxYVal);
 		guiTypeLogger * addLogger(string name, simpleLogger * logger, int drawW, int drawH);
 		guiTypeFileLister * addFileLister(string name, simpleFileLister * lister, int drawW, int drawH);
+		guiTypeLabel * addLabel( string text );
+		guiTypeTextInput* addTextInput( string name, string text, int width );
 		
 		void setupEvents();
 		ofEvent <guiCallbackData> & createEventGroup(string eventGroupName, vector <string> xmlNames);
@@ -161,6 +165,8 @@ class ofxControlPanel: public guiBaseObject{
         bool mousePressed(float x, float y, int button);
         bool mouseDragged(float x, float y, int button);
         void mouseReleased();
+		/// return true if we consume the keypress
+		bool keyPressed( int k );
 
         void updateBoundingBox();
         void update();
@@ -194,6 +200,8 @@ class ofxControlPanel: public guiBaseObject{
 		bool incrementSave;
 		bool restoreDown;
 		bool bDraggable;
+	
+	bool bDoSaveRestore;
 
 		int selectedPanel;
         int currentPanel;

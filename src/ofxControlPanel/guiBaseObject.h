@@ -45,6 +45,9 @@ class guiBaseObject{
         //should  be called on mouse up
         //-------------------------------------------
         virtual void release();
+	
+		//should be called when a key is pressed; return true if we consume the key
+		virtual bool keyPressed( int k);
 		
         //these are here for the custom control types
         //we notify all elements about these actions

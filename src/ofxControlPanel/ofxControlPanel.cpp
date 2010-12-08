@@ -70,8 +70,9 @@ ofxControlPanel * ofxControlPanel::getPanelInstance(string panelName){
 }	
 		
 //-----------------------------
-void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY, float width, float height){
+void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY, float width, float height, bool doSaveRestore){
 	
+	bDoSaveRestore = doSaveRestore;
 	name = controlPanelName;
 
 	setPosition(panelX, panelY);
@@ -101,6 +102,20 @@ void ofxControlPanel::loadFont(string fontName, int fontsize ){
 		printf("ahhhhhh why does my font no work!\n");
 	}
 }
+
+//---------------------------------------------
+
+void ofxControlPanel::setSize( int new_width, int new_height )
+{
+	// set width
+	setDimensions( new_width, new_height );
+	// set underlying panel widths
+	for ( int i=0; i<panels.size(); i++ )
+	{
+		panels[i]->setDimensions( (boundingBox.width - borderWidth*2) -1, boundingBox.height - topSpacing*3);
+	}
+}
+
 
 //---------------------------------------------
 guiTypePanel * ofxControlPanel::addPanel(string panelName, int numColumns, bool locked){
@@ -210,6 +225,33 @@ guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool def
     return tmp;
 }
 
+/*
+guiTypeText * ofxControlPanel::addText( string text, string xmlName )
+{
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+	
+    //add a new toggle to our list
+    guiTypeText * tmp = new guiTypeText();
+	
+	setLayoutFlag(tmp);
+	
+    //setup and dimensions
+    tmp->setup(name );
+    tmp->setDimensions(14, 14);
+	tmp->xmlName = xmlName;
+	
+    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
+    guiObjects.push_back(tmp);
+	
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+	
+    panels[currentPanel]->addElement( tmp );
+	
+    return tmp;
+}*/
+
 
 //---------------------------------------------
 guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames)
@@ -310,6 +352,45 @@ guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName
 }
 
 
+//---------------------------------------------
+guiTypeLabel * ofxControlPanel::addLabel( string text )
+{
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+	
+	guiTypeLabel* tmp = new guiTypeLabel();
+	tmp->setup( text );
+	tmp->setDimensions( 200, 0 );
+	
+	panels[currentPanel]->addElement(tmp);
+	
+	guiObjects.push_back( tmp );
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+	
+	return tmp;
+	
+}
+
+//---------------------------------------------
+guiTypeTextInput * ofxControlPanel::addTextInput( string name, string text, int width )
+{
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+	
+	guiTypeTextInput* tmp = new guiTypeTextInput();
+	tmp->setup( name, text );
+	tmp->setDimensions( width, 14 );
+	
+	panels[currentPanel]->addElement(tmp);
+	
+	guiObjects.push_back( tmp );
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+	
+	return tmp;
+	
+}
 
 //---------------------------------------------
 guiTypeDrawable * ofxControlPanel::addDrawableRect(string name, ofBaseDraws * drawablePtr, int drawW, int drawH){
@@ -1053,6 +1134,20 @@ void ofxControlPanel::mouseReleased(){
     saveDown        = false;
     restoreDown     = false;
 }
+//-------------------------------
+bool ofxControlPanel::keyPressed(int k)
+{
+	if ( hidden ) return false;
+	if ( minimize ) return false;
+	for ( int i=0; i<(int)panels.size(); i++ )
+	{
+		bool eaten = panels[i]->keyPressed( k );
+		if ( eaten )
+			// stop + bail
+			return true;
+	}
+	return false;
+}
 
 
 // ############################################################## //
@@ -1067,8 +1162,16 @@ void ofxControlPanel::update(){
 
     topBar           = ofRectangle(boundingBox.x, boundingBox.y, boundingBox.width, MAX(20, displayText.getTextSingleLineHeight() * 1.2 ) );
     minimizeButton   = ofRectangle(boundingBox.x + boundingBox.width - 24, boundingBox.y + 4, 20, 10 );
-    saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save")) , MAX(12, displayText.getTextSingleLineHeight()) );
-    restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
+	if ( !bDoSaveRestore )
+	{
+		saveButton		= ofRectangle( boundingBox.x, boundingBox.y, 0, 0 );
+		restoreButton	= ofRectangle( boundingBox.x, boundingBox.y, 0, 0 );
+	}
+	else
+	{
+		saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save")) , MAX(12, displayText.getTextSingleLineHeight()) );
+		restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
+	}
 
 	ofxControlPanel::topSpacing = MAX(20, topBar.height);
 
@@ -1142,6 +1245,8 @@ void ofxControlPanel::draw(){
 
         ofRect(minimizeButton.x, minimizeButton.y, minimizeButton.width, minimizeButton.height);
 
+	if ( bDoSaveRestore )
+	{
         ofPushStyle();
             ofFill();
 
@@ -1173,8 +1278,8 @@ void ofxControlPanel::draw(){
 		else {
 			ofDrawBitmapString("restore", restoreButton.x + 3, restoreButton.y + restoreButton.height -3);
 		}
-        ofPopStyle();
-
+		ofPopStyle();
+	}
 
         ofPushMatrix();
             ofTranslate(2,0,0);
