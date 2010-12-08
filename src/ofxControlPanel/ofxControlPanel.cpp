@@ -183,6 +183,21 @@ void ofxControlPanel::setSliderWidth(int width){
 }
 
 //---------------------------------------------
+void ofxControlPanel::addXmlAssociation( guiBaseObject* object, string xmlName, int paramCount )
+{
+	// check for already-existing xml name
+	for ( int i=0; i<xmlObjects.size(); i++ )
+	{
+		if ( xmlObjects[i].xmlName == xmlName )
+		{
+			ofLog(OF_LOG_ERROR, "ofxControlPanel::add*: duplicate xmlName '%s', not adding\n", xmlName.c_str() );
+			return;
+		}
+	}
+	xmlObjects.push_back( xmlAssociation(object, xmlName, paramCount ) );
+}
+
+//---------------------------------------------
 guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool defaultValue)
 {
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
@@ -197,8 +212,9 @@ guiTypeToggle * ofxControlPanel::addToggle(string name, string xmlName, bool def
     tmp->setDimensions(14, 14);
     tmp->setTypeBool();
 	tmp->xmlName = xmlName;
+	
+	addXmlAssociation( tmp, xmlName, 1 );
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
     guiObjects.push_back(tmp);
 
     if( bUseTTFFont ){
@@ -229,7 +245,7 @@ guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName
     //we can say we want to an int or a float!
     tmp->setTypeInt();
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
+	addXmlAssociation( tmp, xmlName, 1 );
     guiObjects.push_back(tmp);
 
     if( bUseTTFFont ){
@@ -239,6 +255,51 @@ guiTypeMultiToggle * ofxControlPanel::addMultiToggle(string name, string xmlName
     panels[currentPanel]->addElement( tmp );
 
     return tmp;
+}
+
+//-------------------------------
+void ofxControlPanel::removeObject( string xmlName )
+{
+	// look for the xmlAssociation
+	guiBaseObject* object = NULL;
+	for ( int i=0; i<xmlObjects.size(); i++ )
+	{
+		if ( xmlObjects[i].xmlName == xmlName )
+		{
+			object = xmlObjects[i].guiObj;
+			xmlObjects.erase( xmlObjects.begin()+i );
+			break;
+		}
+	}
+	if( object == NULL )
+	{
+		fprintf(stderr, "couldn't find object with xmlName '%s': not deleted\n", xmlName.c_str() );
+	}
+	else
+	{
+		bool found = false;
+		for ( int i=0; i<panels.size(); i++ )
+			if ( panels[i]->containsElement( object ) )
+			{
+				//printf("removing %s [%x] from panel %s\n", object->xmlName.c_str(), object, panels[i]->name.c_str() );
+				panels[i]->removeElement( object );
+				found = true;
+				break;
+			}
+		assert( found );
+		found = false;
+		for ( int i=0; i<guiObjects.size(); i++ )
+		{
+			if ( guiObjects[i] == object )
+			{
+				guiObjects.erase( guiObjects.begin()+i );
+				found = true;
+				break;
+			}
+		}
+		assert( found );
+		delete object;
+	}
 }
 
 //-------------------------------
@@ -263,13 +324,14 @@ guiTypeSlider * ofxControlPanel::addSlider(string sliderName, string xmlName, fl
         tmp->setTypeFloat();
     }
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
+	addXmlAssociation( tmp, xmlName, 1 );
     guiObjects.push_back(tmp);
 
     if( bUseTTFFont ){
         tmp->setFont(&guiTTFFont);
     }
 
+	//printf("adding %s [%x] to panel %s\n", xmlName.c_str(), tmp, panels[currentPanel]->name.c_str() );
     panels[currentPanel]->addElement( tmp );
 
     return tmp;
@@ -297,7 +359,7 @@ guiType2DSlider * ofxControlPanel::addSlider2D(string sliderName, string xmlName
         tmp->setTypeFloat();
     }
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 2) );
+	addXmlAssociation( tmp, xmlName, 2 );
     guiObjects.push_back(tmp);
 
     if( bUseTTFFont ){
@@ -389,7 +451,7 @@ guiTypeButtonSlider * ofxControlPanel::addButtonSlider(string sliderName, string
         tmp->setTypeFloat();
     }
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
+	addXmlAssociation( tmp, xmlName, 1 );
     guiObjects.push_back(tmp);
 
 	if( bUseTTFFont ) {
@@ -418,7 +480,7 @@ guiTypeTextDropDown * ofxControlPanel::addTextDropDown(string name, string xmlNa
     //we can say we want to an int or a float!
     tmp->setTypeInt();
 
-    xmlObjects.push_back( xmlAssociation(tmp, xmlName, 1) );
+	addXmlAssociation( tmp, xmlName, 1 );
     guiObjects.push_back(tmp);
 
     if( bUseTTFFont ){
@@ -782,7 +844,8 @@ void ofxControlPanel::disableIncrementSave(){
 
 //-----------------------------
 void ofxControlPanel::loadSettings(string xmlFile){
-    for(unsigned int i = 0; i < guiObjects.size(); i++)guiObjects[i]->loadSettings(xmlFile);
+    for(unsigned int i = 0; i < guiObjects.size(); i++)
+		guiObjects[i]->loadSettings(xmlFile);
 
     currentXmlFile = xmlFile;
 
@@ -812,7 +875,11 @@ void ofxControlPanel::loadSettings(string xmlFile){
 
 //-----------------------------
 void ofxControlPanel::reloadSettings(){
-    for(unsigned int i = 0; i < guiObjects.size(); i++)guiObjects[i]->reloadSettings();
+    for(unsigned int i = 0; i < guiObjects.size(); i++)
+	{
+		//printf("loading setting for guiObject %s\n", guiObjects[i]->name.c_str() );
+		guiObjects[i]->reloadSettings();
+	}
 
     if( currentXmlFile != "" ){
 
@@ -824,11 +891,13 @@ void ofxControlPanel::reloadSettings(){
             for(unsigned int i = 0; i < xmlObjects.size(); i++){
                 if( xmlObjects[i].guiObj != NULL ){
                     int numParams = xmlObjects[i].numParams;
-
+					//printf("loading setting for xmlObject %s\n", xmlObjects[i].xmlName.c_str() );
+					
                     for(int j = 0; j < numParams; j++){
                         string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
                         float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
 
+						//printf("  %s -> %f\n", xmlObjects[i].xmlName.c_str(), val );
                         xmlObjects[i].guiObj->setValue(val, j);
                     }
                     xmlObjects[i].guiObj->updateValue();
@@ -865,6 +934,7 @@ void ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
 
         settings.saveFile(xmlName);
     }
+	//printf("saving %s\n", xmlFile.c_str());
     settings.saveFile(xmlFile);
 	if( bUpdateXmlFile ){
 		currentXmlFile = xmlFile;
@@ -902,6 +972,8 @@ void ofxControlPanel::saveSettings(){
     if(currentXmlFile == "") {
         currentXmlFile = "controlPanelSettings.xml";
     }
+	//printf("saving %s\n", currentXmlFile.c_str());
+	
     settings.saveFile(currentXmlFile);
     usingXml = true;
 }
@@ -973,7 +1045,9 @@ bool ofxControlPanel::mousePressed(float x, float y, int button){
     }else if( usingXml && isInsideRect(x, y, saveButton) ){
         saveSettings();
         saveDown = true;
+		printf("saving settings!\n");
     }else if( usingXml && isInsideRect(x, y, restoreButton) ){
+		printf("restoring settings!\n");
         reloadSettings();
         restoreDown = true;
     }else if( isInsideRect(x, y, topBar) && bDraggable){

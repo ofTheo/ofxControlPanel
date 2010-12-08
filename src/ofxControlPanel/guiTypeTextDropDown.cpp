@@ -92,6 +92,13 @@ void guiTypeTextDropDown::updateGui(float x, float y, bool firstHit, bool isRela
 	}
 }
 
+void guiTypeTextDropDown::updateText() 
+{
+	// don't append the selected number
+	displayText.setText( name );
+	updateBoundingBox();
+}
+
 //-----------------------------------------------.
 void guiTypeTextDropDown::render(){
 

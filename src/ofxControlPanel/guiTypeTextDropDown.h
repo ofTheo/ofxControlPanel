@@ -12,10 +12,13 @@ class guiTypeTextDropDown : public guiBaseObject{
         //------------------------------------------------
         void setup(string dropDownName, int defaultBox, vector <string> boxNames);
         virtual void updateValue();
-        void update();
+        virtual void update();
+		virtual void updateText();
         virtual void release();
         void updateGui(float x, float y, bool firstHit, bool isRelative);
         void render();
+	
+		string getSelectedBoxName() { return vecDropList[value.getValueI()]; }; 
 
 		void notify();
 

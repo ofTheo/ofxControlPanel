@@ -49,6 +49,7 @@ class ofxControlPanel: public guiBaseObject{
         void setWhichPanel(int whichPanel);
         void setWhichPanel(string panelName);
         void setWhichColumn(int column);
+		int getWhichPanel() { return currentPanel; }
 
 		string getCurrentPanelName();
 
@@ -106,6 +107,8 @@ class ofxControlPanel: public guiBaseObject{
 			gFgColor.selected	= selectedColor;
 		}
 		
+		// remove an object
+		void removeObject( string xmlName );
         guiTypeToggle * addToggle(string name, string xmlName, bool defaultValue);
         guiTypeMultiToggle * addMultiToggle(string name, string xmlName, int defaultBox, vector <string> boxNames);
         guiTypeSlider * addSlider(string sliderName, string xmlName, float value , float min, float max, bool isInt);
@@ -214,6 +217,8 @@ class ofxControlPanel: public guiBaseObject{
 		protected:
 			void eventsIn(guiCallbackData & data);
 
+private:
+	void addXmlAssociation( guiBaseObject* object, string xmlName, int defaultValue );
 		
 
 };

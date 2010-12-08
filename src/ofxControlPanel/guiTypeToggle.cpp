@@ -71,3 +71,10 @@ void guiTypeToggle::render(){
 		glPopMatrix();
 	ofPopStyle();
 }
+
+void guiTypeToggle::updateText()
+{
+	displayText.setText( name ); 
+	labelWidth = displayText.getTextWidth();
+	updateBoundingBox(); 
+}
