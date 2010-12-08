@@ -27,10 +27,11 @@ class guiTypePanel : public guiBaseObject{
         virtual void update();
 
         void addElement( guiBaseObject * element );
+		void addSpace( int height );
         void drawLocked();
         void drawUnlocked();
         void render();
-
+	
         ofRectangle lockRect;
 
         float currentXPos;

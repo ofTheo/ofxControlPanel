@@ -125,6 +125,12 @@ void guiTypePanel::update(){
 	}
 }
 
+
+void guiTypePanel::addSpace( int height ) 
+{
+	columns[col].y += height;
+}
+
 //-----------------------------------------------
 void guiTypePanel::addElement( guiBaseObject * element ){
 	element->updateText();
@@ -228,7 +234,7 @@ void guiTypePanel::render(){
 		glPushMatrix();
 			glTranslatef(hitArea.x, hitArea.y, 0);
 				for(unsigned int i = 0; i < children.size(); i++){
-					children[i]->render();
+					children[children.size()-(1+i)]->render();
 				}
 		glPopMatrix();
 
