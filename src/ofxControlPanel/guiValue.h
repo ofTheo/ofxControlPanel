@@ -36,6 +36,7 @@ class guiValue{
 
         //------------------------------------------------
         float getMax(unsigned int which = 0);
+		void setMax( int new_max, unsigned int which=0 );
 
         //------------------------------------------------
         float getPct(unsigned int which = 0);
