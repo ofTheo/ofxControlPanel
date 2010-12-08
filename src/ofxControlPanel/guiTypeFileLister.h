@@ -19,6 +19,9 @@ class guiTypeFileLister : public guiBaseObject{
         void render();
 
 		void notify();
+	
+	void clearSelection();
+	
 			
 		int lineSpacing;
 		int dblClickTime;			
@@ -32,4 +35,12 @@ class guiTypeFileLister : public guiBaseObject{
         float pct;
         int startPos, endPos;
         simpleFileLister * lister;
+	
+	
+	bool hasSelectionChanged() { return selection_has_changed; }
+	void clearSelectionChangedFlag() { selection_has_changed = false; }
+	
+private:
+	
+	bool selection_has_changed;
 };
