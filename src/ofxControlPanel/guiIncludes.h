@@ -26,6 +26,7 @@
 #include "guiTypeChartPlotter.h"
 #include "guiTypeLogger.h"
 #include "guiTypeFileLister.h"
-
+#include "guiTypeLabel.h"
+#include "guiTypeTextInput.h"
 
 

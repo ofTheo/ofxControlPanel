@@ -24,6 +24,8 @@ class guiTypePanel : public guiBaseObject{
 		void setElementYSpacing( float spacingY ) { spacingAmntY = spacingY; }
         virtual bool checkHit(float x, float y, bool isRelative);
 
+		/// add exactly this many pixels of space
+		void addSpace( int height );
 		/// add a region of blank space, height pixels high. will also add spacingAmntY space
 		void addYBlank( float height ) { columns[col].y += height+spacingAmntY; }
         void updateGui(float x, float y, bool firstHit, bool isRelative);
@@ -38,7 +40,7 @@ class guiTypePanel : public guiBaseObject{
 		void drawLocked();
         void drawUnlocked();
         void render();
-
+	
         ofRectangle lockRect;
 
         float currentXPos;

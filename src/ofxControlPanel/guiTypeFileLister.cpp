@@ -20,7 +20,10 @@ guiTypeFileLister::guiTypeFileLister(){
 
 	lineSpacing		= 12;
 	dblClickTime	= 500;	
+	
+	selection_has_changed = false;
 }
+
 
 //------------------------------------------------
 void guiTypeFileLister::setup(string listerName, simpleFileLister * listerPtr , float listerWidth, float listerHeight){
@@ -46,6 +49,9 @@ void guiTypeFileLister::notify(){
 
 //-----------------------------------------------.
 void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelative){
+	if ( isLocked() )
+		return;
+	
 	if( firstHit && x < hitArea.x + sliderWidth){
 		usingSlider = true;
 	}
@@ -66,6 +72,7 @@ void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelati
 			if( select == selectionTmp && (ofGetElapsedTimeMillis() - lastClickTime) < dblClickTime ){
 				selection = select;
 				lister->setSelectedFile(selection);
+				selection_has_changed = true;
 				notify();
 			}
 
@@ -130,7 +137,7 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
 		}
 	ofPopStyle();
 }
-
+ 
 //-----------------------------------------------.
 void guiTypeFileLister::render(){
 	ofPushStyle();
@@ -159,4 +166,10 @@ void guiTypeFileLister::render(){
 		glPopMatrix();
 
 	ofPopStyle();
+}
+
+void guiTypeFileLister::clearSelection()
+{
+
+	selection = -1;
 }

@@ -22,6 +22,8 @@ class guiTypeTextDropDown : public guiBaseObject{
 
 		void notify();
 
+		void hideDropDown() { bShowDropDown = false; state = SG_STATE_NORMAL; }
+	
 		vector <string> vecDropList;
 		bool    bShowDropDown;
 };

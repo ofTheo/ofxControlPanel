@@ -75,6 +75,8 @@ void testApp::setup(){
 	names.push_back("greater than");
 	names.push_back("less than");
 	gui.addTextDropDown("difference mode", "DIFF_MODE", 0, names);
+	gui.addLabel("a label");
+	gui.addTextInput("text input space", "default text", 200 );
 	
 	//--------- PANEL 2
 	gui.setWhichPanel(1);
@@ -212,10 +214,15 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed  (int key){
 
-    //if you need to adjust the camera properties
-    if(key == 's'){
-        grabber.videoSettings();
-    }
+	bool control_panel_ate_key = gui.keyPressed( key );
+
+	if ( !control_panel_ate_key )
+	{
+		//if you need to adjust the camera properties
+		if(key == 's'){
+			grabber.videoSettings();
+		}
+	}	
 	
 }
 

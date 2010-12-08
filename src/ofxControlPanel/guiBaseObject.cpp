@@ -93,6 +93,18 @@ void guiBaseObject::release(){
 	}
  }
 
+//should  be called on key press
+//-------------------------------------------
+bool guiBaseObject::keyPressed(int k){
+	for(unsigned int i = 0; i < children.size(); i++){
+		bool eaten = children[i]->keyPressed(k);
+		if ( eaten )
+			return true;
+	}
+	return false;
+}
+
+
 //these are here for the custom control types
 //we notify all elements about these actions
 void guiBaseObject::saveSettings(string filename){}
