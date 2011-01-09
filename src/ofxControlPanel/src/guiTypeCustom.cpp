@@ -85,7 +85,7 @@ void guiTypeCustom::render(){
 
 			ofDisableAlphaBlending();
 
-			ofSetHexColor(0xFFFFFF);
+			ofSetColor(255, 255, 255);
 			if( custom != NULL)custom->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 		glPopMatrix();
