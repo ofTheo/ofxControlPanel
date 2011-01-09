@@ -23,14 +23,14 @@ float drawableStacker::getHeight(){
 }
 
 void drawableStacker::draw(float x, float y, float w, float h){
-	ofSetColor(0xFFFFFF);
+	ofSetHexColor(0xFFFFFF);
 	for(unsigned int i = 0; i < drawers.size(); i++){
 		drawers[i]->draw(x, y, w, h);
 	}
 }
 
 void drawableStacker::draw(float x, float y){
-	ofSetColor(0xFFFFFF);
+	ofSetHexColor(0xFFFFFF);
 	for(unsigned int i = 0; i < drawers.size(); i++){
 		drawers[i]->draw(x, y, width, height);
 	}
@@ -76,7 +76,7 @@ void guiTypeDrawable::render(){
 
 			//ofDisableAlphaBlending();
 			ofEnableAlphaBlending();
-			ofSetColor(0xFFFFFF);
+			ofSetHexColor(0xFFFFFF);
 			vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 		glPopMatrix();

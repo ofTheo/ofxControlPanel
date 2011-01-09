@@ -50,6 +50,14 @@ class guiTypeVairableLister : public guiBaseObject{
 					vars[i].varAsString = ofToString( *((float *)vars[i].ptr), vars[i].precision);
 				}else if( vars[i].dataType == GUI_VAR_INT ){
 					vars[i].varAsString = ofToString( *((int *)vars[i].ptr));
+				}else if( vars[i].dataType == GUI_VAR_BOOL ){
+					
+					bool bVar = *((bool *)vars[i].ptr);
+					if( bVar ){
+						vars[i].varAsString = "true";
+					}else{
+						vars[i].varAsString = "false";						
+					}
 				}else if( vars[i].dataType == GUI_VAR_STRING ){
 					vars[i].varAsString = *((string *)vars[i].ptr);
 				}

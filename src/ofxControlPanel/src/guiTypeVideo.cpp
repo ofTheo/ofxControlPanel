@@ -61,7 +61,7 @@ void guiTypeVideo::render(){
 
 			ofDisableAlphaBlending();
 
-			ofSetColor(0xFFFFFF);
+			ofSetHexColor(0xFFFFFF);
 			vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 			
 			ofEnableAlphaBlending();
