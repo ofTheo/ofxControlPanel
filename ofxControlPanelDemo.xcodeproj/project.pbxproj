@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D6B2E6212AFE824006B71CC /* guiTypeLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2D6B2E5E12AFE824006B71CC /* guiTypeLabel.cpp */; };
+		2D6B2E6312AFE824006B71CC /* guiTypeTextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2D6B2E6012AFE824006B71CC /* guiTypeTextInput.cpp */; };
 		A1A2F13C111F5772000703E4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F133111F5772000703E4 /* main.cpp */; };
 		A1A2F13D111F5772000703E4 /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F135111F5772000703E4 /* testApp.cpp */; };
 		A1A2F13E111F5772000703E4 /* vectorField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A2F138111F5772000703E4 /* vectorField.cpp */; };
@@ -62,7 +64,7 @@
 		E4BD0D251164F30700A20636 /* guiBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4BD0D241164F30700A20636 /* guiBaseObject.cpp */; };
 		E4BD0E3911651F3A00A20636 /* guiTypeVairableLister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4BD0E3811651F3A00A20636 /* guiTypeVairableLister.cpp */; };
 		E4BD0F711165310C00A20636 /* guiTypeChartPlotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4BD0F701165310C00A20636 /* guiTypeChartPlotter.cpp */; };
-		E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworks.a */; };
+		E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
 		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
@@ -122,6 +124,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2D6B2E5E12AFE824006B71CC /* guiTypeLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTypeLabel.cpp; sourceTree = "<group>"; };
+		2D6B2E5F12AFE824006B71CC /* guiTypeLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTypeLabel.h; sourceTree = "<group>"; };
+		2D6B2E6012AFE824006B71CC /* guiTypeTextInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTypeTextInput.cpp; sourceTree = "<group>"; };
+		2D6B2E6112AFE824006B71CC /* guiTypeTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTypeTextInput.h; sourceTree = "<group>"; };
 		A1A2F133111F5772000703E4 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A1A2F134111F5772000703E4 /* ofAddons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofAddons.h; sourceTree = "<group>"; };
 		A1A2F135111F5772000703E4 /* testApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp.cpp; sourceTree = "<group>"; };
@@ -187,7 +193,7 @@
 		A1A2F1E8111F57F9000703E4 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		A1A2F1EA111F57F9000703E4 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		A1A2F1EB111F57F9000703E4 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
-		A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxControlPanelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofxControlPanelDemoDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4245AAC11665F9C00F68A73 /* customDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = customDrawer.h; sourceTree = "<group>"; };
 		E4245AAD11665F9C00F68A73 /* customDrawer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = customDrawer.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
@@ -289,7 +295,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */,
+				E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */,
 				E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */,
 				E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
@@ -687,6 +693,10 @@
 		E48D9CD11159443200A7B771 /* ofxControlPanel */ = {
 			isa = PBXGroup;
 			children = (
+				2D6B2E5E12AFE824006B71CC /* guiTypeLabel.cpp */,
+				2D6B2E5F12AFE824006B71CC /* guiTypeLabel.h */,
+				2D6B2E6012AFE824006B71CC /* guiTypeTextInput.cpp */,
+				2D6B2E6112AFE824006B71CC /* guiTypeTextInput.h */,
 				E4BD0D241164F30700A20636 /* guiBaseObject.cpp */,
 				E48D9CD31159443200A7B771 /* guiBaseObject.h */,
 				E4BD0F6C1165308900A20636 /* guiVariablePointer.h */,
@@ -753,7 +763,7 @@
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4C2422310CC54B6004149E2 /* openFrameworks */,
 				E45BE0360E8CC5DE009D7055 /* libs */,
-				A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemo.app */,
+				A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -780,7 +790,7 @@
 		E4C2421710CC549C004149E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4C2421E10CC549C004149E2 /* openFrameworks.a */,
+				E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -880,7 +890,7 @@
 			);
 			name = ofxControlPanelDemo;
 			productName = myOFApp;
-			productReference = A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemo.app */;
+			productReference = A1A2F1F9111F57F9000703E4 /* ofxControlPanelDemoDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -890,7 +900,14 @@
 			isa = PBXProject;
 			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "ofxControlPanelDemo" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = E4B69B4A0A3A1720003C02F2;
 			productRefGroup = E4B69B4A0A3A1720003C02F2;
 			projectDirPath = "";
@@ -908,10 +925,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4C2421E10CC549C004149E2 /* openFrameworks.a */ = {
+		E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworks.a;
+			path = openFrameworksDebug.a;
 			remoteRef = E4C2421D10CC549C004149E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -983,6 +1000,8 @@
 				E4BD0E3911651F3A00A20636 /* guiTypeVairableLister.cpp in Sources */,
 				E4BD0F711165310C00A20636 /* guiTypeChartPlotter.cpp in Sources */,
 				E4245AAE11665F9C00F68A73 /* customDrawer.cpp in Sources */,
+				2D6B2E6212AFE824006B71CC /* guiTypeLabel.cpp in Sources */,
+				2D6B2E6312AFE824006B71CC /* guiTypeTextInput.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1032,7 +1051,7 @@
 					"-lpthread",
 				);
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = ReleaseUniversal;
 		};
@@ -1119,7 +1138,7 @@
 					"-lpthread",
 				);
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
@@ -1155,7 +1174,7 @@
 					"-lpthread",
 				);
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};

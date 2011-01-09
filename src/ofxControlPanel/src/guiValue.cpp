@@ -152,6 +152,14 @@ float guiValue::getMax(unsigned int which){
 	}
 	return 0.0;
 }
+void guiValue::setMax( int new_max, unsigned int which )
+{
+	if(which >= 0 && which < max.size() )
+	{
+		max[which] = new_max;
+		updatePct( which );
+	}
+}
 
 //------------------------------------------------
 float guiValue::getPct(unsigned int which){

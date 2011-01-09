@@ -21,16 +21,26 @@ class guiTypePanel : public guiBaseObject{
 
         bool selectColumn(int which);
         void setElementSpacing(float spacingX, float spacingY);
+		void setElementYSpacing( float spacingY ) { spacingAmntY = spacingY; }
         virtual bool checkHit(float x, float y, bool isRelative);
 
+		/// add exactly this many pixels of space
+		void addSpace( int height );
+		/// add a region of blank space, height pixels high. will also add spacingAmntY space
+		void addYBlank( float height ) { columns[col].y += height+spacingAmntY; }
         void updateGui(float x, float y, bool firstHit, bool isRelative);
         virtual void update();
 
         void addElement( guiBaseObject * element );
-        void drawLocked();
+		void removeElement( guiBaseObject* element );
+		bool containsElement( guiBaseObject* element );
+		bool containsElement( string xmlName );
+		guiBaseObject* getElement( string xmlName );
+	
+		void drawLocked();
         void drawUnlocked();
         void render();
-
+	
         ofRectangle lockRect;
 
         float currentXPos;

@@ -125,6 +125,63 @@ void guiTypePanel::update(){
 	}
 }
 
+
+//-----------------------------------------------
+bool guiTypePanel::containsElement( string xmlName )
+{
+	for ( int i=0; i<children.size(); i++ )
+	{
+		if ( children[i]->xmlName == xmlName )
+			return true;
+	}
+	return false;
+}
+
+//-----------------------------------------------
+guiBaseObject* guiTypePanel::getElement( string xmlName )
+{
+	for ( int i=0; i<children.size(); i++ )
+	{
+		if ( children[i]->xmlName == xmlName )
+			return children[i];
+	}
+	return NULL;
+}
+
+//-----------------------------------------------
+bool guiTypePanel::containsElement( guiBaseObject* element )
+{
+	vector <guiBaseObject *>::iterator elementIter = std::find( children.begin(), children.end(), element );
+	return ( elementIter != children.end() );
+}
+
+//-----------------------------------------------
+void guiTypePanel::removeElement( guiBaseObject* element )
+{
+	bool found = false;
+	for ( int i=0; i<children.size(); i++ )
+	{
+		if ( children[i] == element )
+		{
+			// remove from children
+			children.erase( children.begin()+i );
+			// adjust column height
+			columns[whichColumn[i]].y -= element->getHeight() + spacingAmntY;
+			// remove from whichColumn
+			whichColumn.erase( whichColumn.begin()+i );
+			found = true;
+			break;
+		}
+	}
+	assert( found );
+
+}
+
+void guiTypePanel::addSpace( int height ) 
+{
+	columns[col].y += height;
+}
+
 //-----------------------------------------------
 void guiTypePanel::addElement( guiBaseObject * element ){
 	element->updateText();
@@ -228,7 +285,7 @@ void guiTypePanel::render(){
 		glPushMatrix();
 			glTranslatef(hitArea.x, hitArea.y, 0);
 				for(unsigned int i = 0; i < children.size(); i++){
-					children[i]->render();
+					children[children.size()-(1+i)]->render();
 				}
 		glPopMatrix();
 

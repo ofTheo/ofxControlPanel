@@ -5,7 +5,7 @@ static int boxHeight = 15;
 //------------------------------------------------
 void guiTypeTextDropDown::setup(string dropDownName, int defaultBox, vector <string> boxNames){
 	vecDropList = boxNames;
-	value.addValue( (int)defaultBox, 0, vecDropList.size()-1);
+	value.addValue( (int)defaultBox, 0, vecDropList.size()-1 );
 	name = dropDownName;
 	makeXmlNameFromDisplayName();
 
@@ -24,6 +24,12 @@ void guiTypeTextDropDown::updateValue(){
 //-----------------------------------------------.
 void guiTypeTextDropDown::update(){
 
+	if ( value.getMax() != vecDropList.size()-1 )
+	{
+		// set new max
+		value.setMax( vecDropList.size()-1 );
+	}
+	
 	boxHeight = MAX(15, displayText.getTextHeight());
 	hitArea.height = boundingBox.height = boxHeight;
 	
@@ -92,6 +98,13 @@ void guiTypeTextDropDown::updateGui(float x, float y, bool firstHit, bool isRela
 	}
 }
 
+void guiTypeTextDropDown::updateText() 
+{
+	// don't append the selected number
+	displayText.setText( name );
+	updateBoundingBox();
+}
+
 //-----------------------------------------------.
 void guiTypeTextDropDown::render(){
 
@@ -114,7 +127,7 @@ void guiTypeTextDropDown::render(){
 				if(value.getValueI() == i){
 					glColor4fv(fgColor.getSelectedColorF());
 				}else{
-					glColor4fv(bgColor.getNormalColorF());
+					glColor4fv(fgColor.getNormalColorF());
 				}
 
 				ofFill();

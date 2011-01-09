@@ -23,6 +23,7 @@ class simpleFileLister : public ofxDirList{
         bool selectedHasChanged();
         void clearChangedFlag();
 
+		int getNumEntries() { return entries.size(); }
         string getName(int which);
         string getPath(int which);
         void setSelectedFile(int which);
