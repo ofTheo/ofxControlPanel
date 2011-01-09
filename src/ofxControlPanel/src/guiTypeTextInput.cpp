@@ -19,28 +19,57 @@ void guiTypeTextInput::setup(string textInputName, string defaultVal)
 	name = textInputName;
 	text_position = 0;
 	changed = false;
+	mouseDraggedDeltaX = 0;
+	selectDragStartX = 0;
+	selectDragEndX = 0;
+	startIndex = 0;
+	endIndex = 0;
+	startPositionX = 0;
+	endPositionX = 0;
+	preX = 0;
+	textSelected = false;
 	updateText();
 }
 
+//------------------------------------------------
 bool guiTypeTextInput::keyPressed( int k )
 {
 	if ( isLocked() )
 		return false;
 	
+	bool bApplyDelete = true;
+	if( textSelected ){
+		
+		if( startIndex < valueText.textString.length() && endIndex <= valueText.textString.length() ){
+			valueText.textString.erase(valueText.textString.begin() + startIndex, valueText.textString.begin() + endIndex );
+			text_position = startIndex;
+		}else{
+			valueText.textString.clear();
+			text_position = 0;
+		}
+		
+		bApplyDelete	= false;
+		
+		changed			= true;		
+		textSelected = false;	
+	}		
+	
 	bool eaten = false;
 	text_position = min(max(0, text_position), (int)valueText.textString.length() );
 	if ( value.getValueB() )
 	{
+
 		eaten = true;
+		
 		// handle backspace
-		if ( k == OF_KEY_BACKSPACE && valueText.textString.length() > 0 && text_position > 0 )
+		if ( bApplyDelete &&  k == OF_KEY_BACKSPACE && valueText.textString.length() > 0 && text_position > 0 )
 		{
 			valueText.textString.erase( valueText.textString.begin()+(text_position-1) ) ;
 			text_position--;
 			changed = true;
 		}
 		// handle DEL
-		else if ( k == OF_KEY_DEL && valueText.textString.length() > 0 && text_position < valueText.textString.length() )
+		else if (bApplyDelete && k == OF_KEY_DEL && valueText.textString.length() > 0 && text_position < valueText.textString.length() )
 		{
 			valueText.textString.erase( valueText.textString.begin()+(text_position) );
 		}
@@ -79,15 +108,21 @@ void guiTypeTextInput::render()
 	ofFill();
 	glColor4fv(bgColor.getColorF());
 	ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+		
+	if( textSelected ){
+		glColor4fv(fgColor.selected.getColorF());
+		ofRect( hitArea.x+startPositionX, hitArea.y, endPositionX - startPositionX,  hitArea.height);
+	}else{
+		// draw blinking cursor
+		if( !isLocked() && value.getValueB() && (ofGetElapsedTimeMillis()%500)>250){
+			glColor4fv(textColor.getColorF());
+			text_position = min(max(0, text_position), (int)valueText.textString.length() );
+			ofRect( hitArea.x+valueText.getTextWidth(valueText.textString.substr(0,text_position))+1, hitArea.y+1, 2, hitArea.height-2 );
+		}
+	}
 	
 	glColor4fv(textColor.getColorF());
-	valueText.renderText(boundingBox.x + 2, boundingBox.y + (valueText.getTextSingleLineHeight()*2) + 3);
-	// draw blinking cursor
-	if( !isLocked() && value.getValueB() && (ofGetElapsedTimeMillis()%500)>250)
-	{
-		text_position = min(max(0, text_position), (int)valueText.textString.length() );
-		ofRect( hitArea.x+valueText.getTextWidth(valueText.textString.substr(0,text_position))+1, hitArea.y+1, 2, hitArea.height-2 );
-	}
+	valueText.renderText(boundingBox.x + 2, boundingBox.y + (valueText.getTextSingleLineHeight()*2) + 3);	
 	
 	ofNoFill();
 	if( value.getValueB() ) 
@@ -119,27 +154,77 @@ void guiTypeTextInput::release()
 
 void guiTypeTextInput::updateGui(float x, float y, bool firstHit, bool isRelative)
 {
-	
-	if(!firstHit)
-		return;
-	
 	if ( isLocked() )
 		return;
 	
-	if( state == SG_STATE_SELECTED )
-	{
-		// activate
-		value.setValue(true);
-		// position cursor
-		float rel_x = x - hitArea.x;
-		float rel_y = y - hitArea.y;
-		text_position = valueText.textString.length();
-		for ( int i=0; i<valueText.textString.length(); i++ )
-		{
-			if ( rel_x-10 < valueText.getTextWidth(valueText.textString.substr(0,i)) )
+	float rel_x = x - hitArea.x;
+	float rel_y = y - hitArea.y;
+	
+	if( firstHit ){
+		preX = rel_x;
+		selectDragStartX = rel_x;
+		textSelected = false;
+		mouseDraggedDeltaX = 0;
+		startPositionX = 0;
+		endPositionX = 0;
+	}else{
+		mouseDraggedDeltaX += (rel_x-preX);
+		
+		float characterWidth = MAX(8, valueText.getTextWidth("A") );
+		
+		if( fabs( mouseDraggedDeltaX ) > characterWidth*1.5 ){
+			textSelected = true;
+			selectDragEndX = rel_x;
+			if( selectDragEndX > hitArea.width ){
+				selectDragEndX = hitArea.width;
+			}
+			if( selectDragEndX < 0 ){
+				selectDragEndX = 0;
+			}
+		}else{
+			textSelected = false;
+		}
+	}
+	
+
+	if( state == SG_STATE_SELECTED ){
+	
+		if( textSelected ){
+			
+			startPositionX = 0;
+			endPositionX   = 0;
+			
+			float sx = selectDragStartX < selectDragEndX ? selectDragStartX : selectDragEndX;
+			float ex = selectDragStartX > selectDragEndX ? selectDragStartX : selectDragEndX;
+			
+			string toTest = valueText.textString;
+			if( toTest.length() ) toTest = toTest + " ";
+			
+			for ( int i=0; i < toTest.length(); i++ ){
+				float currStrWidth = valueText.getTextWidth(toTest.substr(0,i));
+				
+				if ( sx >= currStrWidth ){
+					startPositionX = currStrWidth;
+					startIndex = i;
+				}
+				if ( ex >=  currStrWidth ){
+					endPositionX   = currStrWidth;
+					endIndex = i;
+				}
+			}
+			
+		}else{
+			// activate
+			value.setValue(true);
+			// position cursor
+			text_position = valueText.textString.length();
+			for ( int i=0; i<valueText.textString.length(); i++ )
 			{
-				text_position = i;
-				break;
+				if ( rel_x-10 < valueText.getTextWidth(valueText.textString.substr(0,i)) )
+				{
+					text_position = i;
+					break;
+				}
 			}
 		}
 	}

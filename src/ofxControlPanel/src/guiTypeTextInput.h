@@ -47,7 +47,15 @@ public:
 
 private:
 	
-	
+	float mouseDraggedDeltaX;
+	float preX;
+	float selectDragStartX;
+	float selectDragEndX;
+	float startPositionX;
+	float endPositionX;
+	int startIndex;
+	int endIndex;
+	bool textSelected;
 	bool changed;
 	int text_position;
 	guiTextBase valueText;
