@@ -125,7 +125,8 @@ class ofxControlPanel: public guiBaseObject{
 		guiTypeFileLister * addFileLister(string name, simpleFileLister * lister, int drawW, int drawH);
 		guiTypeLabel * addLabel( string text );
 		guiTypeTextInput* addTextInput( string name, string text, int width );
-		
+		guiTypeTextInput* addTextInput( string name, string xmlName, string text, int width );
+    
 		void setupEvents();
 		ofEvent <guiCallbackData> & createEventGroup(string eventGroupName, vector <string> xmlNames);
 		ofEvent <guiCallbackData> & createEventGroup(string xmlName);
@@ -140,9 +141,11 @@ class ofxControlPanel: public guiBaseObject{
         void setValueB(string xmlName, bool value,  int whichParam = 0);
         void setValueI(string xmlName, int value,  int whichParam = 0);
         void setValueF(string xmlName, float value,  int whichParam = 0);
+        void setValueS(string xmlName, string value,  int whichParam = 0);
         bool getValueB(string xmlName, int whichParam = 0);
         float getValueF(string xmlName, int whichParam = 0);
         int getValueI(string xmlName, int whichParam = 0);
+        string getValueS(string xmlName, int whichParam = 0);
 
 		bool hasValueChanged(string xmlName, int whichParam = 0);
 		bool hasValueChangedInPanel(string whichPanel);
@@ -220,6 +223,7 @@ class ofxControlPanel: public guiBaseObject{
 
 		bool dragging;
 		bool bNewPanelSelected;
+
 		
 		protected:
 			void eventsIn(guiCallbackData & data);

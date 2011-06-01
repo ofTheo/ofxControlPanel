@@ -15,10 +15,15 @@ class guiValue{
 
         //------------------------------------------------
         void addValueB(bool val);
+        //------------------------------------------------
+        void addValueS(string val);
 
+    
        //------------------------------------------------
         bool setValue(float val, unsigned int which = 0);
-
+        //------------------------------------------------
+        bool setValue(string val, unsigned int which = 0);
+    
         //------------------------------------------------
         bool setValueAsPct(float percent, unsigned int which = 0);
 
@@ -30,7 +35,9 @@ class guiValue{
 
        //------------------------------------------------
         float getValueB(unsigned int which = 0);
-
+        //------------------------------------------------
+        string getValueS(unsigned int which = 0);
+    
         //------------------------------------------------
         float getMin(unsigned int which = 0);
 
@@ -60,6 +67,7 @@ class guiValue{
         vector <float> value;
         vector <float> valueI;
         vector <float> valueB;
+        vector <string> valueS;
 
         vector <float> min;
         vector <float> max;

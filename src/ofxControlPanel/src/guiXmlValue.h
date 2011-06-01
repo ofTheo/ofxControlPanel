@@ -13,6 +13,7 @@ class guiValue{
             value.push_back(val);
             valueI.push_back((int)val);
             valueB.push_back((bool)val);
+            valueS.push_back(ofToString(val));
             min.push_back(_min);
             max.push_back(_max);
             pct.push_back( 0.0 );
@@ -22,10 +23,24 @@ class guiValue{
         }
 
         //------------------------------------------------
+        void addValue(string val, float _min, float _max){
+            value.push_back(0);
+            valueI.push_back((int)0);
+            valueB.push_back((bool)0);
+            valueS.push_back(val);
+            min.push_back(0);
+            max.push_back(0);
+            pct.push_back( 0.0 );
+            
+            //update our pct
+            updatePct(value.size()-1);
+        }
+        //------------------------------------------------
         void addValueI(int val, int _min, int _max){
             value.push_back((float)val);
             valueI.push_back(val);
             valueB.push_back((bool)val);
+            valueS.push_back(ofToString(val));
             min.push_back((float)_min);
             max.push_back((float)_max);
             pct.push_back( 0.0 );
@@ -39,6 +54,7 @@ class guiValue{
             value.push_back((float)val);
             valueI.push_back((int)val);
             valueB.push_back(val);
+            valueS.push_back(ofToString(val));
             min.push_back(0);
             max.push_back(1);
             pct.push_back( 0.0 );
@@ -46,6 +62,21 @@ class guiValue{
             //update our pct
             updatePct(value.size()-1);
         }
+
+        //------------------------------------------------
+        void addValueS(string val){
+            value.push_back((float)0.);
+            valueI.push_back((int)0);
+            valueB.push_back(false);
+            valueS.push_back(val);
+            min.push_back(0);
+            max.push_back(1);
+            pct.push_back( 0.0 );
+            
+            //update our pct
+            updatePct(value.size()-1);
+        }
+
 
        //------------------------------------------------
         bool setValue(float val, int which = 0){
@@ -60,7 +91,9 @@ class guiValue{
                 value[which]  =  val;
                 valueI[which] = (int)val;
                 valueB[which] = (bool)val;
+                valueS[which] = ofToString(val);
 
+                
                 //recalulate our pct
                 updatePct(which);
 
@@ -68,6 +101,25 @@ class guiValue{
             }
             return false;
         }
+    
+    //------------------------------------------------
+    bool setValue(string val, int which = 0){
+        if(which >= 0 && which < value.size() ){
+            
+            
+            value[which]  =  0;
+            valueI[which] = (int)0;
+            valueB[which] = (bool)0;
+            valueS[which] = val;
+            
+            
+            //recalulate our pct
+            updatePct(which);
+            
+            return true;
+        }
+        return false;
+    }
 
         //------------------------------------------------
         bool setValueAsPct(float percent, int which = 0){
@@ -83,7 +135,8 @@ class guiValue{
                 value[which]  =  ( pct[which] * ( max[which] - min[which] ) ) + min[which];
                 valueI[which] = (int)value[which];
                 valueB[which] = (bool)value[which];
-
+                valueS[which] = ofToString(val);
+                
                 return true;
             }
             return false;
@@ -109,6 +162,13 @@ class guiValue{
         float getValueB(int which = 0){
             if(which >= 0 && which < valueB.size() ){
                 return valueB[which];
+            }
+            return false;
+        }
+    
+        string getValueS(int which = 0){
+            if(which >= 0 && which < valueS.size() ){
+                return valueS[which];
             }
             return false;
         }
@@ -154,6 +214,7 @@ class guiValue{
         vector <float> value;
         vector <float> valueI;
         vector <float> valueB;
+        vector <string> valueS;
 
         vector <float> min;
         vector <float> max;

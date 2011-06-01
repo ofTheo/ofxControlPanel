@@ -17,6 +17,7 @@ void guiTypeTextInput::setup(string textInputName, string defaultVal)
 	valueText.setText( defaultVal );
 	value.addValueB(false);
 	name = textInputName;
+    dataType = SG_TYPE_STRING;
 	text_position = 0;
 	changed = false;
 	mouseDraggedDeltaX = 0;
@@ -145,7 +146,8 @@ void guiTypeTextInput::release()
 	if ( state != SG_STATE_SELECTED )
 	{
 		// hide
-		value.setValue(false);
+		value.setValue(valueText.textString);
+        //value.setValue(false);
 		changed = true;
 	}
 	state = SG_STATE_NORMAL;

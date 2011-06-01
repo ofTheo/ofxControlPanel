@@ -14,7 +14,8 @@ SG_STATE_SELECTED
 typedef enum{
 	SG_TYPE_FLOAT,
 	SG_TYPE_INT,
-	SG_TYPE_BOOL
+	SG_TYPE_BOOL,
+    SG_TYPE_STRING
 }sgType;
 
 static bool isInsideRect(float x, float y, ofRectangle rect){
@@ -83,6 +84,9 @@ class guiBaseObject{
 		
         //-----------------------------------------------
         virtual void setTypeBool();
+    
+        //-----------------------------------------------
+        virtual void setTypeString();
 		
         //-----------------------------------------------
         virtual void setPosition(float x, float y);
@@ -164,7 +168,8 @@ class guiBaseObject{
          virtual void setTextSelectColor(int selR, int selG, int selB, int selA);
 
          virtual void setValue(float _value, int whichParam);
-
+        virtual void setValue(string _value, int whichParam);
+        
         virtual void updateValue();
 
         //list of properties

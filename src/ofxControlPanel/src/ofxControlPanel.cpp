@@ -455,6 +455,30 @@ guiTypeTextInput * ofxControlPanel::addTextInput( string name, string text, int 
 }
 
 //---------------------------------------------
+guiTypeTextInput * ofxControlPanel::addTextInput( string name, string xmlName, string text, int width )
+{
+    if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
+	
+	guiTypeTextInput* tmp = new guiTypeTextInput();
+	tmp->setup( name, text );
+	tmp->setDimensions( width, 14 );
+    tmp->xmlName = xmlName;
+    
+    addXmlAssociation(tmp, xmlName, 1);
+	
+	panels[currentPanel]->addElement(tmp);
+	
+	guiObjects.push_back( tmp );
+    if( bUseTTFFont ){
+        tmp->setFont(&guiTTFFont);
+    }
+	
+	return tmp;
+	
+}
+
+
+//---------------------------------------------
 guiTypeDrawable * ofxControlPanel::addDrawableRect(string name, ofBaseDraws * drawablePtr, int drawW, int drawH){
     if( currentPanel < 0 || currentPanel >= (int) panels.size() )return NULL;
     guiTypeDrawable * vid = new guiTypeDrawable();
@@ -818,6 +842,19 @@ void ofxControlPanel::setValueF(string xmlName, float value,  int whichParam){
 
 
 //---------------------------------------------
+void ofxControlPanel::setValueS(string xmlName, string value,  int whichParam){
+    for(int i = 0; i < (int) guiObjects.size(); i++){
+        if( guiObjects[i]->xmlName == xmlName){
+            if( whichParam >= 0  ){
+                guiObjects[i]->value.setValue(value, whichParam);
+                return;
+            }
+        }
+    }
+}
+
+
+//---------------------------------------------
 bool ofxControlPanel::getValueB(string xmlName, int whichParam){
     for(int i = 0; i < (int) xmlObjects.size(); i++){
         if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
@@ -849,6 +886,19 @@ int ofxControlPanel::getValueI(string xmlName, int whichParam){
         if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
             if( whichParam >= 0 && whichParam < xmlObjects[i].numParams ){
                 return xmlObjects[i].guiObj->value.getValueI(whichParam);
+            }
+        }
+    }
+    ofLog(OF_LOG_WARNING, "ofxControlPanel - parameter requested %s doesn't exist - returning 0", xmlName.c_str());
+    return 0;
+}
+
+//---------------------------------------------
+string ofxControlPanel::getValueS(string xmlName, int whichParam){
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
+        if( xmlObjects[i].guiObj != NULL && xmlName == xmlObjects[i].xmlName ){
+            if( whichParam >= 0 && whichParam < xmlObjects[i].numParams ){
+                return xmlObjects[i].guiObj->value.getValueS(whichParam);
             }
         }
     }
@@ -945,9 +995,14 @@ void ofxControlPanel::loadSettings(string xmlFile){
 
             for(int j = 0; j < numParams; j++){
                 string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
-                float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
-
-                xmlObjects[i].guiObj->setValue(val, j);
+                if (xmlObjects[i].guiObj->dataType == SG_TYPE_STRING){
+                    string val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueS(j));
+                    xmlObjects[i].guiObj->setValue(val, j);
+                }
+                else{
+                    float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                    xmlObjects[i].guiObj->setValue(val, j);
+                }
             }
             xmlObjects[i].guiObj->updateValue();
         }
@@ -976,10 +1031,17 @@ void ofxControlPanel::reloadSettings(){
 					
                     for(int j = 0; j < numParams; j++){
                         string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
-                        float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                        if (xmlObjects[i].guiObj->dataType == SG_TYPE_STRING){
+                            string val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueS(j));
+                            xmlObjects[i].guiObj->setValue(val, j);
+                        }
+                        else{
+                            float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                            xmlObjects[i].guiObj->setValue(val, j);
+                        }
 
 						//printf("  %s -> %f\n", xmlObjects[i].xmlName.c_str(), val );
-                        xmlObjects[i].guiObj->setValue(val, j);
+
                     }
                     xmlObjects[i].guiObj->updateValue();
                 }
@@ -1002,7 +1064,14 @@ void ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
 
             for(int j = 0; j < numParams; j++){
                 string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
-                settings.setValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                if (xmlObjects[i].guiObj->dataType == SG_TYPE_STRING){
+                    cout << "string "<<str<<endl;
+                    settings.setValue(str, xmlObjects[i].guiObj->value.getValueS(j));
+                }
+                else{
+                    cout << "val "<<str<<endl;
+                    settings.setValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                }
             }
         }
     }
@@ -1038,7 +1107,14 @@ void ofxControlPanel::saveSettings(){
 
             for(int j = 0; j < numParams; j++){
                 string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
-                settings.setValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                if (xmlObjects[i].guiObj->dataType == SG_TYPE_STRING){
+                    settings.setValue(str, xmlObjects[i].guiObj->value.getValueS(j));
+                    cout << "string "<<str<<"' "<<xmlObjects[i].guiObj->value.getValueS(j)<<endl;
+                }
+                else{
+                    settings.setValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+                    cout << "val "<<str<<"' "<<xmlObjects[i].guiObj->value.getValueF(j)<<endl;
+                }
             }
         }
     }

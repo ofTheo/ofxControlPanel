@@ -41,6 +41,9 @@ public:
 	void clearValueTextChangedFlag() { changed = false; }
 	string getValueText() { return valueText.textString; }
 	void setValueText( string new_text );
+    void setValue( string new_text, int whichParam){
+        setValueText(new_text);
+    }
 
 	// don't append the selected number
 	void updateText();

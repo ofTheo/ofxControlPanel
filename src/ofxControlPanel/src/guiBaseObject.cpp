@@ -145,6 +145,11 @@ void guiBaseObject::setTypeBool(){
 }
 
 //-----------------------------------------------
+void guiBaseObject::setTypeString(){
+	dataType = SG_TYPE_STRING;
+}
+
+//-----------------------------------------------
 void guiBaseObject::setPosition(float x, float y){
 	boundingBox.x = x;
 	boundingBox.y = y;
@@ -235,6 +240,7 @@ void guiBaseObject::updateText(){
 			drawStr += " "+ofToString(value.getValueF(i), numDecimalPlaces);
 		}else if( dataType == SG_TYPE_INT ) drawStr += " "+ofToString(value.getValueI(i), 0);
 		else if( dataType == SG_TYPE_BOOL ) drawStr += " "+ofToString(value.getValueB(i), 0);
+        else if( dataType == SG_TYPE_STRING ) drawStr += " "+value.getValueS(i);
 	}
 
 	displayText.setText(drawStr);
@@ -329,6 +335,11 @@ void guiBaseObject::render(){
  void guiBaseObject::setValue(float _value, int whichParam) {
 	 value.setValue(_value,whichParam);
  }
+
+//-------------------------------------------
+void guiBaseObject::setValue(string _value, int whichParam) {
+    value.setValue(_value,whichParam);
+}
 
  //-------------------------------------------
  void guiBaseObject::updateValue() {
