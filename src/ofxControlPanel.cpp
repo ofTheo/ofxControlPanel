@@ -88,18 +88,12 @@ void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY,
 
 //-----------------------------
 void ofxControlPanel::loadFont(string fontName, int fontsize ){
-    guiTTFFont.loadFont(fontName, fontsize);
-    bool okay = guiTTFFont.bLoadedOk;
+	guiTTFFont.loadFont(fontName, fontsize);
 	guiBaseObject::setFont(&guiTTFFont);
-
-    if(okay){
-		printf("font loaded okay!\n");
-        bUseTTFFont = true;
-        for(unsigned int i = 0; i < guiObjects.size(); i++){
-            guiObjects[i]->setFont(&guiTTFFont);
-        }
-    }else{
-		printf("ahhhhhh why does my font no work!\n");
+	
+	bUseTTFFont = true;
+	for(unsigned int i = 0; i < guiObjects.size(); i++){
+		guiObjects[i]->setFont(&guiTTFFont);
 	}
 }
 

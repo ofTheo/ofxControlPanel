@@ -9,7 +9,7 @@ typedef struct{
 }entry;
 
 
-class simpleFileLister : public ofxDirList{
+class simpleFileLister : public ofxDirList {
 
      public:
 
