@@ -73,6 +73,7 @@ public:
 			ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 40, ofGetHeight() - 10);
 		}
 	}
+	using ofxControlPanel::hasValueChanged;
 	// usage: panel.hasValueChanged(variadic(1)(2)(3)(4)(5));
 	bool hasValueChanged(const vector<string>& values) {
 		for(int i = 0; i < values.size(); i++) {
@@ -114,15 +115,18 @@ public:
 	}
 	
 	// by default, make sliders float
+	using ofxControlPanel::addSlider;
 	void addSlider(string name, string xmlName, float value, float low, float high, bool isInt = false) {
 		ofxControlPanel::addSlider(name, xmlName, value, low, high, isInt);
 	}
 	void addSlider(string name, float value, float low, float high, bool isInt = false) {
 		ofxControlPanel::addSlider(name, name, value, low, high, isInt);
 	}
+	using ofxControlPanel::addToggle;
 	void addToggle(string name, bool value = false) {
 		ofxControlPanel::addToggle(name, name, value);
 	}
+	using ofxControlPanel::addPanel;
 	void addPanel(string panelName, int columns = 1) {
 		ofxControlPanel::addPanel(panelName, columns);
 		ofxControlPanel::setWhichPanel(panelName);
