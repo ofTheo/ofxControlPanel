@@ -122,7 +122,7 @@ void guiTypeTextInput::render()
 	}
 	
 	glColor4fv(textColor.getColorF());
-	valueText.renderText(boundingBox.x + 2, boundingBox.y + (valueText.getTextSingleLineHeight()*2) + 3);	
+	valueText.renderText(boundingBox.x + 2, boundingBox.y + (valueText.getTextSingleLineHeight()*3) + 1);	
 	
 	ofNoFill();
 	if( value.getValueB() ) 
