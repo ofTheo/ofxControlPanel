@@ -1,7 +1,7 @@
 ofxControlPanel
 ===============
 
-ofxContorlPanel is a simple control panel gui and widget set for OpenFrameworks app runtime tweaks. Settings can be loaded and saved via xml files.
+ofxControlPanel is a simple control panel gui and widget set for OpenFrameworks app runtime tweaks. Settings can be loaded and saved via xml files.
 
 See also src/ofxAutoControlPanel.h to make your life even easier ...
 
@@ -38,7 +38,7 @@ git checkout 0062
 
 #### Using the latest ofxControlPanel
 
-The master branch of ofxControlPanel will work with the current master of OpenFrameworks and can be considered *realtively* stable.
+The master branch of ofxControlPanel will work with the current master of OpenFrameworks and can be considered *relatively* stable.
 
 Running the Example Project
 -------------------------------
