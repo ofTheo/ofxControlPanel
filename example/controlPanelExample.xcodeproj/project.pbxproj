@@ -112,7 +112,6 @@
 		3065883C145F86170015FD7B /* vectorField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorField.h; sourceTree = "<group>"; };
 		3065883D145F86170015FD7B /* videoMotionExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = videoMotionExample.cpp; sourceTree = "<group>"; };
 		3065883E145F86170015FD7B /* videoMotionExample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = videoMotionExample.h; sourceTree = "<group>"; };
-		3065884A145F86430015FD7B /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDirList.h; sourceTree = "<group>"; };
 		3065887F145F864D0015FD7B /* guiBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiBaseObject.cpp; sourceTree = "<group>"; };
 		30658880145F864D0015FD7B /* guiBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiBaseObject.h; sourceTree = "<group>"; };
 		30658881145F864D0015FD7B /* guiCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiCallback.cpp; sourceTree = "<group>"; };
@@ -316,23 +315,6 @@
 				3065883C145F86170015FD7B /* vectorField.h */,
 			);
 			path = vectorField;
-			sourceTree = "<group>";
-		};
-		30658845145F86430015FD7B /* ofxDirList */ = {
-			isa = PBXGroup;
-			children = (
-				30658849145F86430015FD7B /* src */,
-			);
-			name = ofxDirList;
-			path = ../../../addons/ofxDirList;
-			sourceTree = "<group>";
-		};
-		30658849145F86430015FD7B /* src */ = {
-			isa = PBXGroup;
-			children = (
-				3065884A145F86430015FD7B /* ofxDirList.h */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 		3065884B145F864D0015FD7B /* ofxControlPanel */ = {
@@ -698,7 +680,6 @@
 			children = (
 				306588F4145F882D0015FD7B /* ofxOpenCv */,
 				306588E3145F86550015FD7B /* ofxXmlSettings */,
-				30658845145F86430015FD7B /* ofxDirList */,
 				3065884B145F864D0015FD7B /* ofxControlPanel */,
 			);
 			name = addons;
