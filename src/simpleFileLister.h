@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxDirList.h"
 
 typedef struct{
     string filename;
@@ -9,7 +8,7 @@ typedef struct{
 }entry;
 
 
-class simpleFileLister : public ofxDirList {
+class simpleFileLister : public ofDirectory {
 
      public:
 

@@ -52,7 +52,7 @@ void backgroundSubtractionExample::update(unsigned char * pixelsIn, int width, i
 
 //-----------
 void backgroundSubtractionExample::draw(float x, float y){
-	ofSetColor(0xFFFFFF);
+	ofSetHexColor(0xFFFFFF);
 	gray.draw(x, y);
 	background.draw(x + gray.width,  y);
 	thresh.draw(x, y + gray.height);

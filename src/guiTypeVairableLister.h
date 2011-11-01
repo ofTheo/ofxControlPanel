@@ -110,8 +110,8 @@ class guiTypeVairableLister : public guiBaseObject{
 						}
 						
 						glColor4fv(textColor.getColorF());
-						displayText.renderString(vars[i].displayName, x, y);
-						displayText.renderString("= " + vars[i].varAsString, x + minNameWidth, y);
+						displayText.renderString(vars[i].displayName, x + 2, y + 3);
+						displayText.renderString("= " + vars[i].varAsString, x + minNameWidth + 2, y + 3);
 
 						y  += lineH;
 						ly += lineH;

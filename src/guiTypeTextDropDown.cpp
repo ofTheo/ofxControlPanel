@@ -146,7 +146,7 @@ void guiTypeTextDropDown::render(){
 
 				glColor4fv(textColor.getColorF());
 
-				displayText.renderString(vecDropList[i], bx + 2, by + boxHeight -4);
+				displayText.renderString(vecDropList[i], bx + 2, by + boxHeight -3);
 
 			}
 
@@ -168,7 +168,7 @@ void guiTypeTextDropDown::render(){
 			ofRect(bx + boundingBox.width - boxHeight*0.5, by, boxHeight*0.5, boxHeight*0.5);
 
 			glColor4fv(textColor.getColorF());
-			displayText.renderString(vecDropList[value.getValueI()], bx + 2, by + boxHeight -4);
+			displayText.renderString(vecDropList[value.getValueI()], bx + 2, by + boxHeight -3);
 
 		}
 

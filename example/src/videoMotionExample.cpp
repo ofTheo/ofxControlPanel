@@ -34,8 +34,8 @@ void videoMotionExample::convertMotionHistoryToField(){
 	unsigned char tmpVal = 0;
 	int pixX, pixY;
 
-	ofxVec2f vec;
-	ofxVec2f tmp;
+	ofVec2f vec;
+	ofVec2f tmp;
 
 	float xPct = 0;
 	float yPct = 0;
@@ -125,11 +125,11 @@ void videoMotionExample::update(unsigned char * pixelsIn, int width, int height 
 //vector field and average them out to an overall
 //direction - this will be quite small so you will want
 //to scale it up.
-ofxVec2f videoMotionExample::getOverallMotionFromField(){
+ofVec2f videoMotionExample::getOverallMotionFromField(){
 
 	int numVecs = NUM_BINS_X * NUM_BINS_Y;
 
-	ofxVec2f avg = 0;
+	ofVec2f avg = 0;
 	for(int y = 0; y < NUM_BINS_Y; y++){
 		for(int x = 0; x < NUM_BINS_X; x++){
 			avg += motionField.field[x][y];
@@ -142,7 +142,7 @@ ofxVec2f videoMotionExample::getOverallMotionFromField(){
 
 //-----------
 void videoMotionExample::draw(float x, float y){
-	ofSetColor(0xFFFFFF);
+	ofSetHexColor(0xFFFFFF);
 	gray.draw(x, y);
 	thresh.draw(x, y + gray.height);
 	motion.draw(x, y + gray.height + thresh.height);
