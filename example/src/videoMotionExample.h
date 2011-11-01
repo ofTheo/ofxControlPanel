@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "vectorField.h"
 #include "ofxOpenCv.h"
-#include "ofxVectorMath.h"
 
 class motionDraw : public ofBaseDraws{
 	public:
@@ -24,7 +23,7 @@ class motionDraw : public ofBaseDraws{
 		}
 	
 		void draw(float x, float y, float w, float h){
-			ofSetColor(0xFFFFFF);
+			ofSetHexColor(0xFFFFFF);
 			vid->draw(x, y, w, h);
 			field->draw(x, y, w, h, drawScale);
 		}
@@ -53,7 +52,7 @@ class motionStats : public ofBaseDraws{
 		}
 		
 		void updateFromField( vectorField &field, float smoothing = 1.0){
-			ofxVec2f valIn = field.getTrueAverage();
+			ofVec2f valIn = field.getTrueAverage();
 			
 			val *= 0.9;
 			val += valIn * 0.1;
@@ -91,7 +90,7 @@ class motionStats : public ofBaseDraws{
 		}	
 
 		float drawScale;
-		ofxVec2f normalized;
+		ofVec2f normalized;
 		ofPoint val;
 };
 
@@ -121,7 +120,7 @@ class videoMotionExample{
         //vector field and average them out to an overall
         //direction - this will be quite small so you will want
         //to scale it up.
-        ofxVec2f getOverallMotionFromField();
+        ofVec2f getOverallMotionFromField();
 
         //-----------
         void draw(float x, float y);

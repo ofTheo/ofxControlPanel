@@ -206,7 +206,7 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-	ofSetColor(0xffffff);
+	ofSetHexColor(0xffffff);
 	gui.draw();
 }
 

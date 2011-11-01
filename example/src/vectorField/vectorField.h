@@ -1,10 +1,7 @@
 #ifndef _VEC_FIELD
 #define _VEC_FIELD
 
-#define OF_ADDON_USING_OFXVECTORMATH
-
 #include "ofMain.h"
-#include "ofAddons.h"
 
 #define NUM_BINS_X 120
 #define NUM_BINS_Y 80
@@ -18,14 +15,14 @@ class vectorField{
 		}
 
 		//-------------------------------------------------
-		void addIntoField(float x, float y, ofxVec2f vec, float radius = 1.0){
+		void addIntoField(float x, float y, ofVec2f vec, float radius = 1.0){
 
 			if(x >= 1.0 || x < 0 || y >= 1.0 || y < 0){
 				 return;
 			}
 
-			ofxVec2f pos(x,y);
-			ofxVec2f raster;
+			ofVec2f pos(x,y);
+			ofVec2f raster;
 
 			raster.x = pos.x;
 			raster.y = pos.y;
@@ -52,8 +49,8 @@ class vectorField{
 			ex  = MIN(ex, NUM_BINS_X);
 			ey  = MIN(ey, NUM_BINS_Y);
 
-			ofxVec2f binPos;
-			ofxVec2f distVec;
+			ofVec2f binPos;
+			ofVec2f distVec;
 			float dist = 0;
 			float amnt = 0;
 
@@ -80,7 +77,7 @@ class vectorField{
 			if(amnt > 1.0)amnt = 1.0;
 			else if(amnt < 0.0)amnt = 0.0;
 
-			ofxVec2f blur;
+			ofVec2f blur;
 
 			float ramnt = (1.0 - amnt) * 0.25;
 
@@ -98,9 +95,9 @@ class vectorField{
 		}
 
 		//-------------------------------------------------
-		ofxVec2f getTrueAverage(){
+		ofVec2f getTrueAverage(){
 
-			ofxVec2f vec;
+			ofVec2f vec;
 			for(int yy = 0; yy < NUM_BINS_Y; yy++){
 				for(int xx = 0; xx < NUM_BINS_X; xx++){
 					vec += field[xx][yy];
@@ -116,10 +113,10 @@ class vectorField{
 		}
 
 		//-------------------------------------------------
-		ofxVec2f getModeAverage(){
+		ofVec2f getModeAverage(){
 			
 			int count = 0;
-			ofxVec2f vec;
+			ofVec2f vec;
 			for(int yy = 0; yy < NUM_BINS_Y; yy++){
 				for(int xx = 0; xx < NUM_BINS_X; xx++){
 					
@@ -137,16 +134,16 @@ class vectorField{
 		}
 
 		//-------------------------------------------------
-		ofxVec2f readFromField(float x, float y){
+		ofVec2f readFromField(float x, float y){
 
 			if(x >= 1.0 || x < 0 || y >= 1.0 || y < 0){
-				 return ofxVec2f();
+				 return ofVec2f();
 			}
 
 			int rasterX = x * NUM_BINS_X;
 			int rasterY = y * NUM_BINS_Y;
 
-			ofxVec2f vec = field[rasterX][rasterY];
+			ofVec2f vec = field[rasterX][rasterY];
 
 			return vec;
 		}
@@ -171,7 +168,7 @@ class vectorField{
 			for(int yy = 0; yy < NUM_BINS_Y; yy++){
 				for(int xx = 0; xx < NUM_BINS_X; xx++){
 					field[xx][yy] *= 1.0 - pct;
-					field[xx][yy] += ofxVec2f( ofRandom(-1.0, 1.0), ofRandom(-1.0, 1.0)) * mag * pct;
+					field[xx][yy] += ofVec2f( ofRandom(-1.0, 1.0), ofRandom(-1.0, 1.0)) * mag * pct;
 				}
 			}
 		}
@@ -200,8 +197,8 @@ class vectorField{
 		//-------------------------------------------------
 		void draw(int x, int y, float width, float height, float scale = 1.0){
 
-			ofxVec2f pixelPos;
-			ofxVec2f vec;
+			ofVec2f pixelPos;
+			ofVec2f vec;
 
 			glPushMatrix();
 				glTranslatef(x, y, 0);
@@ -214,9 +211,9 @@ class vectorField{
 
 
 						glBegin(GL_LINES);
-							ofSetColor(0x000044);
+							ofSetHexColor(0x000044);
 							glVertex2f(pixelPos.x, pixelPos.y);
-							ofSetColor(0xFFFF33);
+							ofSetHexColor(0xFFFF33);
 							glVertex2f(pixelPos.x + vec.x, pixelPos.y + vec.y);
 						glEnd();
 
@@ -228,7 +225,7 @@ class vectorField{
 		}
 
 
-	ofxVec2f field[NUM_BINS_X][NUM_BINS_Y];
+	ofVec2f field[NUM_BINS_X][NUM_BINS_Y];
 	float binW, binH;
 
 
