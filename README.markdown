@@ -47,6 +47,19 @@ If you're using OS X, open the Xcode project in ofxControlPanel/example/ and hit
 
 The addon should work fine in Windows and Linux, although there are no example build files yet.
 
+Adding ofxControlPanel to an Existing Project
+---------------------------------------------
+
+If you want to add ofxControlPanel to another project, you need to make sure you include the src folders:
+
+openFrameworks/addons/ofxControlPanel/src
+
+For XCode:
+
+* create a new group "ofxControlPanel"
+* drag these directories from ofxControlPanel into this new group: ofxControlPanel/src
+* you also need to add the following addon dependencies in a similar manner: ** ofxXmlSettings
+
 
 DEVELOPING
 ----------
