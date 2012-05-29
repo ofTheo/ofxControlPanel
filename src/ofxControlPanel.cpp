@@ -43,8 +43,8 @@ ofxControlPanel::~ofxControlPanel(){
 	guiObjects.clear();
 	
 	for(int i = 0; i < ofxControlPanel::globalPanelList.size(); i++){
-		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i]->name == name ){			
-			ofxControlPanel::globalPanelList.erase( ofxControlPanel::globalPanelList.begin()+i, ofxControlPanel::globalPanelList.begin()+i+1);
+		if( ofxControlPanel::globalPanelList[i] != NULL && ofxControlPanel::globalPanelList[i] == this ){
+			ofxControlPanel::globalPanelList.erase(ofxControlPanel::globalPanelList.begin()+i, ofxControlPanel::globalPanelList.begin()+i+1);
 			break;
 		}
 	}
