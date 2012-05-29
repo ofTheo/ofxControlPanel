@@ -38,12 +38,12 @@ public:
 	ofxAutoControlPanel() {
 		msg = "";
 		setXMLFilename("settings.xml");
-		ofAddListener(ofEvents.update, this, &ofxAutoControlPanel::update);
-		ofAddListener(ofEvents.draw, this, &ofxAutoControlPanel::draw);
-		ofAddListener(ofEvents.keyPressed, this, &ofxAutoControlPanel::keyPressed);
-		ofAddListener(ofEvents.mousePressed, this, &ofxAutoControlPanel::mousePressed);
-		ofAddListener(ofEvents.mouseReleased, this, &ofxAutoControlPanel::mouseReleased);
-		ofAddListener(ofEvents.mouseDragged, this, &ofxAutoControlPanel::mouseDragged);
+		ofAddListener(ofEvents().update, this, &ofxAutoControlPanel::update);
+		ofAddListener(ofEvents().draw, this, &ofxAutoControlPanel::draw);
+		ofAddListener(ofEvents().keyPressed, this, &ofxAutoControlPanel::keyPressed);
+		ofAddListener(ofEvents().mousePressed, this, &ofxAutoControlPanel::mousePressed);
+		ofAddListener(ofEvents().mouseReleased, this, &ofxAutoControlPanel::mouseReleased);
+		ofAddListener(ofEvents().mouseDragged, this, &ofxAutoControlPanel::mouseDragged);
 	}
 	void setup() {
 		ofxControlPanel::setup("Control Panel", 5, 5, 280, 600);
@@ -56,7 +56,10 @@ public:
 	}
 	void draw(ofEventArgs& event) {
 		if(!hidden) {
+			ofPushMatrix();
+			ofTranslate(.5, .5);
 			ofxControlPanel::draw();
+			ofPopMatrix();
 			if(msg != "") {
 				ofSetColor(0);
 				ofFill();
@@ -125,6 +128,10 @@ public:
 	using ofxControlPanel::addToggle;
 	void addToggle(string name, bool value = false) {
 		ofxControlPanel::addToggle(name, name, value);
+	}
+	using ofxControlPanel::addMultiToggle;
+	void addMultiToggle(string name, int initial, vector<string> values) {
+		ofxControlPanel::addMultiToggle(name, name, initial, values);
 	}
 	using ofxControlPanel::addPanel;
 	void addPanel(string panelName, int columns = 1) {
