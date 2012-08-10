@@ -56,6 +56,7 @@ public:
 	}
 	void draw(ofEventArgs& event) {
 		if(!hidden) {
+			ofPushStyle();
 			ofPushMatrix();
 			ofTranslate(.5, .5);
 			ofxControlPanel::draw();
@@ -69,11 +70,12 @@ public:
 				ofDrawBitmapString(msg, 10, ofGetHeight() - 10);
 			}
 			
-			glColor4f(1, 1, 1, 1);
+			ofSetColor(255);
 			ofFill();
 			ofRect(ofGetWidth() - 45, ofGetHeight() - 25, 40, 20);
-			glColor4f(0, 0, 0, 1);
+			ofSetColor(0);
 			ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 40, ofGetHeight() - 10);
+			ofPopStyle();
 		}
 	}
 	using ofxControlPanel::hasValueChanged;
