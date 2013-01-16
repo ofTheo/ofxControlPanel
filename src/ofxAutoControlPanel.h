@@ -56,6 +56,8 @@ public:
 	}
 	void draw(ofEventArgs& event) {
 		if(!hidden) {
+			ofPushMatrix();
+			ofSetupScreenPerspective();
 			glPushAttrib(GL_ENABLE_BIT);
 			glDisable(GL_DEPTH_TEST);
 			ofPushStyle();
@@ -79,6 +81,7 @@ public:
 			ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 40, ofGetHeight() - 10);
 			ofPopStyle();
 			glPopAttrib();
+			ofPopMatrix();
 		}
 	}
 	using ofxControlPanel::hasValueChanged;
