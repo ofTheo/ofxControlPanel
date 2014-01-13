@@ -954,6 +954,42 @@ void ofxControlPanel::loadSettings(string xmlFile){
     }
 }
 
+
+//-----------------------------
+void ofxControlPanel::loadSettingsbyMode(string xmlFile){
+    for(unsigned int i = 0; i < guiObjects.size(); i++)
+		guiObjects[i]->loadSettings(xmlFile);
+	
+    currentXmlFile = xmlFile;
+	
+    settingsDirectory = currentXmlFile;
+	
+    int posLastSlash = settingsDirectory.rfind("/");
+    if( posLastSlash > 0) settingsDirectory.erase(settingsDirectory.begin()+ posLastSlash+1, settingsDirectory.end()  );
+    else settingsDirectory = "";
+	
+    settings.loadFile(currentXmlFile);
+    usingXml = true;
+	
+    for(unsigned int i = 0; i < xmlObjects.size(); i++){
+        if( xmlObjects[i].guiObj != NULL ){
+            int numParams = xmlObjects[i].numParams;
+			
+            for(int j = 0; j < numParams; j++){
+				if(xmlObjects[i].xmlName != "configuredmode"){
+					
+					string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
+					float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(j));
+					xmlObjects[i].guiObj->setValue(val, j);
+				}
+            }
+            xmlObjects[i].guiObj->updateValue();
+        }
+    }
+}
+
+
+
 //-----------------------------
 void ofxControlPanel::reloadSettings(){
     for(unsigned int i = 0; i < guiObjects.size(); i++)

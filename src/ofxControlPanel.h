@@ -45,6 +45,9 @@ class ofxControlPanel: public guiBaseObject{
 		
 		int getSelectedPanel();
 		void setSelectedPanel(int whichPanel);
+	
+		void loadSettingsbyMode(string xmlFile);//Extra Function to allow mmodidfie diferents setups
+
 		
         void setWhichPanel(int whichPanel);
         void setWhichPanel(string panelName);
