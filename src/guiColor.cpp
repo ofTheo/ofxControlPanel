@@ -46,26 +46,26 @@ void guiColor::setGuiColorMode(int whichColor){
 	colorMode = whichColor;
 }
 
+////----------------------------------------------------------
+//simpleColor& guiColor::getColor(){
+//	if( colorMode == 1 && bUseSelected) return selected;
+//	else if( colorMode == 2 && bUseDisabled ) return disabled;
+//	else return color;
+//}
+
 //----------------------------------------------------------
-simpleColor& guiColor::getColor(){
+ofColor guiColor::getColor(){
 	if( colorMode == 1 && bUseSelected) return selected.getColor();
-	else if( colorMode == 2 && bUseDisabled ) return disabled.getColor();
+	else if( colorMode == 2 && bUseDisabled) return disabled.getColor();
 	else return color.getColor();
 }
 
 //----------------------------------------------------------
-float* guiColor::getColorF(){
-	if( colorMode == 1 && bUseSelected) return selected.getColorF();
-	else if( colorMode == 2 && bUseDisabled) return disabled.getColorF();
-	else return color.getColorF();
+ofColor guiColor::getSelectedColor(){
+	return selected.getColor();
 }
 
 //----------------------------------------------------------
-float* guiColor::getSelectedColorF(){
-	return selected.getColorF();
-}
-
-//----------------------------------------------------------
-float* guiColor::getNormalColorF(){
-   return color.getColorF();
+ofColor guiColor::getNormalColor(){
+   return color.getColor();
 }

@@ -89,15 +89,15 @@ void guiTypeVairableLister::updateBoundingBox(){
 void guiTypeVairableLister::render(){
 	ofPushStyle();
 		
-			glColor4fv(textColor.getColorF());				
+			ofSetColor(textColor.getColor());				
 			guiBaseObject::renderText();
 
 			//draw the background
 
 
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			float lineH = displayText.getTextSingleLineHeight();//hitArea.height / (float) MAX(1, value.paramGroup.size());
 			
@@ -108,7 +108,7 @@ void guiTypeVairableLister::render(){
 			//draw the foreground
 			for(int i = 0; i < value.paramGroup.size(); i++){
 				
-				glColor4fv(textColor.getColorF());
+				ofSetColor(textColor.getColor());
 				displayText.renderString(value.paramGroup.getName(i), x, y);
                 
                 string str = "";
@@ -129,8 +129,8 @@ void guiTypeVairableLister::render(){
 			
             //draw the outline
             ofNoFill();
-            glColor4fv(outlineColor.getColorF());
-            ofRect(boundingBox);
+            ofSetColor(outlineColor.getColor());
+            ofDrawRectangle(boundingBox);
             
 	ofPopStyle();
 }

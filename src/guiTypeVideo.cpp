@@ -50,14 +50,14 @@ void guiTypeVideo::render(){
 			scrubPct = video->getPosition();
 		}else scrubPct = 0.0;
 
-		glPushMatrix();
+		ofPushMatrix();
 		//glTranslatef(boundingBox.x, boundingBox.y, 0);
 			guiBaseObject::renderText();
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			ofDisableAlphaBlending();
 
@@ -67,35 +67,35 @@ void guiTypeVideo::render(){
 			ofEnableAlphaBlending();
 			
 			//ofSetColor(20, 90, 220, 100);
-			glColor4fv( outlineColor.getColorF() );
+			ofSetColor( outlineColor.getColor() );
 			ofNoFill();
-			ofRect(pButtonX, pButtonY, pButtonW, pButtonH);
+			ofDrawRectangle(pButtonX, pButtonY, pButtonW, pButtonH);
 			
 			ofFill();
 			
 			
-			glColor4fv( fgColor.getColorF() );
+			ofSetColor( fgColor.getColor() );
 			if( playPause ){
-				ofRect(pButtonX + 4, pButtonY + 3, 2, 9);
-				ofRect(pButtonX + 9, pButtonY + 3, 2, 9);
+				ofDrawRectangle(pButtonX + 4, pButtonY + 3, 2, 9);
+				ofDrawRectangle(pButtonX + 9, pButtonY + 3, 2, 9);
 			}else{
 				float dx = pButtonX + 5;
 				float dy = pButtonY + 3;
 				
-				ofTriangle( dx, dy, dx + 7, dy + 5, dx, dy + 10); 
+				ofDrawTriangle( dx, dy, dx + 7, dy + 5, dx, dy + 10);
 			}
 
-			glColor4fv( outlineColor.getColorF() );
+			ofSetColor( outlineColor.getColor() );
 			ofNoFill();
 			
 			//ofSetColor(20, 90, 220, 100);
-			ofRect(scX, scY, scW, scH);
+			ofDrawRectangle(scX, scY, scW, scH);
 			
 			ofFill();
-			glColor4fv( fgColor.getColorF() );
-			ofRect( scX + 2, scY + 2, scrubPct * (scW-4.0), scH - 4);
+			ofSetColor( fgColor.getColor() );
+			ofDrawRectangle( scX + 2, scY + 2, scrubPct * (scW-4.0), scH - 4);
 
-		glPopMatrix();
+		ofPopMatrix();
 
 	ofPopStyle();
 }

@@ -139,8 +139,8 @@ void guiTypeTextDropDown::render(){
 
 		//draw the background
 		ofFill();
-		glColor4fv(bgColor.getNormalColorF());
-		ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+		ofSetColor(bgColor.getNormalColor());
+		ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 		float arrowX = hitArea.x + boundingBox.width - boxHeight*0.5;
 		float arrowY = hitArea.y;
@@ -154,26 +154,26 @@ void guiTypeTextDropDown::render(){
 				float by = hitArea.y + i * (boxHeight);
 
 				if(value.getValueI() == i){
-					glColor4fv(fgColor.getSelectedColorF());
+					ofSetColor(fgColor.getSelectedColor());
 				}else{
-					glColor4fv(fgColor.getNormalColorF());
+					ofSetColor(fgColor.getNormalColor());
 				}
 
 				ofFill();
 
-				ofRect(bx, by,  boundingBox.width, boxHeight);
+				ofDrawRectangle(bx, by,  boundingBox.width, boxHeight);
 
 				ofNoFill();
-				glColor4fv(outlineColor.getColorF());
-				ofRect(bx, by,  boundingBox.width, boxHeight);
+				ofSetColor(outlineColor.getColor());
+				ofDrawRectangle(bx, by,  boundingBox.width, boxHeight);
 
 				if(i==0) {				
 					ofFill();
-					glColor4fv(outlineColor.getColorF());
-					ofRect(arrowX, arrowY, boxHeight*0.5, boxHeight*0.5);
+					ofSetColor(outlineColor.getColor());
+					ofDrawRectangle(arrowX, arrowY, boxHeight*0.5, boxHeight*0.5);
 				}
 
-				glColor4fv(textColor.getColorF());
+				ofSetColor(textColor.getColor());
 
 				displayText.renderString(vecDropList[i], bx + 2, by + boxHeight -4);
 
@@ -184,19 +184,19 @@ void guiTypeTextDropDown::render(){
 			float by = hitArea.y;
 
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(bx, by,  boundingBox.width, boxHeight);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(bx, by,  boundingBox.width, boxHeight);
 
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(bx, by,  boundingBox.width, boxHeight);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(bx, by,  boundingBox.width, boxHeight);
 
 			ofFill();
-			glColor4fv(outlineColor.getColorF());
+			ofSetColor(outlineColor.getColor());
 			//ofTriangle(bx + boundingBox.width - 7, by + boxHeight, bx + boundingBox.width - 14, by,bx + boundingBox.width, by);
-			ofRect(arrowX, arrowY, boxHeight*0.5, boxHeight*0.5);
+			ofDrawRectangle(arrowX, arrowY, boxHeight*0.5, boxHeight*0.5);
 		
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
             if(value.getValueI() < vecDropList.size()) {
                 displayText.renderString(vecDropList[value.getValueI()], bx + 2, by + boxHeight -4);
             }

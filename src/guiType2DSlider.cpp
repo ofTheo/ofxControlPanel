@@ -89,8 +89,8 @@ void guiType2DSlider::render(){
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			//draw the foreground
 
@@ -100,24 +100,21 @@ void guiType2DSlider::render(){
 			float bx = hitArea.x + (boxWidth * 0.5) + ( value.getPct(0) * (hitArea.width - (boxWidth)) );
 			float by = hitArea.y + (boxHeight * 0.5) + ( value.getPct(1) * (hitArea.height - (boxHeight)) );
 			
-			glEnable(GL_LINE_STIPPLE);
-			glLineStipple(1, 0xCCCC);
-			glColor4fv(outlineColor.getColorF());
-			ofLine(bx, hitArea.y, bx, hitArea.y + hitArea.height);
-			ofLine(hitArea.x, by, hitArea.x + hitArea.width, by);
-			glDisable(GL_LINE_STIPPLE);
+			ofSetColor(outlineColor.getColor());
+			ofDrawLine(bx, hitArea.y, bx, hitArea.y + hitArea.height);
+			ofDrawLine(hitArea.x, by, hitArea.x + hitArea.width, by);
 
-			glColor4fv(fgColor.getColorF());
+			ofSetColor(fgColor.getColor());
 			ofSetRectMode(OF_RECTMODE_CENTER);
-			ofCircle(bx, by, boxHeight/2);
+			ofDrawCircle(bx, by, boxHeight/2);
 			ofSetRectMode(OF_RECTMODE_CORNER);
 			
 			//draw the outline
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
-			glColor4fv(textColor.getColorF());			
+			ofSetColor(textColor.getColor());			
 			displayText.renderString( name + "\n" + varsString, hitArea.x, hitArea.y + displayText.getTextSingleLineHeight() );
 
 	ofPopStyle();

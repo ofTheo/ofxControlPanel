@@ -15,12 +15,10 @@ class guiColor{
 		void setDisabledColor(int r, int g, int b, int a);
 		void setDisabledColor(int hexValue);
 		void setGuiColorMode(int whichColor);
-		
-		simpleColor& getColor();
-		
-		float* getColorF();
-		float* getSelectedColorF();
-        float* getNormalColorF();
+				
+		ofColor getColor();
+		ofColor getSelectedColor();
+        ofColor getNormalColor();
 
         //---------------
         //---------------

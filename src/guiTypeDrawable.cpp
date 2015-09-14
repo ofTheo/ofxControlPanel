@@ -65,14 +65,14 @@ void guiTypeDrawable::updateGui(float x, float y, bool firstHit, bool isRelative
 void guiTypeDrawable::render(){
 	ofPushStyle();
 
-		glPushMatrix();
+		ofPushMatrix();
 		//glTranslatef(boundingBox.x, boundingBox.y, 0);
 			guiBaseObject::renderText();
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			//ofDisableAlphaBlending();
 			ofEnableAlphaBlending();
@@ -81,7 +81,7 @@ void guiTypeDrawable::render(){
                 vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
             }
 
-		glPopMatrix();
+		ofPopMatrix();
 
 	ofPopStyle();
 }

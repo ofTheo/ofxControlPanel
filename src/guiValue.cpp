@@ -6,18 +6,39 @@ guiValue::guiValue(){
 }
 
 guiValue::~guiValue(){
+    ofParameterGroup emptyParent;
     for(int i = 0; i < paramGroup.size(); i++){
-        paramGroup.get(i).setParent(NULL);
+        paramGroup.get(i).setParent(emptyParent);
     }
 }
 
 //------------------------------------------------
 bool guiValue::addValue(ofAbstractParameter &param){
-    if( param.getParent() ){
-        paramGroup.setName( param.getParent()->getName() );
-    }
-    
+
     paramGroup.add(param);
+    
+    int which = paramGroup.size()-1;
+    string type = getTypeAsString(which);
+    
+    if( type == "float" || type == "" ){
+        ofParameter<float> f =  paramGroup.getFloat(which);
+        if( f.getFirstParent().getName().size() ){
+            paramGroup.setName(f.getFirstParent().getName());
+        }
+    }
+    else if( type == "bool" ){
+        ofParameter<bool> f =  paramGroup.getBool(which);
+        if( f.getFirstParent().getName().size() ){
+            paramGroup.setName(f.getFirstParent().getName());
+        }
+    }
+    else if( type == "int" ){
+        ofParameter<int> f =  paramGroup.getInt(which);
+        if( f.getFirstParent().getName().size() ){
+            paramGroup.setName(f.getFirstParent().getName());
+        }
+    }
+
     return true;
 }
 

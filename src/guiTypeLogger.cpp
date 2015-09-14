@@ -70,11 +70,11 @@ void guiTypeLogger::drawRecords(float x, float y, float width, float height){
 void guiTypeLogger::render(){
 	ofPushStyle();
 
-		glPushMatrix();
+		ofPushMatrix();
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
 			
 			float xx = boundingBox.x + boundingBox.width - 20;
 			float yy = boundingBox.y;
@@ -83,34 +83,34 @@ void guiTypeLogger::render(){
 			for(int i = 0; i < 4; i++){				
 				
 				if( toggle == 0 || i >= toggle ){
-					glColor4fv(fgColor.getSelectedColorF());
+					ofSetColor(fgColor.getSelectedColor());
 					ofFill();
-					ofRect(xx, yy, 5, 10);
+					ofDrawRectangle(xx, yy, 5, 10);
 				}
 				
-				glColor4fv(outlineColor.getColorF());
+				ofSetColor(outlineColor.getColor());
 				ofNoFill();
-				ofRect(xx, yy, 5, 10);				
+				ofDrawRectangle(xx, yy, 5, 10);
 				
 				xx += 5;
 			}
 
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
 			guiBaseObject::renderText();
 
 			ofFill();
-			glColor4fv(fgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y + (hitArea.height - 5) * pct, hitArea.width, 5);
+			ofSetColor(fgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y + (hitArea.height - 5) * pct, hitArea.width, 5);
 
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
-			ofRect(hitArea.x , hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+			ofDrawRectangle(hitArea.x , hitArea.y, hitArea.width, hitArea.height);
 
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
 			if(log != NULL)drawRecords(hitArea.x+hitArea.width + 5, hitArea.y, boundingBox.width-(hitArea.width + 5), boundingBox.height);
 
-		glPopMatrix();
+		ofPopMatrix();
 
 	ofPopStyle();
 }

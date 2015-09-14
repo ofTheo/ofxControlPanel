@@ -25,4 +25,6 @@ class guiTypeSlider : public guiBaseObject{
 		void updateGui(float x, float y, bool firstHit, bool isRelative = false);
 		void render();
 
+        bool bShowDefaultValue;
+        float defaultValue; 
 };
