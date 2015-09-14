@@ -118,18 +118,18 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
 			if( i == selection ){
 				ofPushStyle();
 					ofFill();
-					glColor4fv( fgColor.getSelectedColorF() );
-					ofRect(x, y+yPos+4, width-5, -textH);
+					ofSetColor( fgColor.getSelectedColor() );
+					ofDrawRectangle(x, y+yPos+4, width-5, -textH);
 				ofPopStyle();
 			}else if( i == selectionTmp){
 				ofPushStyle();
 					ofNoFill();
-					glColor4fv(outlineColor.getColorF());
-					ofRect(x, y+yPos+4, width-2, -textH);
+					ofSetColor(outlineColor.getColor());
+					ofDrawRectangle(x, y+yPos+4, width-2, -textH);
 				ofPopStyle();
 			}
 
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
 
 			displayText.renderString(str, x, y + yPos);
 			yPos += textH;
@@ -142,28 +142,28 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
 void guiTypeFileLister::render(){
 	ofPushStyle();
 
-		glPushMatrix();
+		ofPushMatrix();
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
 
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
 			guiBaseObject::renderText();
 
 			ofFill();
-			glColor4fv(fgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y + (hitArea.height - 5) * pct, sliderWidth, 5);
+			ofSetColor(fgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y + (hitArea.height - 5) * pct, sliderWidth, 5);
 
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
-			ofRect(hitArea.x , hitArea.y, sliderWidth, hitArea.height);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+			ofDrawRectangle(hitArea.x , hitArea.y, sliderWidth, hitArea.height);
 
-			glColor4fv(textColor.getColorF());
+			ofSetColor(textColor.getColor());
 			if(lister != NULL)drawRecords(hitArea.x+sliderWidth + 5, hitArea.y, boundingBox.width-(sliderWidth + 5), boundingBox.height);
 
-		glPopMatrix();
+		ofPopMatrix();
 
 	ofPopStyle();
 }

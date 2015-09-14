@@ -51,6 +51,7 @@ class ofxControlPanel: public guiBaseObject{
 		
     
         void addGroup( ofParameterGroup & group );
+        void addGroup( ofParameterGroup & group, vector<bool> bOnesToInclude );
 
 		guiTypeSlider * addSlider(string sliderName, float value , float min, float max);
 		guiTypeSlider * addSliderInt(string sliderName, int value , int min, int max);
@@ -123,6 +124,7 @@ class ofxControlPanel: public guiBaseObject{
 		
 		//events
 		void setupEvents();
+        void clearEvents();
 		ofEvent <guiCallbackData> & createEventGroup(string eventGroupName, vector <string> xmlNames);
 		ofEvent <guiCallbackData> & createEventGroup(string xmlName);
 
@@ -207,13 +209,13 @@ class ofxControlPanel: public guiBaseObject{
 		}
 		
 		void keyPressed(ofKeyEventArgs & args){
-			if( fabs( ofGetFrameNum() - lastFrameDrawn ) <= 1 ){		
+			if( fabs( ofGetFrameNum() - lastFrameDrawn ) <= 1 ){
 				keyPressed(args.key);
 			}
 		}
 		
 		void keyReleased(ofKeyEventArgs & args){
-			if( fabs( ofGetFrameNum() - lastFrameDrawn ) <= 1 ){		
+			if( fabs( ofGetFrameNum() - lastFrameDrawn ) <= 1 ){
 				keyReleased(args.key);
 			}
 		}
@@ -237,7 +239,9 @@ class ofxControlPanel: public guiBaseObject{
 		ofRectangle topBar;
 		ofRectangle minimizeButton;
 		ofRectangle saveButton;
+        ofRectangle saveAsButton;
 		ofRectangle restoreButton;
+		ofRectangle loadButton;
 
 		void setLayoutFlag( guiBaseObject * obj ){
 			obj->bRemoveFromLayout = bIgnoreLayout;
@@ -255,7 +259,10 @@ class ofxControlPanel: public guiBaseObject{
         bool usingXml;
         bool bUseTTFFont;
 		bool minimize;
+
+        bool loadDown;
 		bool saveDown;
+        bool saveAsDown;
 		bool incrementSave;
 		bool restoreDown;
 		bool bDraggable;

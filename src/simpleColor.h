@@ -22,10 +22,7 @@ class simpleColor{
     void setColor(int hexColor);
 
     //----------------------------------------------------------
-    simpleColor& getColor();
-
-    //----------------------------------------------------------
-    float * getColorF();
+    ofColor getColor();
 
     //------------------
     //------------------

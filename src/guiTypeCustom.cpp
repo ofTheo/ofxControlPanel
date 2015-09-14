@@ -99,20 +99,20 @@ void guiTypeCustom::render(){
 
 	ofPushStyle();
 
-		glPushMatrix();
+		ofPushMatrix();
 			guiBaseObject::renderText();
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			ofDisableAlphaBlending();
 
 			ofSetColor(255, 255, 255);
 			if( custom != NULL)custom->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
-		glPopMatrix();
+		ofPopMatrix();
 
 	ofPopStyle();
 }

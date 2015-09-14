@@ -31,6 +31,8 @@ ofxControlPanel::ofxControlPanel(){
     bUseTTFFont     = false;
     usingXml        = true;
     saveDown        = false;
+    saveAsDown      = false;
+    loadDown        = false;
     restoreDown     = false;
     incrementSave   = false;
     hidden          = false;
@@ -54,7 +56,6 @@ ofxControlPanel::ofxControlPanel(){
 
 //-----------------------------
 ofxControlPanel::~ofxControlPanel(){
-    ofLogError() << " ofxControlPanel::~ofxControlPanel " << endl; 
 
     xmlObjects.clear();
     
@@ -134,7 +135,7 @@ void ofxControlPanel::setup(string controlPanelName, float panelX, float panelY,
 
 //-----------------------------
 void ofxControlPanel::loadFont(string fontName, int fontsize ){
-    guiTTFFont.loadFont(fontName, fontsize);
+    guiTTFFont.load(fontName, fontsize);
     bool okay = guiTTFFont.isLoaded();
 	guiBaseObject::setFont(&guiTTFFont);
 
@@ -365,10 +366,52 @@ guiBaseObject * ofxControlPanel::addGuiBaseObject( guiBaseObject * element,  int
 
 //---------------------------------------------
 void ofxControlPanel::addGroup( ofParameterGroup & group ){
+    vector<bool> temp;
+    addGroup( group, temp );
+
+//    addLabel(group.getName(), true);
+//
+//    for(int i = 0; i < group.size(); i++){
+//    
+//        ofAbstractParameter * ptr = &group.get(i);
+//
+//        if( ptr->type() == typeid(ofParameter<float>).name() ){
+//            ofParameter <float> & f = dynamic_cast< ofParameter<float> & >( group.get(i) );
+//            guiTypeSlider * ptr = addSlider(f);
+//        }
+//        else if( ptr->type() == typeid(ofParameter<int>).name() ){
+//            ofParameter <int> & f = dynamic_cast< ofParameter<int> & >( group.get(i) );
+//            addSlider(f);
+//        }
+//        else if( ptr->type() == typeid(ofParameter<bool>).name() ){
+//            ofParameter <bool> & f = dynamic_cast< ofParameter<bool> & >( group.get(i) );
+//            addToggle(f);
+//        }else if( ptr->type() == typeid(ofParameter<string>).name() ){
+//            ofParameter <string> & f = dynamic_cast< ofParameter<string> & >( group.get(i) );
+//            addLabel(f);
+//        }
+//    }
+
+}
+
+//---------------------------------------------
+void ofxControlPanel::addGroup( ofParameterGroup & group, vector<bool> bOnesToInclude ) {
+    
+    if( bOnesToInclude.size() > 0 && group.size() > 0 ) {
+        if( bOnesToInclude.size() != group.size() ) {
+            ofLogWarning() << "ofxControlPanel :: addGroup : group sie and ones to include are diff sizes, including all of them" << endl;
+            bOnesToInclude.clear();
+        }
+    }
+    
+    if( bOnesToInclude.size() == 0 ) {
+        bOnesToInclude.assign( group.size(), true );
+    }
 
     addLabel(group.getName(), true);
 
     for(int i = 0; i < group.size(); i++){
+        if( !bOnesToInclude[i] ) continue;
     
         ofAbstractParameter * ptr = &group.get(i);
 
@@ -714,6 +757,30 @@ void ofxControlPanel::setupEvents(){
 	bEventsSetup = true;
 }
 
+//---------------------------------------------
+void ofxControlPanel::clearEvents() {
+    
+    if(bEventsSetup) {
+        for(int i = 0; i < guiObjects.size(); i++){
+            if( guiObjects[i] != NULL ) {
+                ofRemoveListener(guiObjects[i]->guiEvent, this, &ofxControlPanel::eventsIn);
+            }
+        }
+    }
+
+    
+    for(int i = 0; i < customEvents.size(); i++){
+		if( customEvents[i] != NULL ){
+            ofRemoveListener( customEvents[i]->guiEvent, this, &ofxControlPanel::eventsIn);
+			delete customEvents[i];
+			customEvents[i] = NULL;
+		}
+	}
+	customEvents.clear();
+    
+    bEventsSetup = false;
+}
+
 // Create a single common event which fired whenever any of the gui elements represented by xmlNames is changed
 //---------------------------------------------
 ofEvent <guiCallbackData> & ofxControlPanel::createEventGroup(string eventGroupName, vector <string> xmlNames){
@@ -910,6 +977,8 @@ void ofxControlPanel::disableIncrementalSave(){
 
 //-----------------------------
 void ofxControlPanel::loadSettings(string xmlFile){
+    cout << " loading settings from " << xmlFile << endl;
+
     for(unsigned int i = 0; i < guiObjects.size(); i++)
 		guiObjects[i]->loadSettings(xmlFile);
 
@@ -1007,6 +1076,8 @@ void ofxControlPanel::reloadSettingsForPanel( string name ){
 
 //-------------------------------
 void ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
+    cout << " saving settings to " << xmlFile << endl;
+
     for(int i = 0; i < (int) guiObjects.size(); i++)guiObjects[i]->saveSettings(xmlFile);
 
     for(int i = 0; i < (int) xmlObjects.size(); i++){
@@ -1165,10 +1236,47 @@ bool ofxControlPanel::mousePressed(float x, float y, int button){
             ofNotifyEvent( guiEvent, saveData, this );
         }
 		printf("saving settings!\n");
+    }else if( usingXml && isInsideRect(x, y, saveAsButton) ){
+		
+        string newFilePath = ofSystemSaveDialog("settingsBackup-"+ofGetTimestampString()+".xml", "set xml file to save settings to eg: mySettingsCopy.xml").filePath;
+        string curSettingsFileBackup = currentXmlFile;
+        
+        if( newFilePath.length() > 0 ){
+            if( ofFile::doesFileExist(newFilePath) ){
+                ofSystemAlertDialog("ERROR: can't do 'save as', xml file already exists");
+                newFilePath = curSettingsFileBackup;
+            }
+        }else{
+            newFilePath = curSettingsFileBackup;
+        }
+        
+        saveSettings(newFilePath, false);
+        
+        saveAsDown = true;
+        if( eventsEnabled && bEventsSetup ) {
+            guiCallbackData saveData;
+            saveData.setup("CP_SAVE", "CP_SAVE");
+            saveData.addValueS( newFilePath );
+            ofNotifyEvent( guiEvent, saveData, this );
+        }
+		printf("saving settings!\n");
     }else if( usingXml && isInsideRect(x, y, restoreButton) ){
 		printf("restoring settings!\n");
         reloadSettings();
         restoreDown = true;
+    }else if( usingXml && isInsideRect(x, y, loadButton) ){
+        
+        string loadPath = ofSystemLoadDialog("select an xml settings file", false, ofFilePath::getAbsolutePath( ofToDataPath("settings") ) ).filePath;
+        
+        cout << "loading settings from " << loadPath << endl;
+        
+        if( ofFilePath::getFileExt(loadPath) == "xml" ){
+            string backupFile = currentXmlFile;
+            loadSettings(loadPath);
+            currentXmlFile = backupFile;
+        }
+        
+        loadDown = true;
     }else if( isInsideRect(x, y, topBar) && bDraggable){
         dragging = true;
         mouseDownPoint.set(x - boundingBox.x, y-boundingBox.y, 0);
@@ -1258,7 +1366,9 @@ void ofxControlPanel::mouseReleased(float x, float y, int button){
     }
     dragging        = false;
     saveDown        = false;
+    saveAsDown      = false;
     restoreDown     = false;
+    loadDown        = false;
 }
 
 //-------------------------------
@@ -1361,11 +1471,19 @@ void ofxControlPanel::update(){
 	{
 		saveButton		= ofRectangle( boundingBox.x, boundingBox.y, 0, 0 );
 		restoreButton	= ofRectangle( boundingBox.x, boundingBox.y, 0, 0 );
+        saveAsButton    = saveButton;
+        loadButton      = restoreButton;
 	}
 	else
 	{
 		saveButton       = ofRectangle(boundingBox.x + displayText.getTextWidth() + 20, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save")) , MAX(12, displayText.getTextSingleLineHeight()) );
-		restoreButton    = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
+        
+		saveAsButton       = ofRectangle(saveButton.x + saveButton.width + 15, boundingBox.y + 4, MAX(40, 8 + displayText.getTextWidth("save as")) , MAX(12, displayText.getTextSingleLineHeight()) );
+		
+        restoreButton    = ofRectangle(saveAsButton.x + saveAsButton.width + 50, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("restore")) , MAX(12, displayText.getTextSingleLineHeight()) );
+
+        loadButton    = ofRectangle(restoreButton.x + restoreButton.width + 15, boundingBox.y + 4,  MAX(60, 8 + displayText.getTextWidth("load from")) , MAX(12, displayText.getTextSingleLineHeight()) );
+
 	}
 
 
@@ -1413,6 +1531,8 @@ void ofxControlPanel::draw(){
 
     ofPushStyle();
     ofEnableAlphaBlending();
+    ofSetColor(255, 255, 255, 255);
+    ofFill();
 
         float panelH = boundingBox.height;
         if( minimize ){
@@ -1421,46 +1541,69 @@ void ofxControlPanel::draw(){
 
 		if(!bInvisible || !elementSelected){
 
-			glPushMatrix();
-				glTranslatef(boundingBox.x, boundingBox.y, 0);
+			ofPushMatrix();
+				ofTranslate(boundingBox.x, boundingBox.y, 0);
 				//draw the background
 				ofFill();
-				glColor4fv(bgColor.getColorF());
-				ofRect(0, 0, boundingBox.width, panelH);
+				ofSetColor(bgColor.getColor());
+
+				ofDrawRectangle(0, 0, boundingBox.width, panelH);
 
 				//draw the outline
 				ofNoFill();
-				glColor4fv(outlineColor.getColorF());
-				ofRect(0, 0, boundingBox.width, panelH);
-				ofLine(0, topBar.height, boundingBox.width, topBar.height);
-			glPopMatrix();
+				ofSetColor(outlineColor.getColor());
+				ofDrawRectangle(0, 0, boundingBox.width, panelH);
+				ofDrawLine(0, topBar.height, boundingBox.width, topBar.height);
+			ofPopMatrix();
 
-			ofRect(minimizeButton.x, minimizeButton.y, minimizeButton.width, minimizeButton.height);
+			ofDrawRectangle(minimizeButton.x, minimizeButton.y, minimizeButton.width, minimizeButton.height);
 
 			if ( bDoSaveRestore ){
 				ofPushStyle();
 					ofFill();
 
-					if( saveDown )glColor4fv(fgColor.getSelectedColorF());
-					else glColor4fv(fgColor.getColorF());
+					if( saveDown )ofSetColor(fgColor.getSelectedColor());
+					else ofSetColor(fgColor.getColor());
 
-					ofRect(saveButton.x, saveButton.y, saveButton.width,saveButton.height);
+					ofDrawRectangle(saveButton);
 					ofSetColor(255, 255, 255);
 				
 					displayText.renderString("save", saveButton.x + 3, saveButton.y + saveButton.height -3);
 
-				ofPopStyle();
 
-				ofPushStyle();
 					ofFill();
 
-					if( restoreDown )glColor4fv(fgColor.getSelectedColorF());
-					else glColor4fv(fgColor.getColorF());
+					if( saveAsDown )ofSetColor(fgColor.getSelectedColor());
+					else ofSetColor(fgColor.getColor());
 
-					ofRect(restoreButton.x, restoreButton.y, restoreButton.width,restoreButton.height);
+					ofDrawRectangle(saveAsButton);
+					ofSetColor(255, 255, 255);
+				
+					displayText.renderString("save as", saveAsButton.x + 3, saveAsButton.y + saveAsButton.height -3);
+
+
+					ofFill();
+
+					if( restoreDown )ofSetColor(fgColor.getSelectedColor());
+					else ofSetColor(fgColor.getColor());
+
+					ofDrawRectangle(restoreButton);
 					ofSetColor(255, 255, 255);
 				
 					displayText.renderString("restore", restoreButton.x + 3, restoreButton.y + restoreButton.height -3);
+				
+
+					ofFill();
+
+					if( loadDown )ofSetColor(fgColor.getSelectedColor());
+					else ofSetColor(fgColor.getColor());
+
+					ofDrawRectangle(loadButton);
+					ofSetColor(255, 255, 255);
+				
+					displayText.renderString("load from", loadButton.x + 3, loadButton.y + loadButton.height -3);
+				
+
 				
 				ofPopStyle();
 			}
@@ -1468,7 +1611,7 @@ void ofxControlPanel::draw(){
 
 			ofPushMatrix();
 				ofTranslate(2,0,0);
-				glColor4fv(textColor.getColorF());
+				ofSetColor(textColor.getColor());
 				guiBaseObject::renderText();
 			ofPopMatrix();
 		
@@ -1476,47 +1619,42 @@ void ofxControlPanel::draw(){
 
         if( !minimize ){
                     
-            //don't let gui elements go out of their panels
-//            glEnable(GL_SCISSOR_TEST);
-            //glScissor(boundingBox.x, ofGetHeight() - boundingBox.getBottom()-topSpacing, boundingBox.width - borderWidth , boundingBox.height);
+            ofPushMatrix();
+                ofTranslate(hitArea.x, hitArea.y, 0);
+                for(int i = 0; i < (int) panels.size(); i++){
+                    if( i == selectedPanel ){
+                        panels[i]->setShowOnlySelectedElement(bInvisible);
+                        panels[i]->render();
+                    }
+                }
+            ofPopMatrix();
 
-                glPushMatrix();
-                    glTranslatef(hitArea.x, hitArea.y, 0);
-                    for(int i = 0; i < (int) panels.size(); i++){
-                        if( i == selectedPanel ){
-							panels[i]->setShowOnlySelectedElement(bInvisible);
-							panels[i]->render();
-						}
-					}
-                glPopMatrix();
-
-//            glDisable(GL_SCISSOR_TEST);
-            
+        
             if(!bInvisible || !elementSelected){
                 for(int i = 0; i < (int) panelTabs.size(); i++){
                     if( i == selectedPanel){
                         ofPushStyle();
                             ofFill();
-                            glColor4fv(fgColor.getSelectedColorF());
-                            ofRect(panelTabs[i].x, panelTabs[i].y, panelTabs[i].width, panelTabs[i].height);
-                            glColor4fv(outlineColor.getColorF());
+                            ofSetColor(fgColor.getSelectedColor());
+                            ofDrawRectangle(panelTabs[i].x, panelTabs[i].y, panelTabs[i].width, panelTabs[i].height);
+                            ofSetColor(outlineColor.getColor());
                         ofPopStyle();
                     }
-                    glColor4fv(outlineColor.getColorF());
+                    ofSetColor(outlineColor.getColor());
                     ofNoFill();
-                    ofRect(panelTabs[i].x, panelTabs[i].y, panelTabs[i].width, panelTabs[i].height);
+                    ofDrawRectangle(panelTabs[i].x, panelTabs[i].y, panelTabs[i].width, panelTabs[i].height);
                 }
             }
         
             
-            glPushMatrix();
-                glTranslatef(hitArea.x, hitArea.y, 0);
+            ofPushMatrix();
+                ofTranslate(hitArea.x, hitArea.y, 0);
                 for(int i = 0; i < (int) panels.size(); i++){
                     if( i == selectedPanel ){
                         panels[i]->renderStatus();
                     }
                 }
-            glPopMatrix();
+            ofPopMatrix();
         }
 
     ofPopStyle();

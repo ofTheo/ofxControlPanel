@@ -71,22 +71,22 @@ void guiTypeToggle::render(){
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			if(value.getValueI()){
 				ofFill();
-				glColor4fv(fgColor.getColorF());
-				ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+				ofSetColor(fgColor.getColor());
+				ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 			}
 			
 			//draw the outline
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 			
 			if(bShowText){
-				glColor4fv(textColor.getColorF());
+				ofSetColor(textColor.getColor());
 				displayText.renderText(hitArea.x + hitArea.width + 2, hitArea.y + displayText.getTextSingleLineHeight() - 2);
 			}
 

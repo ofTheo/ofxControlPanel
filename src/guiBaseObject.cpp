@@ -325,7 +325,7 @@ void guiBaseObject::updateBoundingBox(){
 void guiBaseObject::renderText(float offsetX, float offsetY){
 	if(!bShowText) return;
 
-	glColor4fv(textColor.getColorF());
+	ofSetColor(textColor.getColor());
 	displayText.renderText(boundingBox.x + offsetX, boundingBox.y + displayText.getTextSingleLineHeight() + offsetY);
 }
 

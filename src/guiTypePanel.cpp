@@ -295,19 +295,19 @@ void guiTypePanel::drawLocked(){
 		ofFill();
 		ofTranslate(lockRect.x, lockRect.y, 0);
 
-		ofSetColor(200, 0, 0, bgColor.getColorF()[3]*255.0);
-		ofRect(0, 0, lockRect.width, lockRect.height);
+		ofSetColor(200, 0, 0, bgColor.getColor()[3]*255.0);
+		ofDrawRectangle(0, 0, lockRect.width, lockRect.height);
 
 		ofTranslate(LOCK_BORDER, LOCK_BORDER, 0);
 
 		ofSetColor(255, 255, 255);
-		ofEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8, LOCK_HEIGHT * 0.9);
+		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8, LOCK_HEIGHT * 0.9);
 
 		ofSetColor(200, 0, 0);
-		ofEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8 * 0.6, LOCK_HEIGHT * 0.9 * 0.6);
+		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8 * 0.6, LOCK_HEIGHT * 0.9 * 0.6);
 
 		ofSetColor(255, 255, 255);
-		ofRect(0, LOCK_HEIGHT/2, LOCK_WIDTH, LOCK_HEIGHT/2);
+		ofDrawRectangle(0, LOCK_HEIGHT/2, LOCK_WIDTH, LOCK_HEIGHT/2);
 	ofPopMatrix();
 }
 
@@ -317,21 +317,21 @@ void guiTypePanel::drawUnlocked(){
 		ofFill();
 		ofTranslate(lockRect.x, lockRect.y, 0);
 
-		ofSetColor(0, 0, 0, bgColor.getColorF()[3]*255.0);
-		ofRect(0, 0, lockRect.width, lockRect.height);
+		ofSetColor(0, 0, 0, bgColor.getColor()[3]*255.0);
+		ofDrawRectangle(0, 0, lockRect.width, lockRect.height);
 
 		ofTranslate(LOCK_BORDER, LOCK_BORDER, 0);
 		ofSetColor(255, 255, 255);
-		ofEllipse(LOCK_WIDTH/2, LOCK_HEIGHT * 0.4, LOCK_WIDTH * 0.8, LOCK_HEIGHT * 0.9);
+		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT * 0.4, LOCK_WIDTH * 0.8, LOCK_HEIGHT * 0.9);
 
 		ofSetColor(0, 0, 0);
-		ofEllipse(LOCK_WIDTH/2, LOCK_HEIGHT * 0.44, LOCK_WIDTH * 0.8 * 0.6, LOCK_HEIGHT * 0.9 * 0.6);
+		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT * 0.44, LOCK_WIDTH * 0.8 * 0.6, LOCK_HEIGHT * 0.9 * 0.6);
 
 		ofSetColor(255, 255, 255);
-		ofRect(0, LOCK_HEIGHT/2, LOCK_WIDTH, LOCK_HEIGHT/2);
+		ofDrawRectangle(0, LOCK_HEIGHT/2, LOCK_WIDTH, LOCK_HEIGHT/2);
 
 		ofSetColor(0, 0, 0);
-		ofRect(0, LOCK_HEIGHT * 0.5 - LOCK_HEIGHT * 0.25 , LOCK_WIDTH * 0.35, LOCK_HEIGHT * 0.25);
+		ofDrawRectangle(0, LOCK_HEIGHT * 0.5 - LOCK_HEIGHT * 0.25 , LOCK_WIDTH * 0.35, LOCK_HEIGHT * 0.25);
 
 	ofPopMatrix();
 }
@@ -342,29 +342,29 @@ void guiTypePanel::render(){
 
 		if( showOnly && elementInteracting ){
 		
-			glPushMatrix();
-				glTranslatef(hitArea.x, hitArea.y, 0);
+			ofPushMatrix();
+				ofTranslate(hitArea.x, hitArea.y, 0);
 				for(unsigned int i = 0; i < children.size(); i++){
 					int elementToRender = children.size()-(1+i);
 					if( elementToRender == whichElementInteracting ){
 						children[elementToRender]->render();
 					}
 				}
-			glPopMatrix();
+			ofPopMatrix();
 					
 		}else{
 		
-			glPushMatrix();
-			glTranslatef(boundingBox.x, boundingBox.y, 0);
+			ofPushMatrix();
+			ofTranslate(boundingBox.x, boundingBox.y, 0);
 							
 				//draw the background
 				ofFill();
-				glColor4fv(bgColor.getColorF());
-				ofRect(0, 0, boundingBox.width-2, boundingBox.height);
+				ofSetColor(bgColor.getColor());
+				ofDrawRectangle(0, 0, boundingBox.width-2, boundingBox.height);
 
 				//draw the outline
 //				ofNoFill();
-//				glColor4fv(outlineColor.getColorF());
+//				ofSetColor(outlineColor.getColor());
 //				ofRect(0, 0, boundingBox.width, boundingBox.height);
 
 				if( locked ){
@@ -373,15 +373,15 @@ void guiTypePanel::render(){
 					drawUnlocked();
 				}
 					
-			glPopMatrix();
+			ofPopMatrix();
 			//renderText();
 
-			glPushMatrix();
-				glTranslatef(hitArea.x, hitArea.y, 0);
+			ofPushMatrix();
+				ofTranslate(hitArea.x, hitArea.y, 0);
 				for(unsigned int i = 0; i < children.size(); i++){
 					children[children.size()-(1+i)]->render();
 				}
-			glPopMatrix();
+			ofPopMatrix();
 
         }
 	ofPopStyle();
@@ -390,16 +390,16 @@ void guiTypePanel::render(){
 void guiTypePanel::renderStatus(){
 
     if( bShowText && statusGroup.size() > 0 ){
-        glPushMatrix();
+        ofPushMatrix();
         
         float boxHeight = displayText.getTextHeight() * 1.2;
-        glTranslatef(boundingBox.x, boundingBox.getBottom()-boxHeight, 0);
+        ofTranslate(boundingBox.x, boundingBox.getBottom()-boxHeight, 0);
     
-        glColor4fv(bgColor.getColorF());
-        ofRect(0, 0, boundingBox.width, boxHeight);
+        ofSetColor(bgColor.getColor());
+        ofDrawRectangle(0, 0, boundingBox.width, boxHeight);
         ofNoFill();
-        glColor4fv(outlineColor.getColorF());
-        ofRect(0, 0, boundingBox.width, boxHeight);
+        ofSetColor(outlineColor.getColor());
+        ofDrawRectangle(0, 0, boundingBox.width, boxHeight);
 
         string statusParam = statusGroup.getString(0);
         
@@ -409,9 +409,9 @@ void guiTypePanel::renderStatus(){
             statusParam.erase(statusParam.begin() + pos, statusParam.end() );
         }
         
-        glColor4fv(textColor.getColorF());
+        ofSetColor(textColor.getColor());
         displayText.renderString("Status: " + statusParam, 3, boxHeight-3);
 
-        glPopMatrix();
+        ofPopMatrix();
     }
 }

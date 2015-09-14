@@ -118,19 +118,19 @@ class guiTypeChartPlotter : public guiBaseObject{
             
 			ofPushStyle();
 				
-					glColor4fv(textColor.getColorF());				
+					ofSetColor(textColor.getColor());
 					guiBaseObject::renderText();
 
 					//draw the background
 					ofFill();
-					glColor4fv(bgColor.getColorF());
-					ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+					ofSetColor(bgColor.getColor());
+					ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 					
 					float x = hitArea.x;
 					float y = hitArea.y + hitArea.height;
 					
 					if( valueHistory.size() ){
-						glColor4fv(fgColor.getSelectedColorF());
+						ofSetColor(fgColor.getSelectedColor());
 					
 						ofNoFill();
 						ofBeginShape();
@@ -145,14 +145,14 @@ class guiTypeChartPlotter : public guiBaseObject{
 					
 					ofFill();
 
-					glColor4fv(textColor.getColorF());				
+					ofSetColor(textColor.getColor());				
 					displayText.renderString("max: "+ofToString(maxVal, 0), x + 2, hitArea.y + displayText.getTextSingleLineHeight()+2);
 					displayText.renderString("min: "+ofToString(minVal, 0), x + 2, y - 8);
 					
 					//draw the outline
 					ofNoFill();
-					glColor4fv(outlineColor.getColorF());
-					ofRect(boundingBox);
+					ofSetColor(outlineColor.getColor());
+					ofDrawRectangle(boundingBox);
 
 			ofPopStyle();
 		}

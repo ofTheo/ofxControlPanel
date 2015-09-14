@@ -54,9 +54,9 @@ void guiTypeLabel::render(){
 	ofPushStyle();
     
         if( bHighlight ){
-            glColor4fv(outlineColor.getColorF());
-            ofLine(boundingBox.x, boundingBox.y, boundingBox.x + boundingBox.width, boundingBox.y);
-            ofLine(boundingBox.x, boundingBox.y + boundingBox.height, boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
+            ofSetColor(outlineColor.getColor());
+            ofDrawLine(boundingBox.x, boundingBox.y, boundingBox.x + boundingBox.width, boundingBox.y);
+            ofDrawLine(boundingBox.x, boundingBox.y + boundingBox.height, boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
         }
     
         guiBaseObject::renderText();

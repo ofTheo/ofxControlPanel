@@ -37,13 +37,8 @@ void simpleColor::setColor(int hexColor){
 }
 
 //----------------------------------------------------------
-simpleColor& simpleColor::getColor(){
-	return *this;
-}
-
-//----------------------------------------------------------
-float * simpleColor::getColorF(){
-	return color;
+ofColor simpleColor::getColor(){
+	return ofColor(r*255.0, g*255.0, b*255.0, a*255.0);
 }
 
 

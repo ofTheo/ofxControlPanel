@@ -2,10 +2,18 @@
 
 //------------------------------------------------
 void guiTypeSlider::setup(){
+    bShowDefaultValue = false;
+    defaultValue = 0.0;
+    
     if( value.getNumValues() == 0 ){
         return;
     }
     guiBaseObject::setupNamesFromParams(); 
+	
+    if( value.getMax() > value.getMin() ){
+        bShowDefaultValue = true;
+        defaultValue = value.getPct();
+    }
 	
 	setDimensions(getDefaultColumnWidth(), 14);
 }
@@ -56,15 +64,15 @@ void guiTypeSlider::render(){
 
 			//draw the background
 			ofFill();
-			glColor4fv(bgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(bgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
 			//draw the foreground
-			glColor4fv(fgColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width * value.getPct(), hitArea.height);
+			ofSetColor(fgColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width * value.getPct(), hitArea.height);
     
-            float * color = textColor.getColorF();
-			glColor4f(color[0]*0.75, color[1]*0.75, color[2]*0.75, color[3]);
+            ofColor color = textColor.getColor();
+			ofSetColor(((float)color.r) * 0.75, ((float)color.g) * 0.75, ((float)color.b) * 0.75, color.a);
 			displayText.renderString(name, hitArea.x , hitArea.y + displayText.getTextSingleLineHeight() );
 			
             float textW = displayText.getTextWidth(varsString);
@@ -72,18 +80,28 @@ void guiTypeSlider::render(){
             float rectW = textW+4.0;
     
             if( state == SG_STATE_SELECTED ){
-                glColor4f(0.0, 0.0, 0.0, 0.7);
+                ofSetColor(0.0, 0.0, 0.0, 0.7 * 255.0);
             }else{
-                glColor4f(0.0, 0.0, 0.0, 0.4);
+                ofSetColor(0.0, 0.0, 0.0,  0.7 * 255.0);
             }
-			ofRect(hitArea.getRight()-rectW, hitArea.y+2, rectW, hitArea.height-3);
+			ofDrawRectangle(hitArea.getRight()-rectW, hitArea.y+2, rectW, hitArea.height-3);
 
-			glColor4fv(color);
+            if( bShowDefaultValue ){
+                float x = defaultValue * hitArea.getWidth();
+                ofSetColor(1.0 * 255.0, 0.3 * 255.0, 0.2 * 255.0, 255);
+                float flip = 1.0;
+                if( defaultValue > 0.95 ){
+                    flip *= -1.0;
+                }
+                ofDrawTriangle(hitArea.x + x, hitArea.y, hitArea.x + x, hitArea.y + hitArea.height * 0.5, hitArea.x + x + hitArea.height * 0.5 *flip , hitArea.y);
+            }
+
+			ofSetColor(color);
 			displayText.renderString(varsString, hitArea.x + rightAlignVarsX - 2.0, hitArea.y + displayText.getTextSingleLineHeight() );
 
 			//draw the outline
 			ofNoFill();
-			glColor4fv(outlineColor.getColorF());
-			ofRect(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+			ofSetColor(outlineColor.getColor());
+			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 	ofPopStyle();
 }
