@@ -14,8 +14,8 @@ class guiCustomImpl{
 
         }
 
-        virtual void saveSettings(string filename){}
-        virtual void loadSettings(string filename){}
+    virtual bool saveSettings(string filename){return true;}
+    virtual bool loadSettings(string filename){return true;}
 
         virtual  void update(){}
         virtual  void draw(float x, float y, float w, float h){}

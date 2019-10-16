@@ -24,32 +24,66 @@ guiTypeFileLister::guiTypeFileLister(){
 	selection_has_changed = false;
 }
 
-
 //------------------------------------------------
-void guiTypeFileLister::setup(string listerName, simpleFileLister * listerPtr , float listerWidth, float listerHeight){
-	lister  =  listerPtr;
-	name    =  listerName;
-	makeXmlNameFromDisplayName();
+guiTypeFileLister::~guiTypeFileLister() {
+    
+}
+
+// void setup( string aDirectory, float listerWidth, float listerHeight);
+//------------------------------------------------
+void guiTypeFileLister::setup( ofParameter<string>& aparam, string aDirectory, float listerWidth, float listerHeight) {
+    lister = make_shared<simpleFileLister>();
+    lister->listDir(aDirectory);
+    
+    mParamRef.makeReferenceTo( aparam );
+    
+    guiBaseObject::setupNamesFromParams(); 
+    
+//	lister  =  listerPtr;
+//	name    =  listerName;
+//	makeXmlNameFromDisplayName();
 	
-	updateText();
+//	updateText();
 
 	setDimensions(listerWidth, listerHeight);
 	outlineColor.selected = outlineColor.color;
 }
 
-//-----------------------------------------------
-void guiTypeFileLister::notify(){
-	guiCallbackData cbVal;
-	cbVal.setup(xmlName, name);
-	cbVal.addValueI(selection);
-	cbVal.addValueS(lister->getSelectedPath());
-	cbVal.addValueS(lister->getSelectedName());
-	ofNotifyEvent(guiEvent,cbVal,this);
+//
+////-----------------------------------------------
+//void guiTypeFileLister::notify(){
+//	guiCallbackData cbVal;
+//	cbVal.setup(xmlName, name);
+//	cbVal.addValueI(selection);
+//	cbVal.addValueS(lister->getSelectedPath());
+//	cbVal.addValueS(lister->getSelectedName());
+//	ofNotifyEvent(guiEvent,cbVal,this);
+//}
+
+//every time we update the value of our text
+void guiTypeFileLister::updateText( ) {
+        
+    varsString = getVarsAsString();
+//    drawStr = name;
+//    if( varsString.length() ){
+//        drawStr += varsString;
+//    }
+    
+    drawStr = name+": ";
+    if( selection > -1 && mParamRef.get() != "") {
+        drawStr += lister->getSelectedName();
+    } else {
+        drawStr += "na";
+    }
+    displayText.setText(drawStr);
+
+    //now update our bounding box
+    updateBoundingBox();
 }
 
 //-----------------------------------------------.
 void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelative){
-	if ( isLocked() )
+	if ( isLocked() || !isEnabled() )
 		return;
 	
 	if( firstHit && x < hitArea.x + sliderWidth){
@@ -73,7 +107,10 @@ void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelati
 				selection = select;
 				lister->setSelectedFile(selection);
 				selection_has_changed = true;
-				notify();
+                
+                mParamRef = lister->getPath(selection);
+                
+//				notify();
 			}
 
 			selectionTmp  = select;
@@ -102,7 +139,7 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
 		startPos = (float)(lister->entries.size()-1) * (pct);
 		endPos = 0;
 
-		int numCanFit = (height / textH)- 1;
+		int numCanFit = floor((height / textH) - 1);
 		endPos = startPos + numCanFit;
 		endPos = MIN(lister->entries.size(), endPos);
 
@@ -140,9 +177,9 @@ void guiTypeFileLister::drawRecords(float x, float y, float width, float height)
  
 //-----------------------------------------------.
 void guiTypeFileLister::render(){
-	ofPushStyle();
+    ofPushStyle(); {
 
-		ofPushMatrix();
+        ofPushMatrix(); {
 			//draw the background
 			ofFill();
 			ofSetColor(bgColor.getColor());
@@ -161,11 +198,13 @@ void guiTypeFileLister::render(){
 			ofDrawRectangle(hitArea.x , hitArea.y, sliderWidth, hitArea.height);
 
 			ofSetColor(textColor.getColor());
-			if(lister != NULL)drawRecords(hitArea.x+sliderWidth + 5, hitArea.y, boundingBox.width-(sliderWidth + 5), boundingBox.height);
+            if(lister) {
+                drawRecords(hitArea.x+sliderWidth + 5, hitArea.y, boundingBox.width-(sliderWidth + 5), boundingBox.height);
+            }
 
-		ofPopMatrix();
+        } ofPopMatrix();
 
-	ofPopStyle();
+    } ofPopStyle();
 }
 
 void guiTypeFileLister::clearSelection()

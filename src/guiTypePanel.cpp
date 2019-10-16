@@ -1,4 +1,5 @@
 #include "guiTypePanel.h"
+#include "ofxControlPanel.h"
 
 //------------------------------------------------
 guiTypePanel::guiTypePanel(){
@@ -78,7 +79,10 @@ bool guiTypePanel::checkHit(float x, float y, bool isRelative){
 	}
     
     elementInteracting = false;
-    whichElementInteracting = 0; 
+    
+    int prevElementInteracting = elementWithFocusIndex;
+    whichElementInteracting = 0;
+    elementWithFocusIndex = -1;
 	
 	if( hitArea.inside(x, y) ){
 		state = SG_STATE_SELECTED;
@@ -88,15 +92,29 @@ bool guiTypePanel::checkHit(float x, float y, bool isRelative){
 
 			float offsetX = x - hitArea.x;
 			float offsetY = y - hitArea.y;
-
+            bool bHitSomething = false;
 			for(unsigned int i = 0; i < children.size(); i++){
 				bool result = children[i]->checkHit(offsetX, offsetY, isRelative);
 				if(result){
+                    bHitSomething = true;
 					elementInteracting = true;
 					whichElementInteracting = i;
-					return true;
+                    elementWithFocusIndex = i;
+					//return true;
+                    break;
 				}
 			}
+            
+            if( bHitSomething ) {
+//                cout << "prevElementInteracting: " << prevElementInteracting << " elementWithFocusIndex: " << elementWithFocusIndex << endl;
+                if(prevElementInteracting > -1 && prevElementInteracting != elementWithFocusIndex ) {
+                    if( prevElementInteracting < children.size() ) {
+                        children[prevElementInteracting]->lostFocus();
+                    }
+                }
+                
+                return true;
+            }
 		}
 	}
 	
@@ -187,50 +205,6 @@ void guiTypePanel::update(){
 	}
 }
 
-
-//-----------------------------------------------
-bool guiTypePanel::containsElement( string xmlName ){
-	for ( int i=0; i<children.size(); i++ ){
-		if ( children[i]->xmlName == xmlName ){
-			return true;
-		}
-	}
-	return false;
-}
-
-//-----------------------------------------------
-guiBaseObject* guiTypePanel::getElement( string xmlName ){
-	for ( int i=0; i<children.size(); i++ ){
-		if ( children[i]->xmlName == xmlName ){
-			return children[i];
-		}
-	}
-	return NULL;
-}
-
-//-----------------------------------------------
-bool guiTypePanel::containsElement( guiBaseObject* element ){
-	vector <guiBaseObject *>::iterator elementIter = std::find( children.begin(), children.end(), element );
-	return ( elementIter != children.end() );
-}
-
-//-----------------------------------------------
-void guiTypePanel::removeElement( guiBaseObject* element ){
-	bool found = false;
-	for ( int i=0; i<children.size(); i++ ){
-		if ( children[i] == element ){
-			// remove from children
-			children.erase( children.begin()+i );
-			// adjust column height
-			columns[whichColumn[i]].y -= element->getHeight() + spacingAmntY + element->getVerticalSpacing();
-			// remove from whichColumn
-			whichColumn.erase( whichColumn.begin()+i );
-			found = true;
-			break;
-		}
-	}
-}
-
 //-----------------------------------------------
 void guiTypePanel::resetSelectedElement(){
 	elementInteracting = false;
@@ -249,7 +223,8 @@ void guiTypePanel::addSpace( int height ) {
 }
 
 //-----------------------------------------------
-void guiTypePanel::addElement( guiBaseObject * element ){
+void guiTypePanel::addElement( shared_ptr<guiBaseObject> element ){
+    if( !element ) return;
 	element->updateText();
     
     if(columns[col].y + element->getHeight() + 30.0 >= getHeight()){
@@ -289,13 +264,59 @@ void guiTypePanel::addElement( guiBaseObject * element ){
 	//checkResize(element);
 }
 
+//-----------------------------------------------
+void guiTypePanel::removeElement( shared_ptr<guiBaseObject> element ) {
+    if( !element ) return;
+    bool found = false;
+    for( int i=0; i < children.size(); i++ ){
+        if( children[i] && children[i].get() == element.get() ){
+            // remove from children
+            children.erase( children.begin()+i );
+            // adjust column height
+            columns[whichColumn[i]].y -= element->getHeight() + spacingAmntY + element->getVerticalSpacing();
+            // remove from whichColumn
+            whichColumn.erase( whichColumn.begin()+i );
+            found = true;
+            break;
+        }
+    }
+}
+
+//-----------------------------------------------
+bool guiTypePanel::containsElement( shared_ptr<guiBaseObject> element ) {
+    if( !element ) return;
+    vector < shared_ptr<guiBaseObject> >::iterator elementIter = std::find( children.begin(), children.end(), element );
+    return ( elementIter != children.end() );
+}
+
+//-----------------------------------------------
+bool guiTypePanel::containsElement( string xmlName ){
+    for ( int i=0; i < children.size(); i++ ){
+        if( children[i] && children[i]->xmlName == xmlName ){
+            return true;
+        }
+    }
+    return false;
+}
+
+//-----------------------------------------------
+shared_ptr<guiBaseObject> guiTypePanel::getElement( string xmlName ){
+    for ( int i=0; i<children.size(); i++ ){
+        if( children[i] && children[i]->xmlName == xmlName ){
+            return children[i];
+        }
+    }
+    return NULL;
+}
+
 //-----------------------------------------------.
 void guiTypePanel::drawLocked(){
-	ofPushMatrix();
+    ofPushMatrix(); {
 		ofFill();
 		ofTranslate(lockRect.x, lockRect.y, 0);
 
-		ofSetColor(200, 0, 0, bgColor.getColor()[3]*255.0);
+//		ofSetColor(200, 0, 0, bgColor.getColor()[3]*255.0);
+        ofSetColor( fgColor.getSelectedColor() );
 		ofDrawRectangle(0, 0, lockRect.width, lockRect.height);
 
 		ofTranslate(LOCK_BORDER, LOCK_BORDER, 0);
@@ -303,12 +324,13 @@ void guiTypePanel::drawLocked(){
 		ofSetColor(255, 255, 255);
 		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8, LOCK_HEIGHT * 0.9);
 
-		ofSetColor(200, 0, 0);
+//		ofSetColor(200, 0, 0);
+        ofSetColor( fgColor.getSelectedColor() );
 		ofDrawEllipse(LOCK_WIDTH/2, LOCK_HEIGHT/2, LOCK_WIDTH * 0.8 * 0.6, LOCK_HEIGHT * 0.9 * 0.6);
 
 		ofSetColor(255, 255, 255);
 		ofDrawRectangle(0, LOCK_HEIGHT/2, LOCK_WIDTH, LOCK_HEIGHT/2);
-	ofPopMatrix();
+    } ofPopMatrix();
 }
 
 //-----------------------------------------------.
@@ -341,21 +363,37 @@ void guiTypePanel::render(){
 	ofPushStyle();
 
 		if( showOnly && elementInteracting ){
-		
+            
 			ofPushMatrix();
 				ofTranslate(hitArea.x, hitArea.y, 0);
 				for(unsigned int i = 0; i < children.size(); i++){
 					int elementToRender = children.size()-(1+i);
-					if( elementToRender == whichElementInteracting ){
+					if( elementToRender == whichElementInteracting && children[elementToRender] ){
 						children[elementToRender]->render();
 					}
 				}
 			ofPopMatrix();
 					
 		}else{
-		
-			ofPushMatrix();
-			ofTranslate(boundingBox.x, boundingBox.y, 0);
+//		cout << "Drawing panel: " << name << " | " << ofGetFrameNum() << endl;
+            
+            //    mutThis->setAlphaBitmapText(true);
+//            ofMesh charMesh = aBitmapFont.getMesh(aString, ax, ay, OF_BITMAPMODE_SCREEN, false );
+//            amesh.addVertices( charMesh.getVertices() );
+//            amesh.addTexCoords( charMesh.getTexCoords() );
+            //    mutThis->bind( aBitmapFont.getTexture(),0);
+            //    draw(charMesh,OF_MESH_FILL,false,true,false);
+            //    mutThis->unbind(aBitmapFont.getTexture(),0);
+            //    mutThis->setAlphaBitmapText(false);
+            #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+            mLinesMesh.setMode( OF_PRIMITIVE_LINES );
+            mLinesMesh.clear();
+            mRenderMesh.clear();
+            mTextMesh.clear();
+            #endif
+            
+            ofPushMatrix(); {
+                ofTranslate(boundingBox.x, boundingBox.y, 0);
 							
 				//draw the background
 				ofFill();
@@ -367,21 +405,85 @@ void guiTypePanel::render(){
 //				ofSetColor(outlineColor.getColor());
 //				ofRect(0, 0, boundingBox.width, boundingBox.height);
 
-				if( locked ){
-					drawLocked();
-				}else{
-					drawUnlocked();
-				}
+//                if( locked ){
+//                    drawLocked();
+//                }else{
+//                    drawUnlocked();
+//                }
 					
-			ofPopMatrix();
+            } ofPopMatrix();
 			//renderText();
 
-			ofPushMatrix();
+            ofPushMatrix(); {
 				ofTranslate(hitArea.x, hitArea.y, 0);
+                
+                #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+                for(unsigned int i = 0; i < children.size(); i++){
+                    children[i]->addToRenderMesh(mRenderMesh);
+                    children[i]->addToLinesRenderMesh(mLinesMesh);
+                    children[i]->addToTextRenderMesh(mTextMesh);
+                }
+                mRenderMesh.draw();
+                #endif
 				for(unsigned int i = 0; i < children.size(); i++){
-					children[children.size()-(1+i)]->render();
+					children[i]->render();
 				}
-			ofPopMatrix();
+                #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+                mLinesMesh.draw();
+            
+                if( displayText.usingTTF() ) {
+                    displayText.ourFont->getFontTexture().bind();
+                } else {
+                    ofxControlPanel::bitmapFont.getTexture().bind();
+                }
+                ofSetColor( textColor.getColor() );
+                mTextMesh.draw();
+                if( displayText.usingTTF() ) {
+                    displayText.ourFont->getFontTexture().unbind();
+                } else {
+                    ofxControlPanel::bitmapFont.getTexture().unbind();
+                }
+                #endif
+                
+                for(unsigned int i = 0; i < children.size(); i++){
+                    children[i]->renderOnTop();
+                }
+                
+            } ofPopMatrix();
+            
+            if( locked ){
+                ofSetColor( 10, 10, 10, 100 );
+                ofDrawRectangle( boundingBox );
+            }
+            
+            ofPushMatrix(); {
+                ofTranslate(boundingBox.x, boundingBox.y, 0);
+                if( locked ){
+                    drawLocked();
+                }else{
+                    drawUnlocked();
+                }
+                
+            } ofPopMatrix();
+            
+            if( locked ) {
+                ofPushMatrix(); {
+                    ofTranslate(boundingBox.getCenter());
+                    
+//                    float bw = 90;
+                    float tw = 28;
+//                    ofSetColor( 10, 100 );
+//                    ofDrawRectangle(-bw/2, -bw/2, bw, bw );
+                    ofSetColor( 140 );
+                    ofDrawCircle( 0., -tw/2, tw*0.45 );
+                    ofSetColor( 10 );
+                    ofDrawCircle( 0., -tw/2, tw*0.25 );
+                    
+                    ofSetColor( 140 );
+                    ofDrawRectangle(-tw/2, -tw/2, tw, tw );
+                    
+                } ofPopMatrix();
+            }
 
         }
 	ofPopStyle();

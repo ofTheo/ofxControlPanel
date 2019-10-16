@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ofMain.h"
 
 typedef struct{
@@ -9,31 +8,30 @@ typedef struct{
 
 
 class simpleFileLister : public ofDirectory{
+ public:
 
-     public:
+    simpleFileLister();
+    int refreshDir();
+    
+    int listDir(string directory);
 
-        simpleFileLister();
-        int refreshDir();
-        
-        int listDir(string directory);
+    void reverseOrder();
 
-        void reverseOrder();
+    bool selectedHasChanged();
+    void clearChangedFlag();
 
-        bool selectedHasChanged();
-        void clearChangedFlag();
+    int getNumEntries() { return entries.size(); }
+    string getName(int which);
+    string getPath(int which);
+    void setSelectedFile(int which);
+    string getSelectedName();
+    string getSelectedPath();
+    
+    int  selected;
+    bool selectedChanged;
+    bool bRevSort;
 
-		int getNumEntries() { return entries.size(); }
-        string getName(int which);
-        string getPath(int which);
-        void setSelectedFile(int which);
-        string getSelectedName();
-        string getSelectedPath();
-		
-        int  selected;
-        bool selectedChanged;
-        bool bRevSort;
+    string lastDirectory;
 
-        string lastDirectory;
-
-        vector <entry> entries;
+    vector <entry> entries;
 };

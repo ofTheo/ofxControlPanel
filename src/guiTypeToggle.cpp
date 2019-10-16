@@ -1,6 +1,6 @@
 #include "guiTypeToggle.h"
-#include "guiColor.h"
-#include "simpleColor.h"
+//#include "guiColor.h"
+//#include "simpleColor.h"
 #include "guiValue.h"
 
 //------------------------------------------------
@@ -20,7 +20,10 @@ void guiTypeToggle::updateValue(){
     }
     
 	//CB
-	notify();
+//	notify();
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    mTextMesh.clear();
+    #endif
 }
 
 //-----------------------------------------------.
@@ -37,24 +40,31 @@ void guiTypeToggle::updateGui(float x, float y, bool firstHit, bool isRelative){
 		}else{
 			value.setValue(0);
 		}
-
+        
 		//CB
-		notify();
+//		notify();
+        #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+        mTextMesh.clear();
+        #endif
 	}
 }
 
-//-----------------------------------------------
-void guiTypeToggle::notify(){
-    if( value.getNumValues() == 0 ){
-        return;
-    }
-    
-	guiCallbackData cbVal;
-	cbVal.setup(xmlName, name);
-	cbVal.addValueF(value.getValueI());
-	ofNotifyEvent(guiEvent,cbVal,this);
-	//CB
-}
+////-----------------------------------------------
+//void guiTypeToggle::notify(){
+//    if( value.getNumValues() == 0 ){
+//        return;
+//    }
+////    cout << "notify : Need to update, value changed | " << ofGetFrameNum() << endl;
+//    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+//    mTextMesh.clear();
+//    #endif
+//
+//	guiCallbackData cbVal;
+//	cbVal.setup(xmlName, name);
+//	cbVal.addValueF(value.getValueI());
+//	ofNotifyEvent(guiEvent,cbVal,this);
+//	//CB
+//}
 
 //---------------------------------------------
 void guiTypeToggle::updateBoundingBox(){
@@ -67,35 +77,76 @@ void guiTypeToggle::render(){
         return;
     }
     
-	ofPushStyle();
+    #ifdef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    ofPushStyle(); {
 
-			//draw the background
-			ofFill();
-			ofSetColor(bgColor.getColor());
-			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+        //draw the background
+        ofFill();
+        ofSetColor(bgColor.getColor());
+        ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
 
-			if(value.getValueI()){
-				ofFill();
-				ofSetColor(fgColor.getColor());
-				ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
-			}
-			
-			//draw the outline
-			ofNoFill();
-			ofSetColor(outlineColor.getColor());
-			ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
-			
-			if(bShowText){
-				ofSetColor(textColor.getColor());
-				displayText.renderText(hitArea.x + hitArea.width + 2, hitArea.y + displayText.getTextSingleLineHeight() - 2);
-			}
+        if(value.getValueI()){
+            ofFill();
+            ofSetColor(fgColor.getColor());
+            ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+        }
+        
+        //draw the outline
+        ofNoFill();
+        ofSetColor(outlineColor.getColor());
+        ofDrawRectangle(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+        
+        if(bShowText){
+            ofSetColor(textColor.getColor());
+            displayText.renderText(hitArea.x + hitArea.width + 2, hitArea.y + displayText.getTextSingleLineHeight() - 2);
+        }
 
-	ofPopStyle();
+    } ofPopStyle();
+    #endif
 }
 
 //-----------------------------------------------
 void guiTypeToggle::updateText(){
-	displayText.setText( name ); 
+//    cout << "guiTypeToggle :: updateText : | " << ofGetFrameNum() << endl;
+	displayText.setText( name );
 	labelWidth = displayText.getTextWidth();
 	updateBoundingBox(); 
 }
+
+#ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+//-----------------------------------------------
+void guiTypeToggle::addToRenderMesh( ofMesh& arenderMesh ) {
+    addRectangleToMesh( arenderMesh, hitArea, bgColor.getColor() );
+    if( value.getValueI() ) {
+        addRectangleToMesh( arenderMesh, hitArea, fgColor.getColor() );
+    }
+}
+
+//-----------------------------------------------
+void guiTypeToggle::addToLinesRenderMesh( ofMesh& arenderMesh ) {
+    addRectangleToLinesMesh( arenderMesh, hitArea, outlineColor.getColor() );
+}
+
+//-----------------------------------------------
+void guiTypeToggle::addToTextRenderMesh( ofMesh& arenderMesh ) {
+    if( bShowText ) {
+        if( mTextMesh.getNumVertices() == 0 ) {
+            displayText.addStringToMesh( mTextMesh, displayText.textString, hitArea.x + hitArea.width + 4, hitArea.y, textColor.getColor() );
+        }
+//        arenderMesh.addVertices( mTextMesh.getVertices() );
+//        arenderMesh.addTexCoords( mTextMesh.getTexCoords() );
+        if(mTextMesh.getNumVertices() > 0 ) {
+            arenderMesh.append( mTextMesh );
+        }
+    }
+}
+#endif
+
+
+
+
+
+
+
+
+

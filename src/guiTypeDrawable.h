@@ -1,9 +1,9 @@
 #pragma once
 
 #include "guiBaseObject.h"
-#include "guiColor.h"
-#include "simpleColor.h"
-#include "guiValue.h"
+//#include "guiColor.h"
+//#include "simpleColor.h"
+//#include "guiValue.h"
 
 //alows you to stack ofBaseDraw objects as layers on top of each other and then pass it to guiTypeDrawable::setup
 //handy if you want to render drawing from one class ontop of a video of another class. 
@@ -29,16 +29,15 @@ class drawableStacker : public ofBaseDraws{
 
 //pass in any ofBaseDraws class ( videoPlayer, videoGrabber, image, or your own class ) 
 class guiTypeDrawable : public guiBaseObject{
+public:
 
-     public:
+    guiTypeDrawable();
 
-        guiTypeDrawable();
+    void setup(string videoName, ofBaseDraws * vidIn, float videoWidth, float videoHeight);
+    void updateGui(float x, float y, bool firstHit, bool isRelative);
 
-        void setup(string videoName, ofBaseDraws * vidIn, float videoWidth, float videoHeight);
-        void updateGui(float x, float y, bool firstHit, bool isRelative);
+    void render();
 
-        void render();
-
-        ofBaseDraws * vid;
+    ofBaseDraws * vid;
 };
 

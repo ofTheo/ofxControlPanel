@@ -29,15 +29,15 @@ void guiTypeMultiToggle::setup(vector <string> boxNames){
 	setDimensions(180, bNames.size()*(guiTypeMultiToggle::boxSize + guiTypeMultiToggle::boxSpacing) + 2);
 }
 
-//-----------------------------------------------
-void guiTypeMultiToggle::updateValue(){
-    if( value.getNumValues() == 0 ){
-        return;
-    }
-    
-	//CB
-	notify();	
-}
+////-----------------------------------------------
+//void guiTypeMultiToggle::updateValue(){
+//    if( value.getNumValues() == 0 ){
+//        return;
+//    }
+//    
+//	//CB
+////	notify();
+//}
 
 //-----------------------------------------------.
 void guiTypeMultiToggle::updateGui(float x, float y, bool firstHit, bool isRelative){
@@ -60,23 +60,35 @@ void guiTypeMultiToggle::updateGui(float x, float y, bool firstHit, bool isRelat
 		}
 
 		//CB
-		notify();
+//		notify();
 	}
 
 }
 
 //-----------------------------------------------
-void guiTypeMultiToggle::notify(){
+string guiTypeMultiToggle::getSelectedStringValue() {
     if( value.getNumValues() == 0 ){
-        return;
+        return "default";
     }
-    
-	guiCallbackData cbVal;
-	cbVal.setup(xmlName, name);
-	cbVal.addValueF(value.getValueI());
-	ofNotifyEvent(guiEvent,cbVal,this);
-	//CB
+    int rindex = value.getValueI(0);
+    if( rindex >= bNames.size() ) {
+        return "default";
+    }
+    return bNames[ rindex ];
 }
+
+////-----------------------------------------------
+//void guiTypeMultiToggle::notify(){
+//    if( value.getNumValues() == 0 ){
+//        return;
+//    }
+//
+//	guiCallbackData cbVal;
+//	cbVal.setup(xmlName, name);
+//	cbVal.addValueF(value.getValueI());
+//	ofNotifyEvent(guiEvent,cbVal,this);
+//	//CB
+//}
 
 //-----------------------------------------------.
 void guiTypeMultiToggle::render(){

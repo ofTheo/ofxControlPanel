@@ -12,25 +12,27 @@ int simpleFileLister::refreshDir(){
 
 	if( lastDirectory != ""){
 		 int num =  simpleFileLister::listDir(lastDirectory);
+        ofDirectory::sort();
 		 return num;
 	}
 	else return 0;
 }
 
 //-------------------------------------------------------------
-int simpleFileLister::listDir(string directory){
-	
-	
+int simpleFileLister::listDir(string directory) {
+    
 	bRevSort        = false;
 	entries.clear();
 
 	ofDirectory::reset();
 	int numFiles = ofDirectory::listDir(directory);
+    ofDirectory::sort();
 	entries.assign(numFiles, entry());
 
 	for(int i = 0; i < numFiles; i++){
 		entries[i].filename = ofDirectory::getName(i);
 		entries[i].fullpath = ofDirectory::getPath(i);
+//        entries[i].filename = ofFilePath::getBaseName(entries[i].fullpath)+"."+ofFilePath::getFileExt(entries[i].fullpath );
 	}
 
 	lastDirectory = directory;

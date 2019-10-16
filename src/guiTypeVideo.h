@@ -8,23 +8,22 @@
  */
 
 #include "guiBaseObject.h"
-#include "guiColor.h"
-#include "simpleColor.h"
-#include "guiValue.h"
+//#include "guiColor.h"
+//#include "simpleColor.h"
+//#include "guiValue.h"
 #include "guiTypeDrawable.h"
 
 class guiTypeVideo : public guiTypeDrawable{
-	
-	public:
-		 //------------------------------------------------
-        void setup(string videoName, ofVideoPlayer * vidIn, float videoWidth, float videoHeight);
-        void updateGui(float x, float y, bool firstHit, bool isRelative);
-        void render();
-		
-		float pButtonX, pButtonY, pButtonW, pButtonH;	
-		float scX, scY, scW, scH;	
-		
-		float scrubPct;
-		bool playPause;
-		ofVideoPlayer * video;
+public:
+     //------------------------------------------------
+    void setup(string videoName, ofVideoPlayer * vidIn, float videoWidth, float videoHeight);
+    void updateGui(float x, float y, bool firstHit, bool isRelative);
+    void render();
+    
+    float pButtonX, pButtonY, pButtonW, pButtonH;
+    float scX, scY, scW, scH;
+    
+    float scrubPct = 0.0;
+    bool playPause = false;
+    ofVideoPlayer * video = NULL;
 };

@@ -37,6 +37,17 @@ bool guiValue::addValue(ofAbstractParameter &param){
         if( f.getFirstParent().getName().size() ){
             paramGroup.setName(f.getFirstParent().getName());
         }
+    } else if( type == "string" ) {
+        ofParameter<string> f =  paramGroup.getString(which);
+        if( f.getFirstParent().getName().size() ){
+            paramGroup.setName(f.getFirstParent().getName());
+        }
+    }
+    else if( type == "ofcolor" ) {
+        ofParameter<ofColor> f =  paramGroup.getColor(which);
+        if( f.getFirstParent().getName().size() ){
+            paramGroup.setName(f.getFirstParent().getName());
+        }
     }
 
     return true;
@@ -109,6 +120,9 @@ string guiValue::getTypeAsString(int which){
     }
     else if( paramGroup.get(which).type() == typeid(ofParameter<string>).name() ){
         return "string";
+    }
+    else if( paramGroup.get(which).type() == typeid(ofParameter<ofColor>).name() ) {
+        return "ofcolor";
     }
     
     return "";

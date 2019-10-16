@@ -1,10 +1,10 @@
 #pragma once
 
-#include "simpleColor.h"
+//#include "simpleColor.h"
 #include "guiColor.h"
 #include "guiValue.h"
 #include "guiTextBase.h"
-#include "guiCallback.h"
+//#include "guiCallback.h"
 
 typedef enum{
 SG_STATE_NORMAL,
@@ -42,6 +42,8 @@ class guiBaseObject{
         //should  be called on mouse up
         //-------------------------------------------
         virtual void release(float x, float y, bool isRelative);
+    
+    virtual void lostFocus();
 	
 		//should be called when a key is pressed; return true if we consume the key
 		virtual bool keyPressed(int k);
@@ -49,33 +51,23 @@ class guiBaseObject{
 		
         //these are here for the custom control types
         //we notify all elements about these actions
-        virtual void saveSettings(string filename);
-        virtual void loadSettings(string filename);
+        virtual bool saveSettings(string filename);
+        virtual bool loadSettings(string filename);
 
-        virtual void reloadSettings(){
-            ofLogWarning() << " reloadSettings() is deprecated " << endl;
-        }
-        virtual void saveSettings(){
-            ofLogWarning() << " saveSettings() is deprecated " << endl;
-        }
+//        virtual void reloadSettings(){
+//            ofLogWarning() << " reloadSettings() is deprecated " << endl;
+//        }
+//        virtual void saveSettings(){
+//            ofLogWarning() << " saveSettings() is deprecated " << endl;
+//        }
     
 
         virtual void lock();
         virtual void unlock();
         bool isLocked();
     
-
-        //------------------------------------------------
-		virtual void makeXmlNameFromDisplayName(){
-			xmlName = name;
-			size_t found;
-			found=xmlName.find_first_of(" ");
-			while (found!=string::npos){
-				xmlName[found]='_';
-				found=xmlName.find_first_of(" ",found+1);
-			}
-			transform(xmlName.begin(), xmlName.end(), xmlName.begin(), ::toupper);
-		}
+    virtual void setEnabled(bool ab );
+    bool isEnabled();
 
         //------------------------------------------------
         virtual void setShowText(bool showText);
@@ -102,7 +94,7 @@ class guiBaseObject{
         virtual void update();
 
 		//-----------------------------------------------
-		virtual void notify();
+//		virtual void notify();
 		
         //-----------------------------------------------
         virtual void checkPrescison();
@@ -114,6 +106,9 @@ class guiBaseObject{
 
         //-----------------------------------------------
 		string getVarsAsString();
+    string getVarAsString(int awhich);
+    
+    virtual string getSelectedStringValue() { return getVarAsString(0);};
 
         //every time we update the value of our text
         //-----------------------------------------------
@@ -128,12 +123,17 @@ class guiBaseObject{
         //this also needs to be specified by the extending class
         //--------------------------------------------
         virtual void render();
+    
+        virtual void renderOnTop(){}
 
          //-------------------------------------------
          virtual void setSelected();
 
          //-------------------------------------------
          virtual void setNormal();
+    
+    //-------------------------------------------
+    virtual void setLocked();
 		 
          //-------------------------------------------
          virtual void setForegroundColor( int norR, int norG, int norB, int norA);
@@ -166,11 +166,17 @@ class guiBaseObject{
         virtual float getVerticalSpacing();
         virtual float getHorizontalSpacing();
     
-        virtual float getDefaultColumnWidth(); 
+        virtual float getDefaultColumnWidth();
+    
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    virtual void addToRenderMesh( ofMesh& arenderMesh ) {}
+    virtual void addToLinesRenderMesh( ofMesh& arenderMesh ) {}
+    virtual void addToTextRenderMesh( ofMesh& arenderMesh ) {}
+    #endif
 
         //list of properties
         //------------------
-        string name;
+        string name="";
         string drawStr;
 		string varsString;
         string xmlName;
@@ -182,6 +188,7 @@ class guiBaseObject{
         guiColor bgColor;
         guiColor outlineColor;
         guiColor textColor;
+    guiColor triDefaultColor;
 
         int numDecimalPlaces;
 
@@ -189,9 +196,9 @@ class guiBaseObject{
         guiTextBase displayText;
 
         //-------------------
-        vector <guiBaseObject *>children;
+        vector< shared_ptr<guiBaseObject> > children;
 
-		ofEvent <guiCallbackData> guiEvent;		
+//		ofEvent <guiCallbackData> guiEvent;		
 
         //bool isRelative;
         bool locked;
@@ -203,10 +210,17 @@ class guiBaseObject{
         bool bShowText;
         bool readOnly;
         int  state;
+    bool bEnabled = true;
 
 //protected:
 
         guiValue value;
-
+    
+protected:
+    void addRectangleToMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor );
+    void addRectangleToLinesMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor );
+    void addTriangleToMesh( ofMesh& amesh, float a1x, float a1y, float a2x, float a2y, float a3x, float a3y, ofFloatColor acolor );
+    void addLineToMesh( ofMesh& amesh, float a1x, float a1y, float a2x, float a2y, ofFloatColor acolor );
+    
 };
 

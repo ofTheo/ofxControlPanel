@@ -1,9 +1,5 @@
 #pragma once
-
 #include "guiBaseObject.h"
-#include "guiColor.h"
-#include "simpleColor.h"
-#include "guiValue.h"
 
 class guiTypeMultiToggle : public guiBaseObject{
 
@@ -13,14 +9,16 @@ class guiTypeMultiToggle : public guiBaseObject{
 
         //------------------------------------------------
         void setup(vector <string> boxNames);
+    
+    virtual string getSelectedStringValue() override;
 
         //-----------------------------------------------
-		void notify();
+//		void notify();
 
         //-----------------------------------------------
-        virtual void updateValue();
-        void updateGui(float x, float y, bool firstHit, bool isRelative);
-        void render();
+//        virtual void updateValue();
+        void updateGui(float x, float y, bool firstHit, bool isRelative) override;
+        void render() override;
 		
 		vector <string> bNames;
 };

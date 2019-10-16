@@ -7,30 +7,22 @@
  *
  */
 
-#include "guiTypeVairableLister.h"
-#include "guiColor.h"
-#include "simpleColor.h"
+#include "guiTypeVariableLister.h"
 #include "guiValue.h"
 
 //-----------------------------------------------.
-guiTypeVairableLister::guiTypeVairableLister(){
-	typeStartOffset = 0;
-    
-}
-
-//-----------------------------------------------.
-void guiTypeVairableLister::setup(){
+void guiTypeVariableLister::setup(){
     cout << " setting name to " << value.paramGroup.getName() << endl;
 	name = value.paramGroup.getName();
 }
 
 //-----------------------------------------------.
-void guiTypeVairableLister::update(){			
+void guiTypeVariableLister::update(){
 	updateBoundingBox();
 }
 
 //-----------------------------------------------
-void guiTypeVairableLister::updateText(){
+void guiTypeVariableLister::updateText(){
 	
     drawStr = name + ":";
 	displayText.setText(drawStr);
@@ -40,7 +32,7 @@ void guiTypeVairableLister::updateText(){
 }
 
 //-----------------------------------------------.
-void guiTypeVairableLister::updateBoundingBox(){
+void guiTypeVariableLister::updateBoundingBox(){
 
 	minNameWidth = 20;
 	minVarWidth  = 20;
@@ -54,15 +46,21 @@ void guiTypeVairableLister::updateBoundingBox(){
 	for(int i = 0; i < value.paramGroup.size(); i++){
 		minNameWidth = MAX(minNameWidth, displayText.getTextWidth(value.paramGroup.getName(i)));
         
-        string str = "";
-        
-        if( value.getTypeAsString(i) == "float" ){
-            ofParameter <float> val = value.paramGroup.getFloat(i);
-            str = ofToString(val);
-        }else{
-            ofParameter <int> val = value.paramGroup.getInt(i);
-            str = ofToString(val);
-        }
+        string str = getVarAsString(i);
+//        string str = "";
+//        string ttype = value.getTypeAsString(i);
+//
+//        if( ttype == "float" ){
+//            ofParameter <float> val = value.paramGroup.getFloat(i);
+//            str = ofToString(val);
+//        } else if( ttype == "int" ) {
+//            ofParameter <int> val = value.paramGroup.getInt(i);
+//            str = ofToString(val);
+//        } else if(ttype == "bool" ) {
+//            str = value.paramGroup.getBool(i) ? "true" : "false";
+//        } else if( ttype == "string" ) {
+//            str = value.paramGroup.getString(i);
+//        }
         
 		minVarWidth = MAX(minVarWidth, displayText.getTextWidth(str));
 	}
@@ -86,7 +84,7 @@ void guiTypeVairableLister::updateBoundingBox(){
 }
 
 //-----------------------------------------------.
-void guiTypeVairableLister::render(){
+void guiTypeVariableLister::render(){
 	ofPushStyle();
 		
 			ofSetColor(textColor.getColor());				
@@ -111,15 +109,22 @@ void guiTypeVairableLister::render(){
 				ofSetColor(textColor.getColor());
 				displayText.renderString(value.paramGroup.getName(i), x, y);
                 
-                string str = "";
+//                string str = "";
+//                string ttype = value.getTypeAsString(i);
                 
-                if( value.getTypeAsString(i) == "float" ){
-                    ofParameter <float> val = value.paramGroup.getFloat(i);
-                    str = ofToString(val);
-                }else{
-                    ofParameter <int> val = value.paramGroup.getInt(i);
-                    str = ofToString(val);
-                }
+                string str = getVarAsString(i);
+                
+//                if( ttype == "float" ){
+////                    ofParameter <float> val = value.paramGroup.getFloat(i);
+//                    str = ofToString(value.paramGroup.getFloat(i));
+//                } else if( ttype == "int" ) {
+////                    ofParameter <int> val = value.paramGroup.getInt(i);
+//                    str = ofToString(value.paramGroup.getInt(i));
+//                } else if(ttype == "bool" ) {
+//                    str = value.paramGroup.getBool(i) ? "true" : "false";
+//                } else if( ttype == "string" ) {
+//                    str = value.paramGroup.getString(i);
+//                }
                 
 				displayText.renderString(str, x + minNameWidth, y);
 

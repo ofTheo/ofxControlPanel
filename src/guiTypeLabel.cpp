@@ -17,19 +17,27 @@ void guiTypeLabel::setup(ofParameter<string> & label, bool highlight){
 
     textLabel.makeReferenceTo(label);
     bHighlight = highlight;
-    
+    prevString = "09m09asidjoasd890asdfasdsad";
     internalUpdate();
     boundingBox = hitArea;
 }
 
 //-----------------------------------------------.
 void guiTypeLabel::internalUpdate(){
-    string str = textLabel.getName();
-    if( str.length() ){
-        str += ": ";
+    string tstr = textLabel;//textLabel.getName();
+//    if( str.length() ){
+//        str += ": ";
+//    }
+    
+    // only call setText if the text has changed //
+    if( tstr != prevString ) {
+        string str = textLabel.getName();
+        if( str.length() ){
+            str += ": ";
+        }
+        setText( str );
+        prevString = tstr;
     }
-        
-    setText(  str );
 }
 
 //-----------------------------------------------.
@@ -45,20 +53,60 @@ float guiTypeLabel::getVerticalSpacing(){
 void guiTypeLabel::setText( string text ){
 	name = text;
     hitArea.width = MAX(getDefaultColumnWidth(), displayText.getTextWidth(text) + 3);
+//    cout << "guiTypeLabel :: calling setText: " << " | " << ofGetFrameNum() << endl;
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    mTextMesh.clear();
+    #endif
 }
 
 //-----------------------------------------------.
 void guiTypeLabel::render(){
-    internalUpdate();
+//    internalUpdate();
     
-	ofPushStyle();
-    
+    #ifdef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    ofPushStyle(); {
         if( bHighlight ){
-            ofSetColor(outlineColor.getColor());
+            ofSetColor(outlineColor.getColor() );
             ofDrawLine(boundingBox.x, boundingBox.y, boundingBox.x + boundingBox.width, boundingBox.y);
             ofDrawLine(boundingBox.x, boundingBox.y + boundingBox.height, boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
         }
     
         guiBaseObject::renderText();
-	ofPopStyle();
+    } ofPopStyle();
+    #endif
 }
+
+#ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+//-----------------------------------------------.
+void guiTypeLabel::addToRenderMesh( ofMesh& arenderMesh ) {
+    internalUpdate();
+}
+
+//-----------------------------------------------.
+void guiTypeLabel::addToLinesRenderMesh( ofMesh& arenderMesh ) {
+    if( bHighlight ){
+        addLineToMesh( arenderMesh, boundingBox.x, boundingBox.y, boundingBox.getRight(), boundingBox.y, outlineColor.getColor() );
+        addLineToMesh( arenderMesh, boundingBox.x, boundingBox.getBottom(), boundingBox.getRight(), boundingBox.getBottom(), outlineColor.getColor() );
+    }
+}
+
+//-----------------------------------------------.
+void guiTypeLabel::addToTextRenderMesh( ofMesh& arenderMesh ) {
+    if( mTextMesh.getNumVertices() == 0 ) {
+        mTextMesh.clear();
+        displayText.addStringToMesh(mTextMesh, displayText.textString, boundingBox.x, boundingBox.y, textColor.getColor() );
+    }
+    
+    if( mTextMesh.getNumVertices() > 0 ) {
+        arenderMesh.append(mTextMesh);
+    }
+//    arenderMesh.addVertices( mTextMesh.getVertices() );
+//    arenderMesh.addTexCoords( mTextMesh.getTexCoords() );
+}
+#endif
+
+
+
+
+
+

@@ -1,11 +1,6 @@
 #include "guiType2DSlider.h"
 
 //------------------------------------------------
-guiType2DSlider::guiType2DSlider(){
-	knobSize = 6.0;
-}
-
-//------------------------------------------------
 void guiType2DSlider::setup(){
     if( value.getNumValues() != 2 ){
         return;
@@ -46,22 +41,22 @@ void guiType2DSlider::updateGui(float x, float y, bool firstHit, bool isRelative
 
 		updateText();
 		//CB
-		notify();
+//		notify();
 	}
 }
-
-//-----------------------------------------------
-void guiType2DSlider::notify(){
-    if( value.getNumValues() != 2 ){
-        return;
-    }
-    
-	guiCallbackData cbVal;
-	cbVal.setup(xmlName, name);
-	cbVal.addValueF(value.getValueF(0));
-	cbVal.addValueF(value.getValueF(1));
-	ofNotifyEvent(guiEvent,cbVal,this);
-}
+//
+////-----------------------------------------------
+//void guiType2DSlider::notify(){
+//    if( value.getNumValues() != 2 ){
+//        return;
+//    }
+//
+//	guiCallbackData cbVal;
+//	cbVal.setup(xmlName, name);
+//	cbVal.addValueF(value.getValueF(0));
+//	cbVal.addValueF(value.getValueF(1));
+//	ofNotifyEvent(guiEvent,cbVal,this);
+//}
 
 //-----------------------------------------------
 void guiType2DSlider::setKnobSize(float _knobSize){
@@ -76,7 +71,7 @@ void guiType2DSlider::setValue(float _value, int whichParam) {
 //-----------------------------------------------.
 void guiType2DSlider::updateValue(){
    //CB
-   notify();
+//   notify();
 }
 
 //-----------------------------------------------.

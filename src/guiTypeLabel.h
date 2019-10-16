@@ -8,12 +8,10 @@
  */
 
 #pragma once
-
-
 #include "guiBaseObject.h"
-#include "guiColor.h"
-#include "simpleColor.h"
-#include "guiValue.h"
+//#include "guiColor.h"
+//#include "simpleColor.h"
+//#include "guiValue.h"
 
 class guiTypeLabel : public guiBaseObject{
 	
@@ -27,7 +25,19 @@ public:
     
     float getVerticalSpacing();
     
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    virtual void addToRenderMesh( ofMesh& arenderMesh );
+    virtual void addToLinesRenderMesh( ofMesh& arenderMesh );
+    virtual void addToTextRenderMesh( ofMesh& arenderMesh );
+    #endif
+    
     ofParameter <string> textLabel;
 	
     bool bHighlight;
+    
+protected:
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    ofMesh mTextMesh;
+    #endif
+    string prevString = "---";
 };

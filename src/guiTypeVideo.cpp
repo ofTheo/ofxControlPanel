@@ -3,7 +3,7 @@
  //------------------------------------------------
 void guiTypeVideo::setup(string videoName, ofVideoPlayer * vidIn, float videoWidth, float videoHeight){
 	video		= vidIn;
-	playPause	= false;
+	playPause	= video->isPaused();
 	
 	guiTypeDrawable::setup(videoName, video, videoWidth, videoHeight);
 }
@@ -44,13 +44,13 @@ void guiTypeVideo::render(){
 	scW  = hitArea.width - (pButtonW + 16);
 	scH  = pButtonH-2;
 
-	ofPushStyle();
+    ofPushStyle(); {
 
 		if( video != NULL ){
 			scrubPct = video->getPosition();
 		}else scrubPct = 0.0;
 
-		ofPushMatrix();
+        ofPushMatrix(); {
 		//glTranslatef(boundingBox.x, boundingBox.y, 0);
 			guiBaseObject::renderText();
 
@@ -62,7 +62,15 @@ void guiTypeVideo::render(){
 			ofDisableAlphaBlending();
 
 			ofSetColor(255, 255, 255);
-			vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+            ofRectangle vrect( 0, 0, vid->getWidth(), vid->getHeight() );
+            if( vrect.getWidth() > 0.0 && vrect.getHeight() > 0 ) {
+                vrect.scaleTo(hitArea);
+                
+            } else {
+                vrect = hitArea;
+            }
+//			vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
+            vid->draw( vrect );
 			
 			ofEnableAlphaBlending();
 			
@@ -75,7 +83,7 @@ void guiTypeVideo::render(){
 			
 			
 			ofSetColor( fgColor.getColor() );
-			if( playPause ){
+			if( !playPause ){
 				ofDrawRectangle(pButtonX + 4, pButtonY + 3, 2, 9);
 				ofDrawRectangle(pButtonX + 9, pButtonY + 3, 2, 9);
 			}else{
@@ -95,8 +103,8 @@ void guiTypeVideo::render(){
 			ofSetColor( fgColor.getColor() );
 			ofDrawRectangle( scX + 2, scY + 2, scrubPct * (scW-4.0), scH - 4);
 
-		ofPopMatrix();
+        } ofPopMatrix();
 
-	ofPopStyle();
+    } ofPopStyle();
 }
 	

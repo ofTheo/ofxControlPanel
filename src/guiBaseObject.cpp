@@ -6,6 +6,7 @@ guiColor gTextColor;
 guiColor gFgColor;
 guiColor gBgColor;
 guiColor gOutlineColor;
+guiColor gTriDefaultColor;
 
 bool initialColorsLoaded = false;
 
@@ -20,17 +21,29 @@ guiBaseObject::guiBaseObject(){
 	storedTextWidth     = 0;
 
 	if( !initialColorsLoaded ){
-		gFgColor.setColor(130, 130, 130, 255);
-		gFgColor.setSelectedColor(100, 140, 220, 255);
+		gFgColor.setColor(120, 120, 120, 255);
+//		gFgColor.setSelectedColor(100, 140, 220, 255);
+//        gFgColor.setColor(4,89,163, 255);
+        gFgColor.setSelectedColor(253,2,85, 255);
+        gFgColor.setDisabledColor(70, 70, 70, 255);
 
 		gOutlineColor.setColor(60, 60, 60, 255);
-		gOutlineColor.setSelectedColor(100, 140, 220, 255);
+//		gOutlineColor.setSelectedColor(100, 140, 220, 255);
+        gOutlineColor.setSelectedColor(4,89,163, 255);
+        gOutlineColor.setDisabledColor(40, 40, 40, 255);
 
 		gBgColor.setColor(30, 30, 30, 255);
 		gBgColor.setSelectedColor(30, 30, 30, 255);
+        gBgColor.setDisabledColor(20, 20, 20, 255);
 
 		gTextColor.setColor(255, 255, 255, 255);
 		gTextColor.setSelectedColor(255, 255, 255, 255);
+        gTextColor.setDisabledColor( 180, 180, 180, 255 );
+        
+        gTriDefaultColor.setColor(253,2,85,255);
+        gTriDefaultColor.setSelectedColor(4,89,163, 255);
+        gTriDefaultColor.setDisabledColor(20, 20, 20, 255);
+        
 		initialColorsLoaded = true;
 	}
 	
@@ -38,6 +51,7 @@ guiBaseObject::guiBaseObject(){
 	outlineColor	= gOutlineColor;				
 	bgColor			= gBgColor;
 	textColor		= gTextColor;
+    triDefaultColor = gTriDefaultColor;
 	
 	//these need to be setable at some point
 	fontSize     = 11;
@@ -53,7 +67,7 @@ void guiBaseObject::setFont(ofTrueTypeFont * fontPtr){
 //-------------------------------------------
 bool guiBaseObject::checkHit(float x, float y, bool isRelative){
 	if(readOnly)return false;
-	if( isInsideRect(x, y, hitArea) ){
+	if( isInsideRect(x, y, hitArea) && isEnabled() ){
 		state = SG_STATE_SELECTED;
 		setSelected();
 		updateGui(x, y, true, isRelative);
@@ -116,6 +130,13 @@ void guiBaseObject::release(float x, float y, bool isRelative){
     }
  }
 
+//-------------------------------------------
+void guiBaseObject::lostFocus() {
+    for(unsigned int i = 0; i < children.size(); i++){
+        children[i]->lostFocus();
+    }
+}
+
 //should  be called on key press
 //-------------------------------------------
 bool guiBaseObject::keyPressed(int k){
@@ -141,10 +162,11 @@ bool guiBaseObject::keyReleased(int k){
 
 //these are here for the custom control types
 //we notify all elements about these actions
-void guiBaseObject::saveSettings(string filename){}
-void guiBaseObject::loadSettings(string filename){}
+bool guiBaseObject::saveSettings(string filename){ return true;}
+bool guiBaseObject::loadSettings(string filename){ return true;}
 
-void guiBaseObject::lock(){
+void guiBaseObject::lock() {
+    
 	locked = true;
 }
 
@@ -154,6 +176,25 @@ void guiBaseObject::unlock(){
 
 bool guiBaseObject::isLocked(){
 	return locked;
+}
+
+//------------------------------------------------
+void guiBaseObject::setEnabled( bool ab ) {
+    if(ab) {
+        if( !bEnabled ) {
+            setNormal();
+        }
+    } else {
+        if( bEnabled ) {
+            setLocked();
+        }
+    }
+    bEnabled = ab;
+}
+
+//------------------------------------------------
+bool guiBaseObject::isEnabled() {
+    return bEnabled;
 }
 
 //------------------------------------------------
@@ -218,29 +259,29 @@ void guiBaseObject::update(){
 	updateText();
 }
 
-//-----------------------------------------------
-void guiBaseObject::notify(){
-	guiCallbackData cbVal;
-	cbVal.setup(xmlName, name);
-    
-    for(int i = 0; i < value.getNumValues(); i++){
-    
-        string type = value.getTypeAsString(i);
-        if( type == "float" || type == "" ){
-            cbVal.addValueF(value.getValueF(i));
-        }
-        else if( type == "int" || type == "bool" ){
-            cbVal.addValueI(value.getValueI(i));
-        }
-        else if( type == "string" ){
-            cbVal.addValueS(value.getValueAsString(i));
-        }
-    
-    }
-    
-	ofNotifyEvent(guiEvent,cbVal,this);
-	//CB
-}
+////-----------------------------------------------
+//void guiBaseObject::notify(){
+//	guiCallbackData cbVal;
+//	cbVal.setup(xmlName, name);
+//    
+//    for(int i = 0; i < value.getNumValues(); i++){
+//    
+//        string type = value.getTypeAsString(i);
+//        if( type == "float" || type == "" ){
+//            cbVal.addValueF(value.getValueF(i));
+//        }
+//        else if( type == "int" || type == "bool" ){
+//            cbVal.addValueI(value.getValueI(i));
+//        }
+//        else if( type == "string" ){
+//            cbVal.addValueS(value.getValueAsString(i));
+//        }
+//    
+//    }
+//    
+//	ofNotifyEvent(guiEvent,cbVal,this);
+//	//CB
+//}
 
 //-----------------------------------------------
 void guiBaseObject::checkPrescison(){
@@ -273,24 +314,49 @@ string guiBaseObject::getVarsAsString(){
 	for(int i = 0; i < value.getNumValues(); i++){
 		if( i > 0 ) str += " ";
         
-        string type = value.getTypeAsString(i);
+        str += getVarAsString(i);
         
-		if( type == "float" ){
-			checkPrescison();
-			str += ofToString(value.getValueF(i), numDecimalPlaces);
-		}
-        else if( type == "int" ){
-            str += ofToString(value.getValueI(i), 0);
-        }
-        else if( type == "bool" ){
-            str += ofToString(value.getValueB(i), 0);
-        }
-        else if( type == "string" ){
-            str += ofToString(value.getValueAsString(i));
-        }
+//        string type = value.getTypeAsString(i);
+//
+//        if( type == "float" ){
+//            checkPrescison();
+//            str += ofToString(value.getValueF(i), numDecimalPlaces);
+//        }
+//        else if( type == "int" ){
+//            str += ofToString(value.getValueI(i), 0);
+//        }
+//        else if( type == "bool" ){
+//            str += ofToString(value.getValueB(i), 0);
+//        }
+//        else if( type == "string" ){
+//            str += ofToString(value.getValueAsString(i));
+//        }
     }
 	
 	return str;
+}
+
+//-----------------------------------------------
+string guiBaseObject::getVarAsString(int awhich) {
+    if( awhich < value.getNumValues() ) {
+        string type = value.getTypeAsString(awhich);
+        
+        if( type == "float" ){
+            checkPrescison();
+            return ofToString(value.getValueF(awhich), numDecimalPlaces);
+        }
+        else if( type == "int" ){
+            return ofToString(value.getValueI(awhich), 0);
+        }
+        else if( type == "bool" ){
+            return ofToString(value.getValueB(awhich), 0);
+        }
+        else if( type == "string" ){
+            return ofToString(value.getValueAsString(awhich));
+        }
+        
+    }
+    return "default";
 }
 
 //every time we update the value of our text
@@ -337,10 +403,11 @@ void guiBaseObject::render(){
 
  //-------------------------------------------
  void guiBaseObject::setSelected(){
-	fgColor.setGuiColorMode(1);
-	bgColor.setGuiColorMode(1);
-	outlineColor.setGuiColorMode(1);
-	textColor.setGuiColorMode(1);
+    fgColor.setGuiColorMode(1);
+    bgColor.setGuiColorMode(1);
+    outlineColor.setGuiColorMode(1);
+    textColor.setGuiColorMode(1);
+    triDefaultColor.setGuiColorMode(1);
  }
 
  //-------------------------------------------
@@ -349,7 +416,17 @@ void guiBaseObject::render(){
 	bgColor.setGuiColorMode(0);
 	outlineColor.setGuiColorMode(0);
 	textColor.setGuiColorMode(0);
+     triDefaultColor.setGuiColorMode(0);
  }
+
+//-------------------------------------------
+void guiBaseObject::setLocked() {
+    fgColor.setGuiColorMode(2);
+    bgColor.setGuiColorMode(2);
+    outlineColor.setGuiColorMode(2);
+    textColor.setGuiColorMode(2);
+    triDefaultColor.setGuiColorMode(2);
+}
 
  //-------------------------------------------
  void guiBaseObject::setForegroundColor( int norR, int norG, int norB, int norA = 255){
@@ -398,6 +475,120 @@ void guiBaseObject::render(){
 
  //-------------------------------------------
  void guiBaseObject::updateValue() {
-
+     for( int i = 0; i < children.size(); i++ ) {
+         children[i]->updateValue();
+     }
 }
+
+
+//---------------------------------------------
+void guiBaseObject::addRectangleToMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor ) {
+    int tVoffset = amesh.getNumVertices();
+    vector<glm::vec3> rverts;
+    rverts.resize(4);
+    rverts[0] = glm::vec3( arect.x, arect.y, 0 );
+    rverts[1] = glm::vec3( arect.getRight(), arect.y, 0 );
+    rverts[2] = glm::vec3( arect.getRight(), arect.getBottom(), 0 );
+    rverts[3] = glm::vec3( arect.x, arect.getBottom(), 0 );
+    
+    vector<ofFloatColor> rcolors;
+    rcolors.assign( 4, acolor );
+    
+    vector<ofIndexType> rindices;
+    rindices.resize( 6 );
+    rindices[0] = tVoffset + 0;
+    rindices[1] = tVoffset + 1;
+    rindices[2] = tVoffset + 2;
+    
+    rindices[3] = tVoffset + 0;
+    rindices[4] = tVoffset + 2;
+    rindices[5] = tVoffset + 3;
+    
+    amesh.addVertices( rverts );
+    amesh.addColors( rcolors );
+    amesh.addIndices( rindices );
+}
+
+//---------------------------------------------
+void guiBaseObject::addRectangleToLinesMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor ) {
+    int tVoffset = amesh.getNumVertices();
+    vector<glm::vec3> rverts;
+    rverts.resize(4);
+    rverts[0] = glm::vec3( arect.x, arect.y, 0 );
+    rverts[1] = glm::vec3( arect.getRight(), arect.y, 0 );
+    rverts[2] = glm::vec3( arect.getRight(), arect.getBottom(), 0 );
+    rverts[3] = glm::vec3( arect.x, arect.getBottom(), 0 );
+    
+    vector<ofFloatColor> rcolors;
+    rcolors.assign( 4, acolor );
+    
+    vector<ofIndexType> rindices;
+    rindices.resize( 8 );
+    // top line
+    rindices[0] = tVoffset + 0;
+    rindices[1] = tVoffset + 1;
+    
+    // right side
+    rindices[2] = tVoffset + 1;
+    rindices[3] = tVoffset + 2;
+    
+    // bottom
+    rindices[4] = tVoffset + 2;
+    rindices[5] = tVoffset + 3;
+    
+    // left
+    rindices[6] = tVoffset + 3;
+    rindices[7] = tVoffset + 0;
+    
+    amesh.addVertices( rverts );
+    amesh.addColors( rcolors );
+    amesh.addIndices( rindices );
+}
+
+//---------------------------------------------
+void guiBaseObject::addTriangleToMesh( ofMesh& amesh, float a1x, float a1y, float a2x, float a2y, float a3x, float a3y, ofFloatColor acolor ) {
+    int tVoffset = amesh.getNumVertices();
+    vector<glm::vec3> rverts;
+    rverts.resize(3);
+    rverts[0] = glm::vec3( a1x, a1y, 0 );
+    rverts[1]= glm::vec3( a2x, a2y , 0);
+    rverts[2]= glm::vec3( a3x, a3y , 0);
+    
+    vector<ofFloatColor> rcolors;
+    rcolors.assign( 3, acolor );
+    
+    vector<ofIndexType> rindices;
+    rindices.resize( 3 );
+    rindices[0] = tVoffset + 0;
+    rindices[1] = tVoffset + 1;
+    rindices[2] = tVoffset + 2;
+    
+    amesh.addVertices( rverts );
+    amesh.addColors( rcolors );
+    amesh.addIndices( rindices );
+}
+
+//---------------------------------------------
+void guiBaseObject::addLineToMesh( ofMesh& amesh, float a1x, float a1y, float a2x, float a2y, ofFloatColor acolor ) {
+    int tVoffset = amesh.getNumVertices();
+    vector<glm::vec3> rverts;
+    rverts.resize(2);
+    rverts[0] = glm::vec3( a1x, a1y, 0 );
+    rverts[1] = glm::vec3( a2x, a2y, 0 );
+    
+    vector<ofFloatColor> rcolors;
+    rcolors.assign( 2, acolor );
+    
+    vector<ofIndexType> rindices;
+    rindices.resize( 2 );
+    rindices[0] = tVoffset + 0;
+    rindices[1] = tVoffset + 1;
+    
+    amesh.addVertices( rverts );
+    amesh.addColors( rcolors );
+    amesh.addIndices( rindices );
+    
+}
+
+
 

@@ -1,4 +1,5 @@
 #include "guiTextBase.h"
+#include "ofxControlPanel.h"
 
 //-------------------------------------------
 guiTextBase::guiTextBase(){
@@ -116,4 +117,35 @@ guiTextBase::guiTextBase(){
 
 	return  textWidth;
 }
+
+#ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+//---------------------------------------------
+void guiTextBase::addStringToMesh(ofMesh &amesh, string aString, float ax, float ay, ofFloatColor acolor ) {
+    //    mutThis->setAlphaBitmapText(true);
+    
+    ofMesh charMesh;// = aBitmapFont.getMesh(aString, ax, ay, OF_BITMAPMODE_SCREEN, true );
+    if( bRealFont ) {
+        charMesh = ourFont->getStringMesh( aString, ax, ay+getTextSingleLineHeight(), true );
+    } else {
+        charMesh = ofxControlPanel::bitmapFont.getMesh(aString, ax, ay+getTextSingleLineHeight(), OF_BITMAPMODE_SCREEN, true );
+    }
+    
+    charMesh.clearColors();
+    vector<ofFloatColor> tempCs;
+    tempCs.assign( charMesh.getNumVertices(), acolor );
+    charMesh.addColors(tempCs);
+    charMesh.enableColors();
+    amesh.append( charMesh );
+    
+//    amesh.addVertices( charMesh.getVertices() );
+//    amesh.addTexCoords( charMesh.getTexCoords() );
+//    vector<ofFloatColor> tempCs;
+//    tempCs.assign( charMesh.getNumVertices(), acolor );
+//    amesh.addColors( tempCs );
+    //    mutThis->bind( aBitmapFont.getTexture(),0);
+    //    draw(charMesh,OF_MESH_FILL,false,true,false);
+    //    mutThis->unbind(aBitmapFont.getTexture(),0);
+    //    mutThis->setAlphaBitmapText(false);
+}
+#endif
 

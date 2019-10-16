@@ -23,13 +23,15 @@ void guiTypeCustom::setup(string customName, guiCustomImpl * customIn, float pan
 }
 
 //-----------------------------------------------
-void guiTypeCustom::saveSettings(string filename){
-	if( custom != NULL)custom->saveSettings(filename);
+bool guiTypeCustom::saveSettings(string filename){
+	if( custom != NULL) return custom->saveSettings(filename);
+    return false;
 }
 
 //-----------------------------------------------
-void guiTypeCustom::loadSettings(string filename){
-	if( custom != NULL)custom->loadSettings(filename);
+bool guiTypeCustom::loadSettings(string filename){
+	if( custom != NULL) return custom->loadSettings(filename);
+    return false;
 }
 
 //-----------------------------------------------

@@ -1,7 +1,6 @@
 #pragma once
-
 #include "guiColor.h"
-#include "simpleColor.h"
+//#include "simpleColor.h"
 #include "guiValue.h"
 
 class guiTextBase{
@@ -30,6 +29,10 @@ class guiTextBase{
 		virtual bool usingTTF(){
 			return ourFont != NULL;
 		}
+    
+    #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
+    virtual void addStringToMesh( ofMesh& amesh, string aString, float ax, float ay, ofFloatColor acolor );
+    #endif
 
         //--------------------------------------------
         ofTrueTypeFont * ourFont;
