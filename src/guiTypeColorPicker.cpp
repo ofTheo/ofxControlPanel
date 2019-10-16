@@ -55,6 +55,10 @@ void guiTypeColorPicker::setup( ofParameter<ofColor>& acolor ) {
         mTextInputs.push_back(ti);
         children.push_back(ti);
     }
+    mComponentParams[0].setName("r");
+    mComponentParams[1].setName("g");
+    mComponentParams[2].setName("b");
+    mComponentParams[3].setName("a");
     
     setDimensions(getDefaultColumnWidth(), 34);
 }
@@ -82,13 +86,13 @@ void guiTypeColorPicker::updateBoundingBox() {
         hitArea.height = displayText.getTextHeight() + 3.0;
         mColorRect.y = hitArea.y;
         mColorRect.height = hitArea.height;
-        mColorRect.x = hitArea.x;
-        mColorRect.width = 48;
         
+        mColorRect.width = 48;
+        mColorRect.x = hitArea.getRight()-mColorRect.width;
         
         float tw = displayText.getTextWidth("255")+4;
-        float sx = mColorRect.width + 16;
-        float availW = boundingBox.width-sx;
+        float sx = 16;//mColorRect.width + 16;
+        float availW = boundingBox.width-mColorRect.width-24;
         float spacing = (availW - (4.f*tw)) / 3.f;
         
         for(int i = 0; i < mTextInputs.size(); i++ ) {
@@ -135,6 +139,16 @@ void guiTypeColorPicker::addToTextRenderMesh( ofMesh& arenderMesh ) {
 //    name, hitArea.x , hitArea.y + displayText.getTextSingleLineHeight()
     if( mTextMesh.getNumVertices() == 0 ) {
         mTextMesh.clear();
+        
+        for( int i = 0; i < mComponentParams.size(); i++ ) {
+            string rname = mComponentParams[i].getName();
+            if( rname.size() > 0 && i < mTextInputs.size() ) {
+                rname = rname+":";
+                float rtextW = displayText.getTextWidth(rname);
+                displayText.addStringToMesh( mTextMesh, rname, hitArea.x + mTextInputs[i]->hitArea.x-rtextW, hitArea.y + mTextInputs[i]->hitArea.y-2, textColor.getColor() );
+            }
+        }
+        
         displayText.addStringToMesh(mTextMesh, name, boundingBox.x+2, boundingBox.y, textColor.getColor() );
     //    addStringToMesh( arenderMesh, afont, name, hitArea.x, hitArea.y + displayText.getTextSingleLineHeight(), textColor.getColor() );
     }

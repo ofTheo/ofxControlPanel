@@ -139,7 +139,7 @@ bool guiTypeTextInput::keyPressed(int k) {
                 }
                 _onTextChange();
             }
-        } else if( (k >= '0' && k <= '9') || k == '.') {
+        } else if( (k >= '0' && k <= '9') || k == '.' || k == '-') {
             mTextInput += k;
             mCursorIndex = mTextInput.size();
             _onTextChange();
@@ -184,8 +184,8 @@ void guiTypeTextInput::addToTextRenderMesh( ofMesh& arenderMesh, float ax, float
     
     if( mTextMesh.getNumVertices() == 0 ) {
         mTextMesh.clear();
+        
         float textW = displayText.getTextWidth(getText());
-        float rightAlignVarsX = hitArea.getWidth() - textW;
         displayText.addStringToMesh( mTextMesh, getText(), ax + hitArea.x + 2.0, ay + hitArea.y, textColor.getColor() );
     }
     arenderMesh.append(mTextMesh);
