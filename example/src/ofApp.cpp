@@ -12,15 +12,14 @@ void ofApp::setup(){
             
     //--------- PANEL 1
     gui.setWhichPanel(0);
-            
     gui.setWhichColumn(0);
+    gui.addFpsChartPlotter();
     gui.addDrawableRect("video", &grabber, 200, 150);
 
     gui.addLabel("Loading images from disk"); 
     gui.addDrawableRect("image loaded from dir", &img, 200, 150);
 
-    lister.listDir("of_logos/");
-    gui.addFileLister("image lister", &lister, 200, 100);
+    gui.addFileLister( mFilePathStr.set("Image Lister", ""), "of_logos/" );
 
     gui.setWhichColumn(1);
     gui.addDrawableRect("colorCV", &colorCV, 200, 150);
@@ -34,51 +33,42 @@ void ofApp::setup(){
     cvControls.add(bInvert.set("invert", false));
     cvControls.add(threshold.set("threshold", 29.0, 1.0, 255.0));
     
-    gui.addGroup( cvControls ); 
+    gui.add( cvControls );
     
-    vars.setName("app vars");
-    vars.add( appFrameCount.set("frame count", 0) );
-    vars.add( appFrameRate.set("frame rate", 60.0) );
-    vars.add( elapsedTime.set("elapsed time", 0.0) );
-    
-    gui.addVariableLister(vars);
-
-    gui.addChartPlotter(appFrameRate, 30, 80);
-
     vector <string> names;
     names.push_back("abs diff");
     names.push_back("greater than");
     names.push_back("less than");
-    gui.addTextDropDown("difference mode", 0, names);
+    gui.addTextDropDown(textDropDownParam.set("difference mode", 0), names);
+    
+    vars.setName("app vars");
+    vars.add( appFrameCount.set("frame count", 0) );
+//    vars.add( appFrameRate.set("frame rate", 60.0) );
+    vars.add( elapsedTime.set("elapsed time", 0.0) );
+    
+    gui.addVariableLister(vars);
+    
+    gui.addFilePicker( filePickerStr.set("PickedFile", "") );
+    gui.addColorPicker( paramColor.set("PickedColor", ofColor(4,89,163, 255) ) );
 
-    testLabel.set("currentPath", lister.getSelectedPath());
     gui.addLabel("a label");
-    gui.addLabel(testLabel);
+    gui.addLabel(testLabel.set("Test Label", "0"));
+    
+    gui.addMultiToggle( multiToggleParam.set("MultiTogg", 0), { "Option 1", "Option 2", "Option 3" } );
     
     status = "first frame";
     gui.setStatusMessage(status); 
 
     //SETTINGS AND EVENTS
+    multiToggleParam.addListener(this, &ofApp::onToggleChange );
+    mFilePathStr.addListener( this, &ofApp::onFilePathChange );
+    filePickerStr.addListener( this, &ofApp::onFilePathChange );
+    
+    ofAddListener(gui.guiLoadEvent, this, &ofApp::onGuiLoad );
+    ofAddListener(gui.guiSaveEvent, this, &ofApp::onGuiSave );
 
     //load from xml!
     gui.loadSettings("controlPanelSettings.xml");
-
-    //if you want to use events call this after you have added all your gui elements
-    gui.setupEvents();
-    gui.enableEvents();
-
-    //  -- SPECIFIC EVENTS -- this approach creates an event group and only sends you events for the elements you describe. 
-    //        vector <string> list;
-    //        list.push_back("FIELD_DRAW_SCALE");
-    //        list.push_back("DIFF_MODE");
-    //        gui.createEventGroup("TEST_GROUP", list);
-    //        ofAddListener(gui.getEventGroup("TEST_GROUP"), this, &ofApp::eventsIn);
-
-    //  -- PANEL EVENTS -- this approach gives you back an ofEvent for only the events from panel 0
-    //        ofAddListener(gui.getEventsForPanel(0), this, &ofApp::eventsIn);
-
-    //  -- this gives you back an ofEvent for all events in this control panel object
-    ofAddListener(gui.guiEvent, this, &ofApp::eventsIn);
 
     grabber.initGrabber(320, 240);
 
@@ -89,51 +79,58 @@ void ofApp::update(){
     gui.update();
     
     grabber.update();
-    colorCV.setFromPixels(grabber.getPixelsRef());
-    grayscaleCV = colorCV;
-    grayscaleCV.threshold(gui.getValueI("cv_controls:threshold"), bInvert);
+    if( grabber.isFrameNew() ) {
+        colorCV.setFromPixels(grabber.getPixels());
+        grayscaleCV = colorCV;
+        grayscaleCV.threshold(threshold, bInvert);
+    }
     
-    appFrameRate = ofGetFrameRate();
+//    appFrameRate = ofGetFrameRate();
     elapsedTime = ofGetElapsedTimef();
     appFrameCount = ofGetFrameNum();
 
-    testLabel = lister.getSelectedPath();
+    testLabel = ofToString(ofGetFrameNum());//.getSelectedPath();
     
     status = "App running at " + ofToString(ofGetFrameRate());
 
 }
 
 //--------------------------------------------------------------
-void ofApp::eventsIn(guiCallbackData & data){
-     // print to terminal if you want to 
-        //this code prints out the name of the events coming in and all the variables passed
-        printf("ofApp::eventsIn - name is %s - \n", data.getXmlName().c_str());
-        if( data.getDisplayName() != "" ){
-                printf(" element name is %s \n", data.getDisplayName().c_str());
-        }
-        for(int k = 0; k < data.getNumValues(); k++){
-                if( data.getType(k) == CB_VALUE_FLOAT ){
-                    printf("%i float  value = %f \n", k, data.getFloat(k));
-                }
-                else if( data.getType(k) == CB_VALUE_INT ){
-                    printf("%i int    value = %i \n", k, data.getInt(k));
-                }
-                else if( data.getType(k) == CB_VALUE_STRING ){
-                    printf("%i string value = %s \n", k, data.getString(k).c_str());
-                }
-        }
-        
-        printf("\n");
-    
-        if( data.getXmlName() == "IMAGE_LISTER" ){
-            img.loadImage(data.getString(1));
-        }
+void ofApp::draw() {
+    ofSetColor( paramColor );
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight() );
+    gui.draw();
 }
 
+//--------------------------------------------------------------
+void ofApp::onGuiLoad( bool& ab ) {
+    cout << "onGuiLoad : " << ab << " | " << ofGetFrameNum() << endl;
+}
 
 //--------------------------------------------------------------
-void ofApp::draw(){
-    gui.draw();
+void ofApp::onGuiSave( bool& ab ) {
+    cout << "onGuiSave : " << ab << " | " << ofGetFrameNum() << endl;
+}
+
+//--------------------------------------------------------------
+void ofApp::onFilePathChange( string& astr ) {
+    cout << "onFilePathChange: " << astr << " | " << ofGetFrameNum() << endl;
+    if( ofFile::doesFileExist(astr)) {
+        string ext = ofToLower(ofFilePath::getFileExt(astr));
+        if( ext == "png" || ext == "jpg" ) {
+            img.load(astr);
+        }
+    }
+    
+}
+
+//--------------------------------------------------------------
+void ofApp::onToggleChange( int& aint ) {
+    // get the multi toggle
+    auto mtogg = gui.get< guiTypeMultiToggle >( multiToggleParam );
+    if( mtogg ) {
+        cout << "onToggleChange :: " << mtogg->getSelectedStringValue() << endl;
+    }
 }
 
 //--------------------------------------------------------------
