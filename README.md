@@ -18,5 +18,5 @@ Quick example:
     cvControls.add(threshold.set("threshold", 29.0, 1.0, 255.0));
     
     //now add the param group to the gui 
-    gui.addGroup( cvControls ); 
+    gui.add( cvControls ); 
 ```
