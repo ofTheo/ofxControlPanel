@@ -37,7 +37,7 @@ public:
     ~ofxControlPanel();
     
     //set the control panel name
-    void setup(string controlPanelName, float panelX = 0, float panelY = 0, float width = 1024, float height = 768, bool doSaveRestore = true, bool bPanelLocked = false);
+    void setup(string controlPanelName, float panelX = 0, float panelY = 0, float width = ofGetWidth(), float height = ofGetHeight(), bool doSaveRestore = true, bool bPanelLocked = false);
 
 		//add as many panels as you need
     bool hasPanel( string aPanelName );

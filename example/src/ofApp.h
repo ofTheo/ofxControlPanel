@@ -48,7 +48,7 @@ public:
 
     ofParameter <string> testLabel;
     ofParameter <string> status;
-    ofParameter<int> textDropDownParam;
+    ofParameter<int> cvDiffMode;
     
     ofParameter<int> multiToggleParam;
     

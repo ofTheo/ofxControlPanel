@@ -7,43 +7,41 @@ void ofApp::setup(){
             
     ofSetVerticalSync(true);
 
-    gui.setup("test cv", 0, 0, ofGetWidth(), 700);
+    gui.setup("test cv", 0, 0);
     gui.addPanel("control panel test", 4, false);
             
     //--------- PANEL 1
     gui.setWhichPanel(0);
     gui.setWhichColumn(0);
     gui.addFpsChartPlotter();
-    gui.addDrawableRect("video", &grabber, 200, 150);
 
     gui.addLabel("Loading images from disk"); 
-    gui.addDrawableRect("image loaded from dir", &img, 200, 150);
+    gui.addDrawableRect("image loaded from dir", &img, 320, 240);
 
-    gui.addFileLister( mFilePathStr.set("Image Lister", ""), "of_logos/" );
-
-    gui.setWhichColumn(1);
-    gui.addDrawableRect("colorCV", &colorCV, 200, 150);
+    auto lister = gui.addFileLister( mFilePathStr.set("Image Lister", ""), "of_logos/" );
+    lister->setDimensions(lister->getWidth(),200);
 
     gui.setWhichColumn(2);
-    gui.addDrawableRect("grayscaleCV", &grayscaleCV, 200, 150);
-
-    gui.setWhichColumn(3);
+    gui.addDrawableRect("video", &grabber, 200, 150);
+    gui.addDrawableRect("colorCV", &colorCV, 200, 150);
     
+    //use ofParameterGroup to create sets of sliders/parameters
     cvControls.setName("cv controls");
     cvControls.add(bInvert.set("invert", false));
     cvControls.add(threshold.set("threshold", 29.0, 1.0, 255.0));
-    
     gui.add( cvControls );
     
     vector <string> names;
     names.push_back("abs diff");
     names.push_back("greater than");
     names.push_back("less than");
-    gui.addTextDropDown(textDropDownParam.set("difference mode", 0), names);
+    gui.addTextDropDown(cvDiffMode.set("difference mode", 0), names);
     
+    gui.addDrawableRect("grayscaleCV", &grayscaleCV, 200, 150);
+
+    gui.setWhichColumn(3);
     vars.setName("app vars");
     vars.add( appFrameCount.set("frame count", 0) );
-//    vars.add( appFrameRate.set("frame rate", 60.0) );
     vars.add( elapsedTime.set("elapsed time", 0.0) );
     
     gui.addVariableLister(vars);
@@ -85,7 +83,6 @@ void ofApp::update(){
         grayscaleCV.threshold(threshold, bInvert);
     }
     
-//    appFrameRate = ofGetFrameRate();
     elapsedTime = ofGetElapsedTimef();
     appFrameCount = ofGetFrameNum();
 
