@@ -56,6 +56,11 @@ void guiTypeSlider::updateBoundingBox(){
 	}
 }
 
+//-------------------------------------------
+void guiTypeSlider::onEnabledChanged() {
+    mTextMesh.clear();
+}
+
 //should be called on mousedown
 //-------------------------------------------
 bool guiTypeSlider::checkHit(float x, float y, bool isRelative) {

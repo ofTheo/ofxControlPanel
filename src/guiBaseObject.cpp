@@ -183,10 +183,12 @@ void guiBaseObject::setEnabled( bool ab ) {
     if(ab) {
         if( !bEnabled ) {
             setNormal();
+            onEnabledChanged();
         }
     } else {
         if( bEnabled ) {
             setLocked();
+            onEnabledChanged();
         }
     }
     bEnabled = ab;
@@ -416,7 +418,7 @@ void guiBaseObject::render(){
 	bgColor.setGuiColorMode(0);
 	outlineColor.setGuiColorMode(0);
 	textColor.setGuiColorMode(0);
-     triDefaultColor.setGuiColorMode(0);
+    triDefaultColor.setGuiColorMode(0);
  }
 
 //-------------------------------------------

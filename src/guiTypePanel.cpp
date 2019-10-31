@@ -284,7 +284,7 @@ void guiTypePanel::removeElement( shared_ptr<guiBaseObject> element ) {
 
 //-----------------------------------------------
 bool guiTypePanel::containsElement( shared_ptr<guiBaseObject> element ) {
-    if( !element ) return;
+    if( !element ) return false;
     vector < shared_ptr<guiBaseObject> >::iterator elementIter = std::find( children.begin(), children.end(), element );
     return ( elementIter != children.end() );
 }

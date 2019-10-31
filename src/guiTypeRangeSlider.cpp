@@ -103,6 +103,11 @@ void guiTypeRangeSlider::updateBoundingBox() {
 }
 
 //-----------------------------------------------
+void guiTypeRangeSlider::onEnabledChanged() {
+    mTextMesh.clear();
+}
+
+//-----------------------------------------------
 void guiTypeRangeSlider::setValue(float _value, int whichParam) {
     value.setValue(_value, whichParam);
 }

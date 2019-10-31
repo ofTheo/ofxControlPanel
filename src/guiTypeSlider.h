@@ -10,6 +10,7 @@ public:
 
     void setup();
     virtual void updateBoundingBox() override;
+    virtual void onEnabledChanged() override;
 
     //-----------------------------------------------
     virtual float getVerticalSpacing() override {
@@ -20,6 +21,7 @@ public:
     virtual bool checkHit(float x, float y, bool isRelative) override;
     void updateGui(float x, float y, bool firstHit, bool isRelative = false) override;
     void render() override;
+    
     
     
     

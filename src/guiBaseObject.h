@@ -68,6 +68,8 @@ class guiBaseObject{
     
     virtual void setEnabled(bool ab );
     bool isEnabled();
+    
+    virtual void onEnabledChanged() {};
 
         //------------------------------------------------
         virtual void setShowText(bool showText);
