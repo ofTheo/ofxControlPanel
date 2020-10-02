@@ -217,6 +217,19 @@ void guiTypePanel::setShowOnlySelectedElement(bool showOnlySelected){
 	showOnly = showOnlySelected;
 }
 
+//-----------------------------------------------
+bool guiTypePanel::hasSelectedElement() {
+    return elementInteracting;
+}
+
+//-----------------------------------------------
+shared_ptr<guiBaseObject> guiTypePanel::getSelectedElement() {
+    shared_ptr<guiBaseObject> temp;
+    if( !hasSelectedElement() || whichElementInteracting < 0 || whichElementInteracting >= children.size() ){
+        return temp;
+    }
+    return children[whichElementInteracting];
+}
 
 //-----------------------------------------------
 void guiTypePanel::addSpace( int height ) {

@@ -52,6 +52,8 @@ public:
 		
     void resetSelectedElement();
     void setShowOnlySelectedElement(bool showOnlySelected);
+    bool hasSelectedElement();
+    shared_ptr<guiBaseObject> getSelectedElement();
 	
     void drawLocked();
     void drawUnlocked();

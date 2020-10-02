@@ -438,6 +438,15 @@ shared_ptr<guiBaseObject> ofxControlPanel::getGuiObject( ofAbstractParameter& ap
 }
 
 //---------------------------------------------
+ofAbstractParameter& ofxControlPanel::getParam( shared_ptr<guiBaseObject> aobj ) {
+    if( aobj && aobj->value.paramGroup.size() > 0 ) {
+        return aobj->value.paramGroup.get(0);
+    }
+    ofLogError("ofxControlPanel :: getParam : unable to find param from gui object");
+    return mTempParam;
+}
+
+//---------------------------------------------
 void ofxControlPanel::setEnabled( ofParameterGroup& agroup, bool ab ) {
     auto objs = getGuiObjects( agroup );
     for( auto& obj : objs ) {
@@ -1426,6 +1435,12 @@ bool ofxControlPanel::isVisible(){
 }
 
 //-------------------------------
+void ofxControlPanel::setStatusMessage(ofParameter<string> & message ) {
+    // set on all of them
+    setStatusMessage(message, -1);
+}
+
+//-------------------------------
 void ofxControlPanel::setStatusMessage(ofParameter <string> & message, int whichPanel){
 	if( whichPanel == -1 ){
         for(int i = 0; i < panels.size(); i++){
@@ -1553,11 +1568,19 @@ bool ofxControlPanel::mousePressed(float x, float y, int button){
     }
 
     if(minimize == false && tabButtonPressed == false && isInsideRect(x, y, boundingBox) ){
+        bool bDidHitSomething = false;
         for(int i = 0; i < (int) panels.size(); i++){
              if( i == selectedPanel ){
-				elementSelected = panels[i]->checkHit( x - hitArea.x, y - hitArea.y, button);
+                 elementSelected = panels[i]->checkHit( x - hitArea.x, y - hitArea.y, button);
+                 bDidHitSomething = true;
 			 }
 		}
+        if( bDidHitSomething && panels[selectedPanel]->hasSelectedElement() ) {
+            // now lets try to get the parameter //
+//            get( ofAbstractParameter& aparam )
+            shared_ptr<guiBaseObject> sobj = panels[selectedPanel]->getSelectedElement();
+            ofNotifyEvent( guiElementSelectedEvent, sobj, this );
+        }
     }
 
     prevMouse.set(x, y);

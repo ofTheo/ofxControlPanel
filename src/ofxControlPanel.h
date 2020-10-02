@@ -158,6 +158,7 @@ public:
     
     vector< shared_ptr<guiBaseObject> > getGuiObjects( ofParameterGroup& agroup );
     shared_ptr<guiBaseObject> getGuiObject( ofAbstractParameter& aparam );
+    ofAbstractParameter& getParam( shared_ptr<guiBaseObject> aobj );
     
     void setEnabled( ofParameterGroup& agroup, bool ab );
     void setEnabled( ofAbstractParameter& aparam, bool ab );
@@ -210,8 +211,9 @@ public:
     void show();
     void hide();
     
-    void setStatusMessage(ofParameter <string> & message, int whichPanel = -1);
-	void setStatusMessage(ofParameter <string> & message, string panelName = "");
+    void setStatusMessage(ofParameter <string> & message );
+    void setStatusMessage(ofParameter <string> & message, int whichPanel);
+	void setStatusMessage(ofParameter <string> & message, string panelName );
     
     //this only shows the element you are interacting with when the mouse is pressed
     void setInvisibleMode(bool bInvis);
@@ -275,6 +277,7 @@ public:
     
     ofEvent<bool> guiSaveEvent;
     ofEvent<bool> guiLoadEvent;
+    ofEvent< shared_ptr<guiBaseObject> > guiElementSelectedEvent;
 		
 protected:
     ofTrueTypeFont guiTTFFont;
@@ -352,5 +355,8 @@ protected:
     
     // store if we ate the key press //
     int mFrameKeyPressAte = -100;
+    
+    // not going to use abstract param for return param since it's abstract at this point 
+    ofParameter<float> mTempParam;
 
 };
