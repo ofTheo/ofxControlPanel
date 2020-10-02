@@ -64,6 +64,7 @@ void ofApp::setup(){
     
     ofAddListener(gui.guiLoadEvent, this, &ofApp::onGuiLoad );
     ofAddListener(gui.guiSaveEvent, this, &ofApp::onGuiSave );
+    ofAddListener(gui.guiElementSelectedEvent, this, &ofApp::onGuiSelectElement );
 
     //load from xml!
     gui.loadSettings("controlPanelSettings.xml");
@@ -107,6 +108,14 @@ void ofApp::onGuiLoad( bool& ab ) {
 //--------------------------------------------------------------
 void ofApp::onGuiSave( bool& ab ) {
     cout << "onGuiSave : " << ab << " | " << ofGetFrameNum() << endl;
+}
+
+//--------------------------------------------------------------
+void ofApp::onGuiSelectElement( shared_ptr<guiBaseObject>& aobj ) {
+    // aobj->value.paramGroup.get(0);
+    cout << "onGuiSelectElement :: " << aobj->name << " num params: " << aobj->value.paramGroup.size() << " | " << ofGetFrameNum() << endl;
+    ofAbstractParameter& tparam = gui.getParam( aobj );
+    cout << "onGuiSelectElement :: abstract param: " << tparam.getName() << " value: " << tparam << endl;
 }
 
 //--------------------------------------------------------------

@@ -11,6 +11,7 @@ public:
     
     void onGuiLoad( bool& ab );
     void onGuiSave( bool& ab );
+    void onGuiSelectElement( shared_ptr<guiBaseObject>& aobj );
     void onFilePathChange( string& astr );
     void onToggleChange( int& aint );
     
