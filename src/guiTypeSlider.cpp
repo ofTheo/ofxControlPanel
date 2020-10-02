@@ -39,6 +39,13 @@ void guiTypeSlider::setup(){
 	setDimensions(getDefaultColumnWidth(), 14);
 }
 
+//---------------------------------------------
+void guiTypeSlider::updateValue(){
+    guiBaseObject::updateValue();
+//    bShowXmlValue = false;
+//    xmlValue = value.getPct();
+}
+
 
 //---------------------------------------------
 void guiTypeSlider::updateBoundingBox(){
@@ -58,7 +65,18 @@ void guiTypeSlider::updateBoundingBox(){
 
 //-------------------------------------------
 void guiTypeSlider::onEnabledChanged() {
-    mTextMesh.clear();
+    if(mTextInput) {
+        mTextInput->setEnabled(!isEnabled());
+    }
+    onRelayout();
+}
+
+//-------------------------------------------
+void guiTypeSlider::onRelayout() {
+    guiBaseObject::onRelayout();
+    if(mTextInput) {
+        mTextInput->onRelayout();
+    }
 }
 
 //should be called on mousedown
@@ -106,6 +124,12 @@ void guiTypeSlider::updateGui(float x, float y, bool firstHit, bool isRelative){
                 float pct = value.getPct();
                 pct += (x * 0.02) / hitArea.width;
                 value.setValueAsPct( pct );
+            }
+            
+            if( fabs(value.getPct() - xmlValue) > 0.01 ){
+                bShowXmlValue = true;
+            }else{
+                bShowXmlValue = false;
             }
         }
         
@@ -172,7 +196,29 @@ void guiTypeSlider::render(){
 //---------------------------------------------
 void guiTypeSlider::addToRenderMesh( ofMesh& arenderMesh ) {
     addRectangleToMesh( arenderMesh, hitArea, bgColor.getColor() );
-    addRectangleToMesh( arenderMesh, ofRectangle( hitArea.x, hitArea.y, hitArea.width*value.getPct(), hitArea.height ), fgColor.getColor() );
+    
+    addRectangleToMesh( arenderMesh, ofRectangle( hitArea.x, hitArea.y, hitArea.width*value.getPct(), hitArea.height ), (bShowXmlValue && state != SG_STATE_SELECTED)  ? xmlChangedColor.getColor() : fgColor.getColor() );
+    if( bShowXmlValue ){
+        
+        float x = xmlValue * hitArea.getWidth();
+        float flip = 1.0;
+        if( xmlValue > 0.95 ){
+            flip *= -1.0;
+        }
+        addTriangleToMesh( arenderMesh,
+                          hitArea.x + x, hitArea.y,
+                          hitArea.x + x + 2, hitArea.y,
+                          hitArea.x + x + 2, hitArea.y + hitArea.height,
+                          xmlChangedColor.getColor()
+                          );
+        addTriangleToMesh( arenderMesh,
+                          hitArea.x + x + 2, hitArea.y + hitArea.height,
+                          hitArea.x + x, hitArea.y + hitArea.height,
+                          hitArea.x + x, hitArea.y,
+                          xmlChangedColor.getColor()
+                          );
+        
+    }
     if( bShowDefaultValue ){
         float x = defaultValue * hitArea.getWidth();
         float flip = 1.0;
@@ -187,7 +233,7 @@ void guiTypeSlider::addToRenderMesh( ofMesh& arenderMesh ) {
                           triDefaultColor.getColor()
                           );
     }
-    
+        
     if(mTextInput) {
         mTextInput->addToRenderMesh( arenderMesh, hitArea.x, hitArea.y );
     }

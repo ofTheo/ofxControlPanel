@@ -16,6 +16,7 @@ public:
     
     virtual string getSelectedStringValue() override { return mParamRef; };
 
+    virtual void updateValue() override;
     virtual void updateText() override;
     void updateGui(float x, float y, bool firstHit, bool isRelative) override;
     void release(float x, float y, bool isRelative) override;
@@ -37,6 +38,7 @@ public:
     float selectPct;
     float pct;
     int startPos, endPos;
+    int numFiles = 0;
     
 	bool hasSelectionChanged() { return selection_has_changed; }
 	void clearSelectionChangedFlag() { selection_has_changed = false; }

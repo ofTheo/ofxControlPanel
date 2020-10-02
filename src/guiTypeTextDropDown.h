@@ -5,6 +5,7 @@ class guiTypeTextDropDown : public guiBaseObject{
 public:
 
     void setup(vector <string> boxNames);
+    void update( vector<string> boxNames );
 //    virtual void updateValue();
     virtual string getSelectedStringValue() override;
     virtual void update() override;
@@ -27,7 +28,9 @@ public:
     void addToLinesRenderMesh( ofMesh& arenderMesh ) override;
     virtual void addToTextRenderMesh( ofMesh& arenderMesh ) override;
     
-    ofMesh mTextMesh;
+    int boxHeight = 15;
+    
+//    ofMesh mTextMesh;
 #endif
 };
 

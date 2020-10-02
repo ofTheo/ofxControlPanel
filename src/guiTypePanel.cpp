@@ -57,6 +57,7 @@ void guiTypePanel::addColumn(float minWidth){
 //-----------------------------------------------
 bool guiTypePanel::selectColumn(int which){
 	col = ofClamp(which, 0, columns.size()-1);
+    targetColumn = col;
 	return true;
 }
 
@@ -227,6 +228,8 @@ void guiTypePanel::addElement( shared_ptr<guiBaseObject> element ){
     if( !element ) return;
 	element->updateText();
     
+    targetColumns.push_back(targetColumn);
+    
     if(columns[col].y + element->getHeight() + 30.0 >= getHeight()){
     
         int nextCol = col+1;
@@ -242,6 +245,8 @@ void guiTypePanel::addElement( shared_ptr<guiBaseObject> element ){
 	element->setPosition(columns[col].x, columns[col].y);
     
     columns[col].y += element->getHeight();
+    
+//    cout << name << " | addElement " << " - " << element->name << " height: " << element->getHeight() << endl;
 
 	whichColumn.push_back(col);
 
@@ -249,19 +254,102 @@ void guiTypePanel::addElement( shared_ptr<guiBaseObject> element ){
 	children.push_back( element );
 
 	float checkWidth = element->getWidth();
-		
+    
+    bool bRelayout = false;
 	if(checkWidth >= columns[col].width && !element->bRemoveFromLayout ){
-		float amnt = checkWidth - columns[col].width;
-		columns[col].width += amnt;
-
-		for(unsigned int i = col+1; i < columns.size(); i++){
-			columns[i].x += amnt;
-		}
-		
+//		float amnt = checkWidth - columns[col].width;
+//		columns[col].width += amnt;
+//
+//		for(unsigned int i = col+1; i < columns.size(); i++){
+//			columns[i].x += amnt;
+//		}
+        bRelayout=true;
 	}
-
+    if( bRelayout ) {
+        relayout();
+    }
 	//see if we need to resize!
 	//checkResize(element);
+}
+
+//-----------------------------------------------
+void guiTypePanel::relayout() {
+//    cout << "--------------------------------------------------- " << endl;
+//    cout << __FUNCTION__ << " name: " << name << " | " << ofGetFrameNum() << endl;
+    
+    // check the widths //
+    for( int i = 0; i < children.size(); i++ ) {
+        if( i >= whichColumn.size() ) break;
+        auto& element = children[i];
+        float checkWidth = element->getWidth();
+        int tcol = whichColumn[i];
+        if( element->isVisible() ) {
+            if(checkWidth >= columns[tcol].width && !element->bRemoveFromLayout ){
+                columns[tcol].width = checkWidth;
+            }
+        }
+    }
+    
+    for( int i = 0; i < columns.size(); i++ ) {
+        if( i == 0 ) {
+            columns[i] = ofRectangle(currentXPos, currentYPos, columns[i].width, 20);
+        } else {
+            auto& pcol = columns[i-1];
+            columns[i] = ofRectangle(pcol.x + pcol.width + spacingAmntX, currentYPos, columns[i].width, 20);
+        }
+    }
+    
+    // now check the widths //
+    for( int i = 0; i < children.size(); i++ ) {
+        if( i >= whichColumn.size() ) break;
+        auto& element = children[i];
+        int tcol = whichColumn[i];
+        int targetCol = targetColumns[i];
+        
+//        cout << __FUNCTION__ << " - " << i << " - " << element->xmlName << " col: " << tcol << " target: " << targetCol << endl;
+        
+//        if( targetCol < tcol ) {
+            tcol = targetCol;
+            
+//        }
+        
+        if( element->isVisible() ) {
+            if(columns[tcol].y + element->getHeight() + 30.0 >= getHeight()){
+               
+                int nextCol = tcol+1;
+                if( nextCol >= columns.size() ){
+                    addColumn(30);
+                    tcol = nextCol;
+                } else {
+                    // get next available column
+                    for( int k = nextCol; k < columns.size(); k++ ) {
+                        if(columns[k].y + element->getHeight() + 30.0 < getHeight()) {
+                            tcol = k;
+                            break;
+                        }
+                    }
+                }
+                
+            }
+        }
+        whichColumn[i] = tcol;
+        
+        //update the current position for the next element
+        if( element->isVisible() ) {
+            columns[tcol].y += spacingAmntY + element->getVerticalSpacing();
+        }
+        element->setPosition(columns[tcol].x, columns[tcol].y);
+//        cout << "bounding box " << element->getPosX() << " colums: " << columns[tcol].x << endl;
+        
+        element->onRelayout();
+        element->update();
+        
+        if( element->isVisible() ) {
+            columns[tcol].y += element->getHeight();// + element->getVerticalSpacing();
+        }
+    }
+    
+//    cout << "guiTypePanel :: " << name << " height: " << getHeight() << " | " << ofGetFrameNum() << endl;
 }
 
 //-----------------------------------------------
@@ -276,9 +364,14 @@ void guiTypePanel::removeElement( shared_ptr<guiBaseObject> element ) {
             columns[whichColumn[i]].y -= element->getHeight() + spacingAmntY + element->getVerticalSpacing();
             // remove from whichColumn
             whichColumn.erase( whichColumn.begin()+i );
+            targetColumns.erase( targetColumns.begin()+i);
             found = true;
             break;
         }
+    }
+    
+    if(found) {
+        relayout();
     }
 }
 
@@ -418,7 +511,8 @@ void guiTypePanel::render(){
 				ofTranslate(hitArea.x, hitArea.y, 0);
                 
                 #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
-                for(unsigned int i = 0; i < children.size(); i++){
+                for(unsigned int i = 0; i < children.size(); i++) {
+                    if( !children[i]->isVisible() ) continue;
                     children[i]->addToRenderMesh(mRenderMesh);
                     children[i]->addToLinesRenderMesh(mLinesMesh);
                     children[i]->addToTextRenderMesh(mTextMesh);
@@ -426,6 +520,7 @@ void guiTypePanel::render(){
                 mRenderMesh.draw();
                 #endif
 				for(unsigned int i = 0; i < children.size(); i++){
+                    if( !children[i]->isVisible() ) continue;
 					children[i]->render();
 				}
                 #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
@@ -446,6 +541,7 @@ void guiTypePanel::render(){
                 #endif
                 
                 for(unsigned int i = 0; i < children.size(); i++){
+                    if( !children[i]->isVisible() ) continue;
                     children[i]->renderOnTop();
                 }
                 

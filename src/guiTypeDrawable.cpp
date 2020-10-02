@@ -77,7 +77,7 @@ void guiTypeDrawable::render(){
 			//ofDisableAlphaBlending();
 			ofEnableAlphaBlending();
 			ofSetColor(255, 255, 255);
-            if(vid) {
+            if(vid && vid->getWidth() > 0 && vid->getHeight() > 0 ) {
                 vid->draw(hitArea.x, hitArea.y, hitArea.width, hitArea.height);
             }
 

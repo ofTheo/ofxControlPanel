@@ -13,13 +13,14 @@
 //------------------------------------------------
 void guiTypeLabel::setup(ofParameter<string> & label, bool highlight){
 //    cout << " adding label with name " << label.getName() << " and value " << label << endl;
-    guiBaseObject::setupNamesFromParams(); 
-
     textLabel.makeReferenceTo(label);
+    
+    guiBaseObject::setupNamesFromParams();
+    
     bHighlight = highlight;
     prevString = "09m09asidjoasd890asdfasdsad";
-    internalUpdate();
     boundingBox = hitArea;
+    internalUpdate();
 }
 
 //-----------------------------------------------.
@@ -28,22 +29,23 @@ void guiTypeLabel::internalUpdate(){
 //    if( str.length() ){
 //        str += ": ";
 //    }
-    
     // only call setText if the text has changed //
     if( tstr != prevString ) {
         string str = textLabel.getName();
         if( str.length() ){
             str += ": ";
         }
-        setText( str );
+        setText( str+tstr );
+                
         prevString = tstr;
     }
+    updateBoundingBox();
 }
 
 //-----------------------------------------------.
 float guiTypeLabel::getVerticalSpacing(){
     if( bHighlight == false){
-        return 0.0;
+        return 0;
     }else{
         return 14;
     }
@@ -51,7 +53,8 @@ float guiTypeLabel::getVerticalSpacing(){
 
 //-----------------------------------------------.
 void guiTypeLabel::setText( string text ){
-	name = text;
+//	name = text;
+    displayText.setText(text);
     hitArea.width = MAX(getDefaultColumnWidth(), displayText.getTextWidth(text) + 3);
 //    cout << "guiTypeLabel :: calling setText: " << " | " << ofGetFrameNum() << endl;
     #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER

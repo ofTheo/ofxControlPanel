@@ -23,6 +23,9 @@ public:
     void internalUpdate();
 	void render();
     
+    //so we don't mess up our nice text formatting
+    virtual void updateText(){}
+    
     float getVerticalSpacing();
     
     #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
@@ -37,7 +40,7 @@ public:
     
 protected:
     #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
     #endif
     string prevString = "---";
 };

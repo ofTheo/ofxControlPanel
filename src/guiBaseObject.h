@@ -48,6 +48,8 @@ class guiBaseObject{
 		//should be called when a key is pressed; return true if we consume the key
 		virtual bool keyPressed(int k);
 		virtual bool keyReleased(int k);
+    
+    virtual void onRelayout() { mTextMesh.clear();}
 		
         //these are here for the custom control types
         //we notify all elements about these actions
@@ -68,8 +70,12 @@ class guiBaseObject{
     
     virtual void setEnabled(bool ab );
     bool isEnabled();
-    
     virtual void onEnabledChanged() {};
+    
+    virtual void setVisible( bool ab );
+    bool isVisible();
+    virtual void onVisibleChanged() {};
+    
 
         //------------------------------------------------
         virtual void setShowText(bool showText);
@@ -191,6 +197,7 @@ class guiBaseObject{
         guiColor outlineColor;
         guiColor textColor;
     guiColor triDefaultColor;
+    guiColor xmlChangedColor;
 
         int numDecimalPlaces;
 
@@ -213,12 +220,19 @@ class guiBaseObject{
         bool readOnly;
         int  state;
     bool bEnabled = true;
+    bool bVisible = true;
 
 //protected:
 
         guiValue value;
     
 protected:
+
+    bool bShowXmlValue = false;
+    float xmlValue = 0.0;
+
+    ofMesh mTextMesh;
+    
     void addRectangleToMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor );
     void addRectangleToLinesMesh( ofMesh& amesh, ofRectangle arect, ofFloatColor acolor );
     void addTriangleToMesh( ofMesh& amesh, float a1x, float a1y, float a2x, float a2y, float a3x, float a3y, ofFloatColor acolor );

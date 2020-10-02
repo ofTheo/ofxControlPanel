@@ -70,6 +70,8 @@ void guiType2DSlider::setValue(float _value, int whichParam) {
 
 //-----------------------------------------------.
 void guiType2DSlider::updateValue(){
+    
+    guiBaseObject::updateValue();
    //CB
 //   notify();
 }

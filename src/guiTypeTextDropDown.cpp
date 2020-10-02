@@ -1,6 +1,6 @@
 #include "guiTypeTextDropDown.h"
 
-static int boxHeight = 15;
+//static int boxHeight = 15;
 
 //------------------------------------------------
 void guiTypeTextDropDown::setup(vector <string> boxNames){
@@ -14,6 +14,14 @@ void guiTypeTextDropDown::setup(vector <string> boxNames){
     boxHeight = MAX(7, displayText.getTextHeight() + 3);
 	setDimensions(getDefaultColumnWidth(), boxHeight);
 	bShowDropDown = false;	
+}
+
+//------------------------------------------------
+void guiTypeTextDropDown::update( vector<string> boxNames ) {
+    vecDropList = boxNames;
+    
+    boxHeight = MAX(7, displayText.getTextHeight() + 3);
+    setDimensions(getDefaultColumnWidth(), boxHeight);
 }
 
 ////-----------------------------------------------
@@ -50,7 +58,8 @@ void guiTypeTextDropDown::update(){
 	}
 	
 	boxHeight = MAX(15, displayText.getTextHeight());
-	hitArea.height = boundingBox.height = boxHeight;
+//	hitArea.height = boundingBox.height = boxHeight;
+    hitArea.height = boxHeight;
 	
 	int minSize = 0;
 	for(int i = 0; i < vecDropList.size(); i++){
@@ -65,9 +74,14 @@ void guiTypeTextDropDown::update(){
 	if(bShowDropDown) {
 		hitArea.height = boundingBox.height = boxHeight * vecDropList.size();
 	} else {
-		hitArea.height = boundingBox.height = boxHeight;
+        boundingBox.height = boxHeight * 2;
+		hitArea.height = boxHeight;
 		state = SG_STATE_NORMAL;
-		setNormal();
+        if( isEnabled() ) {
+            setNormal();
+        } else {
+            setLocked();
+        }
 	}
 }
 

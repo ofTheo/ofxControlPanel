@@ -33,7 +33,7 @@ guiTypeFileLister::~guiTypeFileLister() {
 //------------------------------------------------
 void guiTypeFileLister::setup( ofParameter<string>& aparam, string aDirectory, float listerWidth, float listerHeight) {
     lister = make_shared<simpleFileLister>();
-    lister->listDir(aDirectory);
+    numFiles = lister->listDir(aDirectory);
     
     mParamRef.makeReferenceTo( aparam );
     
@@ -73,7 +73,13 @@ void guiTypeFileLister::updateText( ) {
     if( selection > -1 && mParamRef.get() != "") {
         drawStr += lister->getSelectedName();
     } else {
-        drawStr += "na";
+        if( mParamRef.get() != "" ) {
+            if( ofFile::doesFileExist(mParamRef.get())) {
+                drawStr += ofFilePath::getFileName(mParamRef.get());
+            }
+        } else {
+            drawStr += "na";
+        }
     }
     displayText.setText(drawStr);
 
@@ -108,7 +114,9 @@ void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelati
 				lister->setSelectedFile(selection);
 				selection_has_changed = true;
                 
-                mParamRef = lister->getPath(selection);
+                auto strVal = lister->getPath(selection);
+                ofStringReplace(strVal, "\\", "/"); //windows paths break xml
+                mParamRef = strVal;
                 
 //				notify();
 			}
@@ -117,6 +125,26 @@ void guiTypeFileLister::updateGui(float x, float y, bool firstHit, bool isRelati
 			lastClickTime = ofGetElapsedTimeMillis();
 		}
 	}
+}
+
+//-----------------------------------------------.
+void guiTypeFileLister::updateValue(){
+    guiBaseObject::updateValue();
+    mParamRef = value.getValueAsString(0);
+    
+    for(int d = 0; d < numFiles; d++){
+        if( lister->getName(d) == ofFilePath::getFileName(mParamRef.get()) ){
+            selection = d;
+            lister->setSelectedFile(selection);
+            break;
+        }
+    }
+    
+    updateText();
+    selection_has_changed = true;
+    
+    
+    
 }
 
 //-----------------------------------------------.

@@ -14,6 +14,8 @@ public:
     ~guiTypeTextInput();
     
     void setup( ofAbstractParameter& aparam );
+    void setupAsInput( ofAbstractParameter& aparam );
+    virtual void onEnabledChanged() override;
     void updateValue() override;
     
     void setText( string atext );
@@ -33,6 +35,10 @@ public:
     bool keyPressed(int k) override;
     bool keyReleased(int k) override;
     
+    virtual void addToRenderMesh( ofMesh& arenderMesh ) override;
+    virtual void addToLinesRenderMesh( ofMesh& arenderMesh ) override;
+    virtual void addToTextRenderMesh( ofMesh& arenderMesh ) override;
+    
     virtual void addToRenderMesh( ofMesh& arenderMesh, float ax, float ay );
     virtual void addToTextRenderMesh( ofMesh& arenderMesh, float ax, float ay );
     
@@ -47,7 +53,10 @@ protected:
     void _onTextEntered();
     void _updateParamFromString( string astring );
     bool _isTextValid();
+    bool _isParamNumber();
+    bool _isValidInputKey( int akey );
     void _onParamChange( ofAbstractParameter& aparam );
+    
     
     bool bInFocus = false;
     
@@ -60,6 +69,6 @@ protected:
     
     int mLastTimeHit = -1000;
     
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
     bool bsetup = false;
 };

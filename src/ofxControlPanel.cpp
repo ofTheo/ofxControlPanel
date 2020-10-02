@@ -170,8 +170,8 @@ void ofxControlPanel::setSize( int new_width, int new_height ){
 //---------------------------------------------
 void ofxControlPanel::enableKeyboardEvents() {
     if(!bHasKeyboardEvents) {
-        ofAddListener(ofEvents().keyPressed, this, &ofxControlPanel::keyPressed);
-        ofAddListener(ofEvents().keyReleased, this, &ofxControlPanel::keyReleased);
+        ofAddListener(ofEvents().keyPressed, this, &ofxControlPanel::keyPressed, OF_EVENT_ORDER_BEFORE_APP );
+        ofAddListener(ofEvents().keyReleased, this, &ofxControlPanel::keyReleased, OF_EVENT_ORDER_BEFORE_APP);
     }
     bHasKeyboardEvents = true;
 }
@@ -183,6 +183,14 @@ void ofxControlPanel::disableKeyboardEvents() {
         ofRemoveListener(ofEvents().keyReleased, this, &ofxControlPanel::keyReleased);
     }
     bHasKeyboardEvents = false;
+}
+
+//---------------------------------------------
+bool ofxControlPanel::didEatKeyPress() {
+    if( ofGetFrameNum() - mFrameKeyPressAte > 2 ) {
+        return false;
+    }
+    return true;
 }
 
 //---------------------------------------------
@@ -358,46 +366,67 @@ void ofxControlPanel::setSelectedPanel(int whichPanel){
 }
 
 //---------------------------------------------
-void ofxControlPanel::setEnabled( ofParameterGroup& agroup, bool ab ) {
-    if( agroup.getName().size() < 2 ) return;
-    if( agroup.size() < 1 ) return;
-//    cout << "ofxControlPanel : setEnabled : " << agroup.getName() << endl;
-    for( int i = 0; i < xmlObjects.size(); i++ ) {
+shared_ptr<guiTypePanel> ofxControlPanel::getPanelPtr( int aIndex ) {
+    if( aIndex >= 0 && aIndex < panels.size()){
+        return panels[aIndex];
+    }
+    shared_ptr<guiTypePanel> tpain;
+    return tpain;
+}
+
+//---------------------------------------------
+shared_ptr<guiTypePanel> ofxControlPanel::getPanelPtr( string aname ) {
+    int tindex = -1;
+    for( int i = 0; i < panels.size(); i++ ) {
+        if( panels[i]->name == aname ) {
+            tindex = i;
+            break;
+        }
+    }
+    return getPanelPtr(tindex);
+}
+
+//---------------------------------------------
+vector< shared_ptr<guiBaseObject> > ofxControlPanel::getGuiObjects( ofParameterGroup& agroup ) {
+    vector< shared_ptr<guiBaseObject> > robjs;
+    if( agroup.getName().size() < 2 ) return robjs;
+    if( agroup.size() < 1 ) return robjs;
+    
+    size_t numXmlObjs = xmlObjects.size();
+    for( int i = 0; i < numXmlObjs; i++ ) {
         if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
             // try to find the pointer for the param, so it's not just name based
-//            cout << "ofxControlPanel : setEnabled : " << agroup.getName() << " trying to match: " << xmlObjects[i].guiObj->value.paramGroup.getName() << endl;
             if( agroup.getName() == xmlObjects[i].guiObj->value.paramGroup.getName() ) {
-//                cout << "ofxControlPanel : setEnabled : group names match: " << agroup.getName() << endl;
                 // check for the param //
-                bool bFoundIt=false;
+//                bool bFoundIt=false;
                 for( int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++ ) {
                     for( int j = 0; j < agroup.size(); j++ ) {
                         if( xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(agroup.get(j)) ) {
-                            // we have it, woohoo //
-                            xmlObjects[i].guiObj->setEnabled(ab);
-//                            cout << "ofxControlPanel : setEnabled : " << agroup.getName() << " " << agroup.get(j).getName() << endl;
-                            bFoundIt = true;
-                            break;
+                            // we have one, woohoo //
+                            robjs.push_back(xmlObjects[i].guiObj);
+//                            bFoundIt = true;
+//                            break;
                         }
                     }
-                    if(bFoundIt) break;
+//                    if(bFoundIt) break;
                 }
             }
         }
     }
+    return robjs;
 }
 
 //---------------------------------------------
-void ofxControlPanel::setEnabled( ofAbstractParameter& aparam, bool ab ) {
-    if( aparam.getName().size() < 2 ) return;
-//    cout << "ofxControlPanel : setEnabled : " << aparam.getName() << endl;
+shared_ptr<guiBaseObject> ofxControlPanel::getGuiObject( ofAbstractParameter& aparam ) {
+    shared_ptr<guiBaseObject> robj;
+    if( aparam.getName().size() < 2 ) return robj;
     for( int i = 0; i < xmlObjects.size(); i++ ) {
         if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
             bool bFoundIt=false;
             for( int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++ ) {
                 if( xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(aparam) ) {
                     // we have it, woohoo //
-                    xmlObjects[i].guiObj->setEnabled(ab);
+                    robj = xmlObjects[i].guiObj;
                     bFoundIt = true;
                     break;
                 }
@@ -405,6 +434,141 @@ void ofxControlPanel::setEnabled( ofAbstractParameter& aparam, bool ab ) {
             }
         }
     }
+    return robj;
+}
+
+//---------------------------------------------
+void ofxControlPanel::setEnabled( ofParameterGroup& agroup, bool ab ) {
+    auto objs = getGuiObjects( agroup );
+    for( auto& obj : objs ) {
+        obj->setEnabled(ab);
+    }
+    
+//    if( agroup.getName().size() < 2 ) return;
+//    if( agroup.size() < 1 ) return;
+////    cout << "ofxControlPanel : setEnabled : " << agroup.getName() << endl;
+//    for( int i = 0; i < xmlObjects.size(); i++ ) {
+//        if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
+//            // try to find the pointer for the param, so it's not just name based
+////            cout << "ofxControlPanel : setEnabled : " << agroup.getName() << " trying to match: " << xmlObjects[i].guiObj->value.paramGroup.getName() << endl;
+//            if( agroup.getName() == xmlObjects[i].guiObj->value.paramGroup.getName() ) {
+////                cout << "ofxControlPanel : setEnabled : group names match: " << agroup.getName() << endl;
+//                // check for the param //
+//                bool bFoundIt=false;
+//                for( int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++ ) {
+//                    for( int j = 0; j < agroup.size(); j++ ) {
+//                        if( xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(agroup.get(j)) ) {
+//                            // we have it, woohoo //
+//                            xmlObjects[i].guiObj->setEnabled(ab);
+////                            cout << "ofxControlPanel : setEnabled : " << agroup.getName() << " " << agroup.get(j).getName() << endl;
+//                            bFoundIt = true;
+//                            break;
+//                        }
+//                    }
+//                    if(bFoundIt) break;
+//                }
+//            }
+//        }
+//    }
+}
+
+//---------------------------------------------
+void ofxControlPanel::setEnabled( ofAbstractParameter& aparam, bool ab ) {
+    shared_ptr<guiBaseObject> obj = getGuiObject( aparam );
+    if( obj ) {
+        obj->setEnabled(ab);
+    }
+//    if( aparam.getName().size() < 2 ) return;
+////    cout << "ofxControlPanel : setEnabled : " << aparam.getName() << endl;
+//    for( int i = 0; i < xmlObjects.size(); i++ ) {
+//        if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
+//            bool bFoundIt=false;
+//            for( int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++ ) {
+//                if( xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(aparam) ) {
+//                    // we have it, woohoo //
+//                    xmlObjects[i].guiObj->setEnabled(ab);
+//                    bFoundIt = true;
+//                    break;
+//                }
+//                if(bFoundIt) break;
+//            }
+//        }
+//    }
+}
+
+//---------------------------------------------
+void ofxControlPanel::setVisible( ofParameterGroup& agroup, bool ab ) {
+    auto objs = getGuiObjects( agroup );
+    for( auto& obj : objs ) {
+        obj->setVisible(ab);
+    }
+    
+//    // try to find the internal param that was created for the group name //
+    for( auto label : mInternalParamGroupLabels ) {
+        if( label->textLabel.get() == agroup.getName() ){
+            label->setVisible(ab);
+            break;
+        }
+    }
+    
+    if( objs.size() > 0 ) {
+        for( auto& panel : panels ) {
+            for( auto& obj : objs ) {
+                if( panel->containsElement(obj)) {
+                    panel->relayout();
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//---------------------------------------------
+void ofxControlPanel::setVisible( ofAbstractParameter& aparam, bool ab ) {
+    shared_ptr<guiBaseObject> obj = getGuiObject( aparam );
+    if( obj ) {
+        obj->setVisible(ab);
+        for( auto& panel : panels ) {
+            if( panel->containsElement(obj)) {
+                panel->relayout();
+            }
+        }
+    }
+}
+
+//---------------------------------------------
+bool ofxControlPanel::contains( ofParameterGroup& agroup ) {
+    if( agroup.getName().size() < 2 ) return false;
+    if( agroup.size() < 1 ) return false;
+//    cout << "ofxControlPanel : setEnabled : " << agroup.getName() << endl;
+    for( int i = 0; i < xmlObjects.size(); i++ ) {
+        if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
+            // try to find the pointer for the param, so it's not just name based
+//            cout << "ofxControlPanel : setEnabled : " << agroup.getName() << " trying to match: " << xmlObjects[i].guiObj->value.paramGroup.getName() << endl;
+            if( agroup.getName() == xmlObjects[i].guiObj->value.paramGroup.getName() ) {
+//                cout << "ofxControlPanel : setEnabled : group names match: " << agroup.getName() << endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------
+bool ofxControlPanel::contains( ofAbstractParameter& aparam ) {
+    if( aparam.getName().size() < 2 ) return false;
+    
+    for( int i = 0; i < xmlObjects.size(); i++ ) {
+        if(xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size() ) {
+            for( int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++ ) {
+                if( xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(aparam) ) {
+                    // we have it, woohoo //
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 // ############################################################## //
@@ -472,8 +636,8 @@ void ofxControlPanel::add( ofParameterGroup & group, vector<bool> bOnesToInclude
     if( bOnesToInclude.size() == 0 ) {
         bOnesToInclude.assign( group.size(), true );
     }
-
-    addLabel(group.getName(), true);
+    
+    mInternalParamGroupLabels.push_back(addLabel(group.getName(), true));
 
     for(int i = 0; i < group.size(); i++){
         if( !bOnesToInclude[i] ) continue;
@@ -493,7 +657,11 @@ void ofxControlPanel::add( ofParameterGroup & group, vector<bool> bOnesToInclude
             addToggle(f);
         }else if( ptr->type() == typeid(ofParameter<string>).name() ){
             ofParameter <string> & f = dynamic_cast< ofParameter<string> & >( group.get(i) );
-            addLabel(f);
+            if(bAddStringsFromParamsAsTextInputs) {
+                addTextInput(f);
+            } else {
+                addLabel(f, false, true);
+            }
         }
         else if( ptr->type() == typeid(ofParameter<ofColor>).name() ){
             ofParameter<ofColor> & f = dynamic_cast< ofParameter<ofColor> & >( group.get(i) );
@@ -834,13 +1002,14 @@ shared_ptr<guiTypeFileLister> ofxControlPanel::addFileLister( ofParameter<string
     setLayoutFlag(listerType);
     listerType->value.addValue(aparam);
     listerType->setup( aparam, aDirectory, getDefaultColumnWidth(), 14 * 3 + 10 );
-    panels[currentPanel]->addElement(listerType);
-
-    guiObjects.push_back(listerType);
-
-    if( bUseTTFFont ){
-        listerType->setFont(&guiTTFFont);
-    }
+    addGuiBaseObject(listerType, 1);
+//    panels[currentPanel]->addElement(listerType);
+//
+//    guiObjects.push_back(listerType);
+//
+//    if( bUseTTFFont ){
+//        listerType->setFont(&guiTTFFont);
+//    }
 
     return listerType;
 }
@@ -861,6 +1030,7 @@ shared_ptr<guiTypeFilePicker> ofxControlPanel::addFilePicker( ofParameter<string
     return fp;
 }
 
+//---------------------------------------------
 shared_ptr<guiTypeColorPicker> ofxControlPanel::addColorPicker( ofParameter<ofColor>& aparam ) {
     if( currentPanel < 0 || currentPanel >= panels.size() ) {
         shared_ptr<guiTypeColorPicker> tt; return tt;
@@ -870,6 +1040,73 @@ shared_ptr<guiTypeColorPicker> ofxControlPanel::addColorPicker( ofParameter<ofCo
     cp->setup( aparam );
     addGuiBaseObject(cp, 1);
     return cp;
+}
+
+//---------------------------------------------
+shared_ptr<guiTypeTextInput> ofxControlPanel::addTextInput( ofParameter<string>& aparam ) {
+    if( currentPanel < 0 || currentPanel >= panels.size() ) {
+        shared_ptr<guiTypeTextInput> tt; return tt;
+    }
+    
+    cout << "ofxControlPanel::addTextInput : " << aparam.getName() << endl;
+    
+    auto ti = make_shared<guiTypeTextInput>();
+    ti->setupAsInput( aparam );
+    addGuiBaseObject(ti, 1);
+    return ti;
+}
+
+//---------------------------------------------
+void ofxControlPanel::addData(ofParameter<string>& aparam) {
+	addDataA(aparam);
+}
+
+//---------------------------------------------
+void ofxControlPanel::addData(ofParameter<int>& aparam) {
+	addDataA(aparam);
+}
+
+//---------------------------------------------
+void ofxControlPanel::addData(ofParameter<float>& aparam) {
+	addDataA(aparam);
+}
+
+//---------------------------------------------
+void ofxControlPanel::addDataA(ofAbstractParameter& aparam) {
+	if (currentPanel < 0 || currentPanel >= (int)panels.size()) {
+		return;
+	}
+	auto guiObj = make_shared<guiBaseObject>();
+	guiObj->value.addValue(aparam);
+	guiObj->setupNamesFromParams();
+	for (int i = 0; i < 1; i++) {
+		if (guiObj->value.paramGroup.getName() != "") {
+			guiObj->xmlName = guiObj->value.paramGroup.getEscapedName() + ":" + guiObj->xmlName;
+		}
+	}
+	addXmlAssociation(guiObj, guiObj->xmlName, 1);
+	guiObjects.push_back(guiObj);
+}
+
+//---------------------------------------------
+void ofxControlPanel::remove( shared_ptr<guiBaseObject> aGuiObj ) {
+    if( !aGuiObj ) return;
+    
+    for( int i = 0; i < panels.size(); i++ ) {
+        panels[i]->removeElement( aGuiObj );
+    }
+    
+    bool bFoundIt = false;
+    for( int i = 0; i < guiObjects.size(); i++ ) {
+        if(guiObjects[i] && guiObjects[i].get() == aGuiObj.get() ) {
+            bFoundIt = true;
+            guiObjects[i].reset();
+            break;
+        }
+    }
+    if(bFoundIt) {
+        ofRemove( guiObjects, shouldRemoveGuiBaseObject );
+    }
 }
 
 //---------------------------------------------
@@ -981,7 +1218,7 @@ bool ofxControlPanel::reloadSettingsForPanel( string name ){
         if( xmlObjects[i].guiObj ){
             if( panelPtr->containsElement( xmlObjects[i].guiObj ) ){
                 int numParams = xmlObjects[i].numParams;
-                //                printf("loading setting for xmlObject %s\n", xmlObjects[i].xmlName.c_str() );
+                //printf("loading setting for xmlObject %s\n", xmlObjects[i].xmlName.c_str() );
 
                 for(int j = 0; j < numParams; j++){
                     string str = xmlObjects[i].xmlName+":val_"+ofToString(j);
@@ -1009,6 +1246,41 @@ bool ofxControlPanel::reloadSettingsForPanel( string name ){
         }
 	}
     return true;
+}
+
+bool ofxControlPanel::reload(ofAbstractParameter& aparam) {
+	if (aparam.getName().size() < 2) return false;
+	//    cout << "ofxControlPanel : setEnabled : " << aparam.getName() << endl;
+	for (int i = 0; i < xmlObjects.size(); i++) {
+		if (xmlObjects[i].guiObj && xmlObjects[i].guiObj->value.paramGroup.size()) {
+			bool bFoundIt = false;
+			for (int k = 0; k < xmlObjects[i].guiObj->value.paramGroup.size(); k++) {
+				if (xmlObjects[i].guiObj->value.paramGroup.get(k).isReferenceTo(aparam)) {
+
+					string str = xmlObjects[i].xmlName + ":val_" + ofToString(k);
+
+					string type = xmlObjects[i].guiObj->value.getTypeAsString();
+					if (type == "ofcolor") {
+						xmlObjects[i].guiObj->value.paramGroup.getColor(k).fromString(settings.getValue(str, xmlObjects[i].guiObj->value.getValueAsString(k)));
+					} else if (type == "string") {
+						xmlObjects[i].guiObj->value.paramGroup.getString(k) = settings.getValue(str, xmlObjects[i].guiObj->value.getValueAsString(k));
+					} else {
+						float val = settings.getValue(str, xmlObjects[i].guiObj->value.getValueF(k));
+						xmlObjects[i].guiObj->setValue(val, k);
+					}
+					// we have it, woohoo //
+					//xmlObjects[i].guiObj->setEnabled(ab);
+					bFoundIt = true;
+					break;
+				}
+				if (bFoundIt) break;
+			}
+			if (bFoundIt) {
+				xmlObjects[i].guiObj->updateValue();
+			}
+		}
+	}
+	return true;
 }
 
 //-------------------------------
@@ -1042,6 +1314,13 @@ bool ofxControlPanel::saveSettings(string xmlFile,  bool bUpdateXmlFile){
 	}
     usingXml = true;
     ofNotifyEvent( guiSaveEvent, bLoadOk, this );
+    
+    for(int i = 0; i < (int) xmlObjects.size(); i++){
+        if( xmlObjects[i].guiObj ){
+            xmlObjects[i].guiObj->updateValue();
+        }
+    }
+    
     return bLoadOk;
 }
 
@@ -1159,6 +1438,20 @@ void ofxControlPanel::setStatusMessage(ofParameter <string> & message, int which
             panels[whichPanel]->setStatus(message);
         }
     }
+}
+
+//-------------------------------
+void ofxControlPanel::setStatusMessage(ofParameter<string> & message, string panelName) {
+	if (panelName != "") {
+		for (int i = 0; i < (int)panels.size(); i++) {
+			if (panels[i]->name == panelName) {
+				setStatusMessage(message, i);
+				break;
+			}
+		}
+	} else {
+		setStatusMessage(message, -1);
+	}
 }
 
 // ############################################################## //
@@ -1375,7 +1668,8 @@ bool ofxControlPanel::keyPressed(int k){
     for( int i=0; i<(int)panels.size(); i++ ){
         if( i == selectedPanel ){
             bool eaten = panels[i]->keyPressed( k );
-            if ( eaten ){
+            if ( eaten ) {
+                mFrameKeyPressAte = ofGetFrameNum();
                 return true;
             }
         }
@@ -1383,11 +1677,13 @@ bool ofxControlPanel::keyPressed(int k){
     
     if( k == OF_KEY_RIGHT ){
         setSelectedPanel(getSelectedPanel() + 1);
+        mFrameKeyPressAte = ofGetFrameNum();
         return true;
     }
 
     if( k == OF_KEY_LEFT ){
         setSelectedPanel(getSelectedPanel() - 1);
+        mFrameKeyPressAte = ofGetFrameNum();
         return true;
     }
     

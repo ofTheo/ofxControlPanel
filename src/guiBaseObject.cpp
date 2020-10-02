@@ -7,6 +7,7 @@ guiColor gFgColor;
 guiColor gBgColor;
 guiColor gOutlineColor;
 guiColor gTriDefaultColor;
+guiColor gXmlChangedColor;
 
 bool initialColorsLoaded = false;
 
@@ -44,6 +45,11 @@ guiBaseObject::guiBaseObject(){
         gTriDefaultColor.setSelectedColor(4,89,163, 255);
         gTriDefaultColor.setDisabledColor(20, 20, 20, 255);
         
+        gXmlChangedColor.setColor(55, 164, 177, 255);
+        gXmlChangedColor.setSelectedColor(55, 164, 177, 255);
+        gXmlChangedColor.setDisabledColor(55, 164, 177, 255);
+
+        
 		initialColorsLoaded = true;
 	}
 	
@@ -52,7 +58,8 @@ guiBaseObject::guiBaseObject(){
 	bgColor			= gBgColor;
 	textColor		= gTextColor;
     triDefaultColor = gTriDefaultColor;
-	
+    xmlChangedColor = gXmlChangedColor;
+
 	//these need to be setable at some point
 	fontSize     = 11;
 	titleSpacing = 5;
@@ -66,7 +73,8 @@ void guiBaseObject::setFont(ofTrueTypeFont * fontPtr){
 //should be called on mousedown
 //-------------------------------------------
 bool guiBaseObject::checkHit(float x, float y, bool isRelative){
-	if(readOnly)return false;
+	if(readOnly) return false;
+    if(!isVisible() ) return false;
 	if( isInsideRect(x, y, hitArea) && isEnabled() ){
 		state = SG_STATE_SELECTED;
 		setSelected();
@@ -105,7 +113,7 @@ void guiBaseObject::setupNamesFromParams(){
         xmlName = value.paramGroup[0].getEscapedName();
         
         if( name == "" || xmlName == "" ){
-            cout << "guiBaseObject::setupNames - name has not been set!!!" << endl;
+            ofLogVerbose() << "guiBaseObject::setupNames - name has not been set!!!" << endl;
         }
         
     }else{
@@ -126,6 +134,12 @@ void guiBaseObject::release(float x, float y, bool isRelative){
         
         for(unsigned int i = 0; i < children.size(); i++){
             children[i]->release(offsetX, offsetY, isRelative);
+        }
+        
+        if( fabs(value.getPct()-xmlValue) > 0.01){
+            bShowXmlValue = true; 
+        }else{
+            bShowXmlValue = false;
         }
     }
  }
@@ -183,11 +197,13 @@ void guiBaseObject::setEnabled( bool ab ) {
     if(ab) {
         if( !bEnabled ) {
             setNormal();
+            onRelayout();
             onEnabledChanged();
         }
     } else {
         if( bEnabled ) {
             setLocked();
+            onRelayout();
             onEnabledChanged();
         }
     }
@@ -197,6 +213,27 @@ void guiBaseObject::setEnabled( bool ab ) {
 //------------------------------------------------
 bool guiBaseObject::isEnabled() {
     return bEnabled;
+}
+
+//------------------------------------------------
+void guiBaseObject::setVisible( bool ab ) {
+    if( ab ) {
+        if(!bVisible) {
+            setNormal();
+            mTextMesh.clear();
+            onVisibleChanged();
+        }
+    } else {
+        if( bVisible) {
+            onVisibleChanged();
+        }
+    }
+    bVisible = ab;
+}
+
+//------------------------------------------------
+bool guiBaseObject::isVisible() {
+    return bVisible;
 }
 
 //------------------------------------------------
@@ -480,6 +517,8 @@ void guiBaseObject::setLocked() {
      for( int i = 0; i < children.size(); i++ ) {
          children[i]->updateValue();
      }
+     xmlValue = value.getPct();
+     bShowXmlValue = false;
 }
 
 

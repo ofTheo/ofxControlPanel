@@ -106,11 +106,21 @@ public:
     shared_ptr<guiTypeFilePicker> addFilePicker( ofParameter<string>& aparam );
     
     shared_ptr<guiTypeColorPicker> addColorPicker( ofParameter<ofColor>& aparam );
+    
+    shared_ptr<guiTypeTextInput> addTextInput( ofParameter<string>& aparam );
 
+	void addData(ofParameter<string>& aparam);
+	void addData(ofParameter<int>& aparam);
+	void addData(ofParameter<float>& aparam);
+
+	void addDataA(ofAbstractParameter& aparam);
 //		guiTypeTextInput* addTextInput( string name, string text, int width );
 
     // remove an object
 //    void removeObject( string xmlName );
+    
+	
+    void remove( shared_ptr<guiBaseObject> aGuiObj );
     
     template<typename Type>
     shared_ptr<Type> get( ofAbstractParameter& aparam ) {
@@ -138,12 +148,25 @@ public:
     
     string getSelectedPanelName();
     int getSelectedPanel();
+    
     void setSelectedPanel(int whichPanel);
     int getWhichPanel() { return currentPanel; }
     int getNumPanels(){ return panels.size(); }
     
+    shared_ptr<guiTypePanel> getPanelPtr( int aIndex );
+    shared_ptr<guiTypePanel> getPanelPtr( string aname );
+    
+    vector< shared_ptr<guiBaseObject> > getGuiObjects( ofParameterGroup& agroup );
+    shared_ptr<guiBaseObject> getGuiObject( ofAbstractParameter& aparam );
+    
     void setEnabled( ofParameterGroup& agroup, bool ab );
     void setEnabled( ofAbstractParameter& aparam, bool ab );
+    
+    void setVisible( ofParameterGroup& agroup, bool ab );
+    void setVisible( ofAbstractParameter& aparam, bool ab );
+    
+    bool contains( ofParameterGroup& agroup );
+    bool contains( ofAbstractParameter& aparam );
 		
     //other
     void loadFont( string fontName, int fontsize );
@@ -160,6 +183,7 @@ public:
     // keyboard events
     void enableKeyboardEvents();
     void disableKeyboardEvents();
+    bool didEatKeyPress();
     
 
     bool newPanelSelected();
@@ -170,6 +194,8 @@ public:
     
     bool reloadSettings();
     bool reloadSettingsForPanel(string panelName);
+
+	bool reload(ofAbstractParameter & aparam);
 
     bool saveSettings(string xmlFile, bool bUpdateXmlFile = true);
     bool saveSettings();
@@ -185,9 +211,12 @@ public:
     void hide();
     
     void setStatusMessage(ofParameter <string> & message, int whichPanel = -1);
+	void setStatusMessage(ofParameter <string> & message, string panelName = "");
     
     //this only shows the element you are interacting with when the mouse is pressed
     void setInvisibleMode(bool bInvis);
+    
+    void setAddedStringsFromParamGroupsAsTextInputs( bool ab ) { bAddStringsFromParamsAsTextInputs = ab;}
     
     bool isVisible();
     bool isHidden();
@@ -256,6 +285,7 @@ protected:
     
 //		vector <guiCustomEvent *> customEvents;
     vector <ofAbstractParameter *> internalParams;
+    vector< shared_ptr<guiTypeLabel> > mInternalParamGroupLabels;
 
     ofxXmlSettings settings;
     string currentXmlFile;
@@ -317,5 +347,10 @@ protected:
     bool elementSelected;
     
     string incrementSaveName;
+    
+    bool bAddStringsFromParamsAsTextInputs = false;
+    
+    // store if we ate the key press //
+    int mFrameKeyPressAte = -100;
 
 };

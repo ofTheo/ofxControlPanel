@@ -28,6 +28,27 @@ void guiTypeTextInput::setup( ofAbstractParameter& aparam ) {
     bsetup = true;
 }
 
+//--------------------------------------------------------------
+void guiTypeTextInput::setupAsInput( ofAbstractParameter& aparam ) {
+    value.addValue( aparam );
+    mCursorIndex = mTextInput.size();
+    _updateCursorPos();
+    ofAddListener(value.paramGroup.parameterChangedE(), this, &guiTypeTextInput::_onParamChange );
+    bsetup = true;
+    guiBaseObject::setupNamesFromParams();
+    setDimensions(getDefaultColumnWidth(), 14);
+    displayText.setText(name);
+}
+
+//-----------------------------------------------
+void guiTypeTextInput::onEnabledChanged() {
+    onRelayout();
+    
+    if( !isEnabled() ) {
+        setFocus(false);
+    }
+}
+
 //-----------------------------------------------
 void guiTypeTextInput::updateValue() {
     if( value.getNumValues() == 0 ){
@@ -89,6 +110,10 @@ void guiTypeTextInput::lostFocus() {
 //--------------------------------------------------------------
 bool guiTypeTextInput::checkHit(float x, float y, bool isRelative) {
 //    cout << "GuiTypeTextINput :: check hit " << (hitArea.inside( x, y )) << " | " << ofGetFrameNum() << endl;
+    if( !isEnabled() ) {
+        bWasHit = false;
+        return false;
+    }
     mousePt = glm::vec2(x,y);
     _updateCursorPos();
     if( hitArea.inside( x, y )) {
@@ -113,7 +138,7 @@ void guiTypeTextInput::release(float x, float y, bool isRelative) {
 
 //--------------------------------------------------------------
 bool guiTypeTextInput::keyPressed(int k) {
-    
+    if(!isEnabled()) return false;
     if( hasFocus() ) {
         if( k == OF_KEY_LEFT ) {
             mCursorIndex -= 1;
@@ -139,12 +164,19 @@ bool guiTypeTextInput::keyPressed(int k) {
                 }
                 _onTextChange();
             }
-        } else if( (k >= '0' && k <= '9') || k == '.' || k == '-') {
+//        } else if( (k >= '0' && k <= '9') || k == '.' || k == '-') {
+//            mTextInput += k;
+//            mCursorIndex = mTextInput.size();
+//            _onTextChange();
+        } else if( k == OF_KEY_RETURN ) {
+            _onTextEntered();
+            return true;
+        }
+        
+        if(_isValidInputKey(k)) {
             mTextInput += k;
             mCursorIndex = mTextInput.size();
             _onTextChange();
-        } else if( k == OF_KEY_RETURN ) {
-            _onTextEntered();
         }
         
 //        cout << "guiTypeTextInput :: keyPressed: " << k << " str: " << mTextInput << " | " << ofGetFrameNum() << endl;
@@ -161,6 +193,21 @@ bool guiTypeTextInput::keyReleased(int k) {
         return true;
     }
     return false;
+}
+
+//--------------------------------------------------------------
+void guiTypeTextInput::addToRenderMesh( ofMesh& arenderMesh ) {
+    addToRenderMesh( arenderMesh, 0, 0 );
+}
+
+//--------------------------------------------------------------
+void guiTypeTextInput::addToLinesRenderMesh( ofMesh& arenderMesh ) {
+    addRectangleToLinesMesh( arenderMesh, hitArea, outlineColor.getColor() );
+}
+
+//--------------------------------------------------------------
+void guiTypeTextInput::addToTextRenderMesh( ofMesh& arenderMesh ) {
+    addToTextRenderMesh( arenderMesh, 0, 0 );
 }
 
 //--------------------------------------------------------------
@@ -187,6 +234,7 @@ void guiTypeTextInput::addToTextRenderMesh( ofMesh& arenderMesh, float ax, float
         
         float textW = displayText.getTextWidth(getText());
         displayText.addStringToMesh( mTextMesh, getText(), ax + hitArea.x + 2.0, ay + hitArea.y, textColor.getColor() );
+        displayText.addStringToMesh( mTextMesh, name, boundingBox.x, boundingBox.y, textColor.getColor() );
     }
     arenderMesh.append(mTextMesh);
 }
@@ -267,6 +315,39 @@ bool guiTypeTextInput::_isTextValid() {
         }
     }
     return false;
+}
+
+//--------------------------------------------------------------
+bool guiTypeTextInput::_isParamNumber() {
+    string type = value.getTypeAsString(0);
+    if( type == "float" ) { return true; }
+    if( type == "int" ) { return true; }
+    return false;
+}
+
+//--------------------------------------------------------------
+bool guiTypeTextInput::_isValidInputKey( int akey ) {
+    
+    vector<int> nonoKeys = {
+        OF_KEY_DEL, OF_KEY_ALT, OF_KEY_BACKSPACE, OF_KEY_UP, OF_KEY_DOWN, OF_KEY_RIGHT, OF_KEY_LEFT,
+        OF_KEY_RETURN, OF_KEY_F1, OF_KEY_F2, OF_KEY_F3, OF_KEY_F4, OF_KEY_F5, OF_KEY_F6, OF_KEY_F7, OF_KEY_F8, OF_KEY_F9,
+        OF_KEY_SHIFT, OF_KEY_COMMAND, OF_KEY_ESC, OF_KEY_SUPER, OF_KEY_LEFT_SHIFT, OF_KEY_RIGHT_SHIFT
+    };
+    
+    for( int i = 0; i < nonoKeys.size(); i++ ) {
+        if( akey == nonoKeys[i] ) {
+            return false;
+        }
+    }
+    
+    if( _isParamNumber() ) {
+        if( (akey >= '0' && akey <= '9') || akey == '.' || akey == '-') {
+            return true;
+        }
+        return false;
+    }
+    
+    return true;
 }
 
 //--------------------------------------------------------------

@@ -38,6 +38,6 @@ public:
 
     void render();
 
-    ofBaseDraws * vid;
+    ofBaseDraws* vid = nullptr;
 };
 

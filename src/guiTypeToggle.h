@@ -21,6 +21,6 @@ public:
     virtual void addToRenderMesh( ofMesh& arenderMesh );
     virtual void addToLinesRenderMesh( ofMesh& arenderMesh );
     virtual void addToTextRenderMesh( ofMesh& arenderMesh );
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
     #endif
 };

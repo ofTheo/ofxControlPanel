@@ -15,6 +15,7 @@ void guiTypeToggle::setup(){
 
 //-----------------------------------------------
 void guiTypeToggle::updateValue(){
+    guiBaseObject::updateValue(); 
     if( value.getNumValues() == 0 ){
         return;
     }
@@ -116,15 +117,15 @@ void guiTypeToggle::updateText(){
 #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
 //-----------------------------------------------
 void guiTypeToggle::addToRenderMesh( ofMesh& arenderMesh ) {
-    addRectangleToMesh( arenderMesh, hitArea, bgColor.getColor() );
+    addRectangleToMesh( arenderMesh, hitArea,  bgColor.getColor() );
     if( value.getValueI() ) {
-        addRectangleToMesh( arenderMesh, hitArea, fgColor.getColor() );
+        addRectangleToMesh( arenderMesh, hitArea, bShowXmlValue  ? xmlChangedColor.getColor() : fgColor.getColor() );
     }
 }
 
 //-----------------------------------------------
 void guiTypeToggle::addToLinesRenderMesh( ofMesh& arenderMesh ) {
-    addRectangleToLinesMesh( arenderMesh, hitArea, outlineColor.getColor() );
+    addRectangleToLinesMesh( arenderMesh, hitArea, bShowXmlValue  ? xmlChangedColor.getColor() : outlineColor.getColor() );
 }
 
 //-----------------------------------------------

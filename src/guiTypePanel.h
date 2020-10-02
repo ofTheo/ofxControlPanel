@@ -47,6 +47,8 @@ public:
     bool containsElement( shared_ptr<guiBaseObject> element );
     bool containsElement( string xmlName );
     shared_ptr<guiBaseObject> getElement( string xmlName );
+    
+    void relayout();
 		
     void resetSelectedElement();
     void setShowOnlySelectedElement(bool showOnlySelected);
@@ -65,7 +67,9 @@ public:
 
     vector <ofRectangle> columns;
     vector <int> whichColumn;
-    int col;
+    vector<int> targetColumns;
+    int col = 0;
+    int targetColumn = 0;
     
     bool showOnly;
     bool elementInteracting;
@@ -78,7 +82,7 @@ protected:
 #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
     ofMesh mRenderMesh;
     ofMesh mLinesMesh;
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
 #endif
     int elementWithFocusIndex = -1;
 

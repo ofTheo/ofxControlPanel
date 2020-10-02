@@ -32,7 +32,7 @@ public:
     void addToLinesRenderMesh( ofMesh& arenderMesh );
     virtual void addToTextRenderMesh( ofMesh& arenderMesh );
     
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
 #endif
 		
     float minVal, maxVal;

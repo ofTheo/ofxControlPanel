@@ -11,6 +11,7 @@ public:
     void setup();
     virtual void updateBoundingBox() override;
     virtual void onEnabledChanged() override;
+    virtual void onRelayout() override;
 
     //-----------------------------------------------
     virtual float getVerticalSpacing() override {
@@ -22,15 +23,15 @@ public:
     void updateGui(float x, float y, bool firstHit, bool isRelative = false) override;
     void render() override;
     
-    
-    
+    //-----------------------------------------------.
+    void updateValue() override;
     
 #ifndef OFX_CONTROL_PANEL_NO_BATCH_RENDER
     virtual void addToRenderMesh( ofMesh& arenderMesh ) override;
     virtual void addToLinesRenderMesh( ofMesh& arenderMesh ) override;
     virtual void addToTextRenderMesh( ofMesh& arenderMesh ) override;
     
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
 #endif
     
     bool bShowDefaultValue = false;

@@ -24,7 +24,7 @@ public:
     virtual void addToLinesRenderMesh( ofMesh& arenderMesh ) override;
     virtual void addToTextRenderMesh( ofMesh& arenderMesh ) override;
     
-    ofMesh mTextMesh;
+//    ofMesh mTextMesh;
     
 protected:
     void _onColorParamChange( ofColor& av );
